@@ -1,0 +1,21 @@
+# Deploy — publish the Flutter web build
+#
+# Why: Build and deploy RSProjects Showcase to hosting.
+# Owner: Platform / release.
+# When: Implement after hosting target is chosen (see docs/DEPLOYMENT.md).
+#
+# TODO(deploy): flutter build web --release
+# TODO(deploy): upload / publish artifacts
+# TODO(deploy): optionally run scripts/publish.dart
+
+name: deploy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  placeholder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Placeholder — deploy not implemented
+        run: echo "Deploy workflow not implemented yet"

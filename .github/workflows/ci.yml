@@ -1,0 +1,24 @@
+# CI — continuous integration
+#
+# Why: Lint, analyze, and test gates on every PR.
+# Owner: Platform / CI.
+# When: Implement when first real feature lands.
+#
+# TODO(ci): flutter pub get
+# TODO(ci): flutter analyze
+# TODO(ci): flutter test
+# TODO(ci): optionally dart run scripts/validate_content.dart
+
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  placeholder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Placeholder — CI not implemented
+        run: echo "CI workflow not implemented yet"

@@ -1,0 +1,34 @@
+name: rsprojects_showcase
+description: Public portal for all RSProjects products.
+publish_to: "none"
+
+version: 0.0.1+1
+
+environment:
+  sdk: ^3.12.2
+
+# TODO(deps): Add packages only when a feature requires them
+# (e.g. go_router, flutter_riverpod, markdown).
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  # TODO(deps): integration_test when end-to-end flows are implemented
+  # integration_test:
+  #   sdk: flutter
+
+flutter:
+  uses-material-design: true
+
+  # TODO(assets): Uncomment when real assets are added.
+  # assets:
+  #   - assets/branding/
+  #   - assets/icons/
+  #   - assets/images/
+  #   - assets/screenshots/
+  #   - generated/registry.json
+  #   - content/projects/

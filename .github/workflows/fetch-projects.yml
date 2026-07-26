@@ -1,0 +1,21 @@
+# Fetch projects — content discovery / sync
+#
+# Why: Scheduled or manual sync of project metadata into content/.
+# Owner: Content pipeline / CI.
+# When: Implement when remote sources and scripts/fetch_projects.dart exist.
+#
+# TODO(fetch): dart run scripts/fetch_projects.dart
+# TODO(fetch): dart run scripts/generate_registry.dart
+# TODO(fetch): open PR or commit registry updates
+
+name: fetch-projects
+
+on:
+  workflow_dispatch:
+
+jobs:
+  placeholder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Placeholder — fetch-projects not implemented
+        run: echo "Fetch-projects workflow not implemented yet"
