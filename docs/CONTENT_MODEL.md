@@ -1,8 +1,12 @@
 # Content Model
 
+Project and example schemas for the portal cache and generated registry.
+
+**Project Integration:** Product projects own source, docs, examples, and `showcase/metadata.json`. The showcase holds **Integration Definitions** (`content/integrations/`) describing **Project Providers**, plus a **derived cache** under `content/projects/` and `content/examples/` until sync automation lands. See [`PROJECT_INTEGRATION.md`](PROJECT_INTEGRATION.md).
+
 ## Project metadata
 
-Each project lives at `content/projects/<id>/metadata.json`.
+Each project cache entry lives at `content/projects/<id>/metadata.json` (mirrored from the product project’s `showcase/metadata.json` when integrated).
 
 ### Required fields
 
@@ -22,12 +26,22 @@ Each project lives at `content/projects/<id>/metadata.json`.
 | Field | Type | Notes |
 |-------|------|--------|
 | `tagline` | string | Short one-liner (hero) |
-| `repositoryUrl` | string | HTTPS URL — hero GitHub action |
-| `demoUrl` | string | HTTPS URL — hero Demo action |
-| `docsUrl` | string | HTTPS URL — hero Documentation action |
+| `repositoryUrl` | string | HTTPS URL — typically the repository **provider** |
+| `demoUrl` | string | HTTPS URL — hero Demo action / demo provider |
+| `docsUrl` | string | HTTPS URL — hero Documentation / documentation provider |
 | `tags` | string[] | Free-form tags |
 | `icon` | string | Asset path or icon key |
 | `showcase` | object | Canonical presentation sections (see below) |
+| `integration` | object | Provenance for Integration Definition–backed cache (see below) |
+
+### Integration provenance (`integration`)
+
+Optional object on cached project metadata:
+
+| Field | Type | Notes |
+|-------|------|--------|
+| `projectId` | string | Matches `content/integrations/<projectId>.json` |
+| `source` | string | `project-cache` (derived from product providers) \| `showcase-authored` (portal-only until contract lands). Legacy: `repository-cache`, `repositoryId` still accepted by validators. |
 
 ## Showcase framework (`showcase`)
 
@@ -73,7 +87,10 @@ Legacy `screenshots[]` remains supported as a gallery fallback when `media` is e
 
 ## Project examples (**implemented**)
 
-Examples are **supporting content** for projects — authored independently for automation, discovered on project pages (not a standalone app feature).
+Examples are **supporting content** for projects — discovered on project pages (not a standalone app feature).
+
+**SSOT:** Product project `examples/<id>/` (via Integration Definition providers — see [`PROJECT_INTEGRATION.md`](PROJECT_INTEGRATION.md)).  
+**Portal cache today:** `content/examples/<example-id>/` until Phase 3 sync.
 
 ```
 content/examples/<example-id>/
@@ -115,6 +132,18 @@ Each example belongs to **exactly one** project via `projectId`.
 | omit / `available: false` | `note?` | `DemoUnavailable` |
 
 Shared UI: `DemoPane` / `ExampleGallery` under `lib/shared/demos/` and `lib/shared/examples/`.
+
+## Integration Definitions (**implemented**)
+
+Provider maps for integrated projects (not a second copy of product content):
+
+```
+content/integrations/<projectId>.json
+```
+
+See [`PROJECT_INTEGRATION.md`](PROJECT_INTEGRATION.md) for provider keys, ownership layers, and the Document Platform reference. Entries are **not** currently merged into `assets/generated/registry.json` (architecture + future sync input).
+
+New source types (design-system site, API reference, benchmark dashboard, …) are additional keys under `providers` — not new top-level concepts.
 
 ## Phase 2.2–2.5 (planned) — not implemented yet
 
@@ -209,4 +238,11 @@ Required catalog fields are always validated. When `showcase` is present, struct
 
 ## Ownership
 
-Project owners maintain their `content/projects/<id>/` folder. Example authors maintain `content/examples/<id>/`. CI regenerates the registry; do not hand-edit `assets/generated/registry.json` for releases.
+| Layer | Who maintains |
+|-------|----------------|
+| Product project (`showcase/`, `docs/`, `examples/`, …) | Product owners (SSOT) |
+| `content/integrations/<projectId>.json` | Showcase maintainers (Integration Definition / providers) |
+| `content/projects/<id>/`, `content/examples/<id>/` | Derived cache — sync from product providers; portal-only until contract lands |
+| `assets/generated/registry.json` | Generated only — do not hand-edit for releases |
+
+See [`PROJECT_INTEGRATION.md`](PROJECT_INTEGRATION.md).

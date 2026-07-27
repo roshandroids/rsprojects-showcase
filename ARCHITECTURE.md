@@ -4,7 +4,7 @@
 
 RSProjects Showcase is a **Flutter Web–first**, cross-platform portal for discovering and presenting RSProjects products.
 
-Layout is **feature-first** with shared core/platform layers. Adding a product is primarily a **content** change under `content/projects/`, not a UI fork.
+Layout is **feature-first** with shared core/platform layers. Adding a product is primarily a **Project Integration** change (product SSOT → Integration Definition / providers → showcase cache → generated registry), not a UI fork.
 
 ## Layers
 
@@ -30,12 +30,15 @@ lib/
 
 ## Content & discovery
 
+**Project Integration (D-029):** The showcase integrates **projects** via provider-driven **Integration Definitions** under `content/integrations/`. A Git repository is one **Project Provider** among many (documentation, demo, package, website, releases, benchmarks, …). Product projects own SSOT (including `showcase/`); the portal may keep a **derived cache** under `content/projects/` and `content/examples/` until Phase 3 sync. See [`docs/PROJECT_INTEGRATION.md`](docs/PROJECT_INTEGRATION.md).
+
 ```
-content/projects/<id>/metadata.json
-content/examples/<id>/metadata.json
+Product Project (SSOT: showcase/, docs/, examples/, …)
+  → content/integrations/<projectId>.json   # Integration Definition + providers
+  → content/projects/ + content/examples/   # derived cache (manual sync today)
   → scripts/validate_content.dart
   → scripts/generate_registry.dart
-  → assets/generated/registry.json   # projects[] + examples[]
+  → assets/generated/registry.json          # projects[] + examples[]
   → AssetRegistryProjectRepository
   → domain Project / ProjectShowcase + shared ProjectExample
   → Riverpod catalog / detail
@@ -44,9 +47,9 @@ content/examples/<id>/metadata.json
 
 **Phase 2 (remaining):** docs hub, project demo section via DemoSpec, search/collections, relations — see [`docs/PHASE_2_SHOWCASE_EXCELLENCE.md`](docs/PHASE_2_SHOWCASE_EXCELLENCE.md). Local `docs/` / `media/` under projects and `content/collections/` remain planned.
 
-**D-027:** Examples are authored independently under `content/examples/` (with `projectId`) and presented on project pages via shared `ExampleGallery`. Supporting content — not a standalone application feature.
+**D-027:** Examples are presented on project pages via shared `ExampleGallery` (supporting content — not a standalone app feature). Portal `content/examples/` is a cache; long-term SSOT is each product’s `examples/` (via providers).
 
-**Phases 3–5 (planned):** automation/publishing, ecosystem intelligence, community & developer portal — [`docs/roadmap/`](docs/roadmap/).
+**Phases 3–5 (planned):** automation/publishing (sync from Integration Definitions / providers), ecosystem intelligence, community & developer portal — [`docs/roadmap/`](docs/roadmap/).
 
 ## State management
 

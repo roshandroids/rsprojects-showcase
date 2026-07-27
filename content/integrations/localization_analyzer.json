@@ -1,0 +1,33 @@
+{
+  "projectId": "localization_analyzer",
+  "displayName": "Localization Analyzer",
+  "status": "registered",
+  "providers": {
+    "repository": {
+      "gitUrl": "https://github.com/roshandroids/MBO",
+      "defaultBranch": "main",
+      "packagePath": "packages/localization_analyzer",
+      "localDevPath": "../MBO_research/cmic_localization_inspector",
+      "paths": {
+        "readme": "packages/localization_analyzer/README.md",
+        "license": "LICENSE",
+        "pubspec": "packages/localization_analyzer/pubspec.yaml",
+        "examples": "examples/",
+        "showcaseMetadata": null,
+        "media": null,
+        "docs": null,
+        "changelog": null
+      }
+    },
+    "documentation": {},
+    "demo": {},
+    "package": {
+      "path": "packages/localization_analyzer",
+      "note": "Pure-Dart package inside MBO; not a standalone public product repo yet"
+    },
+    "website": {},
+    "releases": {},
+    "benchmarks": {}
+  },
+  "notes": "Registered only — product showcase/ contract not placed in MBO this milestone. Portal content under content/projects/localization_analyzer remains showcase-authored cache until integrated."
+}

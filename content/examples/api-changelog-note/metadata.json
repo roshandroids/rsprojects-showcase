@@ -1,10 +1,10 @@
 {
   "id": "api-changelog-note",
   "title": "API changelog note",
-  "description": "Structured release notes that export to eng and support channels.",
+  "description": "Structured release notes that export to eng and support channels. Portal cache — see Document_Platform/examples/ for runnable hosts.",
   "projectId": "document_platform",
   "category": "sample",
-  "tags": ["changelog", "api"],
+  "tags": ["changelog", "api", "cache"],
   "demo": {
     "kind": "media",
     "available": true
@@ -16,5 +16,5 @@
       "caption": "Author note → structured export → eng and support channels"
     }
   ],
-  "sourceUrl": "https://github.com/roshandroids/rsprojects-showcase"
+  "sourceUrl": "https://github.com/roshandroids/Document_Platform"
 }

@@ -68,4 +68,37 @@ void main() {
     });
     expect(errors, isEmpty);
   });
+
+  test('accepts integration provenance object', () {
+    final errors = validateProjectMetadata({
+      ...valid(),
+      'integration': {
+        'projectId': 'document_platform',
+        'source': 'project-cache',
+      },
+    });
+    expect(errors, isEmpty);
+  });
+
+  test('accepts legacy integration.repositoryId and repository-cache', () {
+    final errors = validateProjectMetadata({
+      ...valid(),
+      'integration': {
+        'repositoryId': 'document_platform',
+        'source': 'repository-cache',
+      },
+    });
+    expect(errors, isEmpty);
+  });
+
+  test('rejects invalid integration.source', () {
+    final errors = validateProjectMetadata({
+      ...valid(),
+      'integration': {
+        'projectId': 'document_platform',
+        'source': 'remote-live',
+      },
+    });
+    expect(errors.any((e) => e.contains('integration.source')), isTrue);
+  });
 }

@@ -59,6 +59,13 @@ const Set<String> kAllowedDemoKinds = {
   'media',
 };
 
+const Set<String> kAllowedIntegrationSources = {
+  'project-cache',
+  'showcase-authored',
+  // Legacy alias (Repository Integration → Project Integration).
+  'repository-cache',
+};
+
 /// Validates a decoded metadata map. Returns human-readable error messages.
 List<String> validateProjectMetadata(
   Map<String, Object?> data, {
@@ -107,6 +114,30 @@ List<String> validateProjectMetadata(
 
   if (expectedId != null && id != null && id != expectedId) {
     errors.add('Metadata id "$id" does not match folder "$expectedId"');
+  }
+
+  final integration = data['integration'];
+  if (integration != null) {
+    if (integration is! Map) {
+      errors.add('Field "integration" must be an object when present');
+    } else {
+      final projectId = integration['projectId'] ?? integration['repositoryId'];
+      if (projectId != null &&
+          (projectId is! String || projectId.trim().isEmpty)) {
+        errors.add(
+          'integration.projectId (or legacy repositoryId) '
+          'must be a non-empty string',
+        );
+      }
+      final source = integration['source'];
+      if (source != null &&
+          (source is! String ||
+              !kAllowedIntegrationSources.contains(source))) {
+        errors.add(
+          'integration.source invalid. Allowed: $kAllowedIntegrationSources',
+        );
+      }
+    }
   }
 
   final showcase = data['showcase'];

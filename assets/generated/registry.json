@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-27T01:30:39.449089Z",
+  "generatedAt": "2026-07-27T01:56:58.502483Z",
   "projects": [
     {
       "id": "ai_tray",
@@ -56,176 +56,172 @@
     {
       "id": "document_platform",
       "name": "Document Platform",
-      "tagline": "Structured documents for modern product teams",
-      "description": "Document Platform is an RSProjects product for authoring, organizing, and shipping living product documentation. It emphasizes clear content models, multi-format export, and workflows that keep engineering and product writing in sync.",
-      "version": "0.9.0",
+      "tagline": "Flutter-native document editing you can embed",
+      "description": "Document Platform is an independent Flutter document-editing stack: schema-driven model, commands, hybrid rendering, clipboard/HTML interchange, plugins, and templates — split into focused Melos packages hosts can compose without forking a monolith.",
+      "version": "0.1.0",
       "status": "beta",
       "category": "platform",
       "platforms": [
-        "web",
         "macos",
+        "web",
         "windows",
         "linux"
       ],
       "featured": true,
-      "repositoryUrl": "https://github.com/roshandroids",
-      "docsUrl": "https://github.com/roshandroids/rsprojects-showcase",
+      "repositoryUrl": "https://github.com/roshandroids/Document_Platform",
+      "docsUrl": "https://github.com/roshandroids/Document_Platform/blob/main/docs/INDEX.md",
       "tags": [
-        "documentation",
-        "content",
-        "productivity"
+        "flutter",
+        "editor",
+        "documents",
+        "embeddable"
       ],
+      "integration": {
+        "projectId": "document_platform",
+        "source": "project-cache"
+      },
       "showcase": {
         "heroMedia": {
           "kind": "image",
-          "alt": "Document Platform editor hero"
+          "alt": "Document Platform editor playground"
         },
-        "problem": "Product and engineering documentation often lives in disconnected tools—wikis, tickets, and ad-hoc markdown—making it hard to keep structure, ownership, and shipping formats aligned as teams grow.",
-        "solution": "Document Platform provides a shared content model, authoring workflows, and export paths so living docs stay consistent from draft to delivery across web and desktop.",
+        "problem": "Enterprise Flutter apps need structured rich documents, selection/IME, toolbar, and clipboard fidelity — without bolting those concerns onto an editor that was not designed for embedding.",
+        "solution": "A Melos package monorepo with clear dependency direction toward document_core: model, session, presentation, UI, interchange, plugins, and theming that hosts compose.",
         "features": [
           {
-            "title": "Structured content model",
-            "description": "Typed document schemas keep sections, metadata, and ownership explicit.",
+            "title": "Schema-driven document model",
+            "description": "Hierarchical nodes, attributions, and transactional mutations in document_core.",
             "icon": "schema"
           },
           {
-            "title": "Multi-format export",
-            "description": "Ship the same source as web, printable, and engineering-friendly formats.",
-            "icon": "export"
-          },
-          {
-            "title": "Cross-team workflows",
-            "description": "Review loops that keep product writing and engineering updates in sync.",
+            "title": "Editor session & commands",
+            "description": "Selection, IME, inverse undo/redo, and command pipeline in document_editor.",
             "icon": "workflow"
           },
           {
-            "title": "Cross-platform clients",
-            "description": "Primary web experience with desktop companions for focused writing.",
+            "title": "Interchange fidelity",
+            "description": "Clipboard pipeline plus HTML and Markdown packages for host integration.",
+            "icon": "export"
+          },
+          {
+            "title": "Embeddable examples",
+            "description": "example_basic, example_embed, example_enterprise, and email_template_editor showcase hosts.",
             "icon": "platform"
           }
         ],
         "demo": {
           "available": false,
-          "note": "Interactive demo is planned for a later release. Use Documentation for current guidance."
+          "note": "Run examples/example_basic locally (Editor Playground). Interactive web embed for the public portal is planned."
         },
         "screenshots": [
           {
-            "alt": "Document editor overview",
-            "caption": "Structured editor with section outline and metadata"
+            "alt": "Editor Playground",
+            "caption": "Feature gallery in examples/example_basic"
           },
           {
-            "alt": "Export pipeline",
-            "caption": "Multi-format export from a single content source"
+            "alt": "Email template editor",
+            "caption": "Official migration showcase: examples/email_template_editor"
           }
         ],
         "media": [
           {
-            "kind": "image",
-            "alt": "Document editor overview",
-            "caption": "Structured editor with section outline and metadata"
-          },
-          {
             "kind": "diagram",
-            "alt": "Content pipeline diagram",
-            "caption": "Author → validate → export → publish"
+            "alt": "Package dependency direction",
+            "caption": "Hosts compose packages; dependencies point inward toward document_core"
           },
           {
-            "kind": "video",
-            "alt": "Authoring walkthrough (placeholder)",
-            "caption": "Short walkthrough planned when demo assets land"
+            "kind": "image",
+            "alt": "Editor Playground",
+            "caption": "Feature gallery in examples/example_basic"
+          },
+          {
+            "kind": "image",
+            "alt": "Email template editor",
+            "caption": "Official migration showcase host"
           }
         ],
-        "architecture": "Feature-first Flutter clients consume a content registry and document APIs. Domain models stay free of UI; presentation uses a shared showcase template so every RSProjects product page follows the same structure.",
+        "architecture": "Dependency direction is inward toward document_core. Layers: model → session → presentation → UI → interchange → plugins/theme. Cycles require an ADR. See docs/architecture/ in the Document Platform repository.",
         "architectureDiagram": {
           "kind": "diagram",
-          "alt": "Document Platform architecture layers",
-          "caption": "Content → domain → Riverpod → generic showcase UI"
+          "alt": "Document Platform layered packages",
+          "caption": "Model, session, rendering, widgets, interchange, plugins"
         },
         "technologies": [
           "Flutter",
           "Dart",
-          "Riverpod",
-          "Content registry",
-          "Markdown / structured docs"
+          "Melos",
+          "document_core",
+          "document_editor"
         ],
         "platformSupport": [
           {
-            "platform": "web",
-            "notes": "Primary authoring and review experience"
+            "platform": "macos",
+            "notes": "Primary example and dogfood target"
           },
           {
-            "platform": "macos",
-            "notes": "Desktop companion for focused writing"
+            "platform": "web",
+            "notes": "Supported for portal and host embeds"
           },
           {
             "platform": "windows",
-            "notes": "Desktop companion"
+            "notes": "Desktop companion targets"
           },
           {
             "platform": "linux",
-            "notes": "Desktop companion"
+            "notes": "Desktop companion targets"
           }
         ],
-        "installation": "Clone the repository, run flutter pub get, then flutter run -d chrome for the web client. Desktop targets follow the same Flutter toolchain.",
+        "installation": "Clone https://github.com/roshandroids/Document_Platform, run dart pub get at the workspace root, then: cd examples/example_basic && flutter run -d macos",
         "documentationLinks": [
           {
-            "label": "Showcase repository",
-            "url": "https://github.com/roshandroids/rsprojects-showcase"
+            "label": "Documentation index",
+            "url": "https://github.com/roshandroids/Document_Platform/blob/main/docs/INDEX.md"
           },
           {
-            "label": "Content model",
-            "url": "https://github.com/roshandroids/rsprojects-showcase/blob/main/docs/CONTENT_MODEL.md"
-          }
-        ],
-        "benchmarks": [
-          {
-            "label": "Cold open (web)",
-            "value": "< 2.5s",
-            "note": "Target budget on mid-tier laptop; not a published measurement yet"
+            "label": "Host integration",
+            "url": "https://github.com/roshandroids/Document_Platform/blob/main/docs/guides/HOST_INTEGRATION.md"
           },
           {
-            "label": "Export draft (typical doc)",
-            "value": "< 1s",
-            "note": "Target for mid-size structured documents"
+            "label": "Architecture",
+            "url": "https://github.com/roshandroids/Document_Platform/blob/main/docs/architecture/ARCHITECTURE.md"
+          },
+          {
+            "label": "Engineering wiki",
+            "url": "https://github.com/roshandroids/Document_Platform/wiki"
           }
         ],
         "roadmap": [
           {
-            "item": "Interactive in-app demo surface",
-            "status": "planned"
+            "item": "Host pilot toward 1.0.0",
+            "status": "in_progress"
           },
           {
-            "item": "Content model + showcase template integration",
+            "item": "Architecture freeze (ADRs 001–008)",
             "status": "done"
           },
           {
-            "item": "Screenshot asset pipeline",
-            "status": "in_progress"
+            "item": "Public portal interactive demo",
+            "status": "planned"
           }
         ],
         "changelog": [
           {
-            "version": "0.9.0",
+            "version": "0.1.0",
             "date": "2026-07",
-            "notes": "Beta content model, multi-platform clients, and showcase metadata for the public portal."
-          },
-          {
-            "version": "0.8.0",
-            "date": "2026-06",
-            "notes": "Initial structured authoring workflows and export stubs."
+            "notes": "Directional architecture freeze closeout; package suite at 0.1.0 with high coverage gates."
           }
         ],
         "contributors": [
           {
             "name": "Roshan Shrestha",
-            "role": "Maintainer",
+            "role": "Owner / maintainer",
             "url": "https://github.com/roshandroids"
           }
         ],
         "downloads": [
           {
             "label": "Source (GitHub)",
-            "url": "https://github.com/roshandroids/rsprojects-showcase",
+            "url": "https://github.com/roshandroids/Document_Platform",
             "platform": "all"
           }
         ],
@@ -233,7 +229,7 @@
           "localization_analyzer",
           "ai_tray"
         ],
-        "contributing": "Issues and pull requests are welcome on the public RSProjects repositories. Prefer content and schema changes that keep the showcase template generic—avoid project-specific UI forks."
+        "contributing": "See CONTRIBUTING.md and docs/process/ in the Document Platform repository. Prefer package-level changes with ADRs when dependency direction is affected."
       }
     },
     {
@@ -300,12 +296,13 @@
     {
       "id": "api-changelog-note",
       "title": "API changelog note",
-      "description": "Structured release notes that export to eng and support channels.",
+      "description": "Structured release notes that export to eng and support channels. Portal cache — see Document_Platform/examples/ for runnable hosts.",
       "projectId": "document_platform",
       "category": "sample",
       "tags": [
         "changelog",
-        "api"
+        "api",
+        "cache"
       ],
       "demo": {
         "kind": "media",
@@ -318,7 +315,7 @@
           "caption": "Author note → structured export → eng and support channels"
         }
       ],
-      "sourceUrl": "https://github.com/roshandroids/rsprojects-showcase"
+      "sourceUrl": "https://github.com/roshandroids/Document_Platform"
     },
     {
       "id": "arb-diff-sample",
@@ -340,25 +337,26 @@
     {
       "id": "product-brief-template",
       "title": "Product brief template",
-      "description": "Starter schema for problem, solution, and success metrics.",
+      "description": "Starter schema for problem, solution, and success metrics. Portal cache — product examples live under Document_Platform/examples/.",
       "projectId": "document_platform",
       "category": "template",
       "tags": [
         "schema",
-        "product"
+        "product",
+        "cache"
       ],
       "featured": true,
       "demo": {
         "available": false,
-        "note": "Interactive authoring demo ships with Document Platform playgrounds."
+        "note": "Prefer Document_Platform examples/example_basic (Editor Playground) for live demos."
       },
       "documentationLinks": [
         {
-          "label": "Content model",
-          "url": "https://github.com/roshandroids/rsprojects-showcase/blob/main/docs/CONTENT_MODEL.md"
+          "label": "Document Platform docs index",
+          "url": "https://github.com/roshandroids/Document_Platform/blob/main/docs/INDEX.md"
         }
       ],
-      "sourceUrl": "https://github.com/roshandroids/rsprojects-showcase"
+      "sourceUrl": "https://github.com/roshandroids/Document_Platform"
     }
   ]
 }

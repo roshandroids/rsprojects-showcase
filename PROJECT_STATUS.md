@@ -21,7 +21,7 @@ RSProjects Showcase is the public portal for discovering and presenting all RSPr
 
 ## Current objective
 
-Phase 2.1 Rich Project Pages is **Complete**. Project example infrastructure (`content/examples/` + `DemoSpec` + `ExampleGallery`) is **Complete**. Next: Phase 2.2 Interactive Demos — wire project showcase demo section through `DemoSpec`/`DemoPane` under the execution-first policy ([`docs/GOVERNANCE.md`](docs/GOVERNANCE.md) §2a). Long-term Phases 3–5 remain planning-only under [`docs/roadmap/`](docs/roadmap/).
+Phase 2.1 Rich Project Pages and project example infrastructure are **Complete**. **Project Integration Framework** is **Complete** (provider-driven Integration Definitions + Document Platform validated). Next: Phase 2.2 Interactive Demos — wire project showcase demo section through `DemoSpec`/`DemoPane` under the execution-first policy ([`docs/GOVERNANCE.md`](docs/GOVERNANCE.md) §2a). Provider sync automation remains Phase 3. Long-term Phases 3–5 remain planning-only under [`docs/roadmap/`](docs/roadmap/).
 
 ## Repository information
 
@@ -35,7 +35,7 @@ Phase 2.1 Rich Project Pages is **Complete**. Project example infrastructure (`c
 | Remote | `git@roshandroids.github.com:roshandroids/rsprojects-showcase.git` |
 | Default branch | `main` |
 | Latest remote commit | See git log / GitHub |
-| Latest local milestone | Project example infrastructure + Phase 2.1 |
+| Latest local milestone | Project Integration Framework |
 | Working tree | See Recent Changes |
 
 ---
@@ -53,12 +53,13 @@ Phase 2.1 Rich Project Pages is **Complete**. Project example infrastructure (`c
 | 2.0 | Showcase Excellence — planning | **Complete** | Roadmap + Phase 2 brief + planned schema/abstractions (no feature UI yet) |
 | 2.1 | Rich Project Pages | **Complete** | `heroMedia`, `media[]`, architecture diagram, feature icons/media, contributors, downloads; Document Platform reference |
 | 2.1b | Project example infrastructure | **Complete** | `content/examples/` → registry `examples[]`; shared `DemoSpec`/`DemoPane`/`ExampleGallery`; Document Platform + Localization Analyzer |
+| 2.1c | Project Integration Framework | **Complete** | Provider-driven Integration Definitions (`content/integrations/`); Document Platform `showcase/` SSOT; Localization Analyzer + AI Tray registered |
 | 2.2–2.5 | Showcase Excellence — remaining | **Planned** | Project demo section via DemoSpec, docs hub, search/discovery, ecosystem navigation |
 | 3 | Automation & Publishing | **Planned** | Self-maintaining generate/validate/publish; see `docs/roadmap/PHASE_3_AUTOMATION.md` |
 | 4 | Ecosystem Intelligence | **Planned** | Graphs, explorers, timeline; see `docs/roadmap/PHASE_4_ECOSYSTEM.md` |
 | 5 | Community & Developer Portal | **Planned** | Community + develop portal; see `docs/roadmap/PHASE_5_DEVELOPER_PORTAL.md` |
 
-**Long-term:** Adding a project is primarily a content change under `content/projects/`; CI produces the registry the app consumes.
+**Long-term:** Adding a product is primarily Project Integration (`content/integrations/` providers + product `showcase/`) plus a derived content cache; CI produces the registry the app consumes. Provider sync automation is Phase 3.
 
 ---
 
@@ -68,30 +69,30 @@ Phase 2.1 Rich Project Pages is **Complete**. Project example infrastructure (`c
 
 | Field | Value |
 |-------|--------|
-| **Sprint name** | Project example infrastructure |
-| **Goal** | Metadata-driven examples authored under `content/examples/`, presented on project pages via shared gallery |
+| **Sprint name** | Project Integration Framework |
+| **Goal** | Provider-driven Project Integration; validate Document Platform as SSOT |
 | **Status** | Complete |
 
 ## Active tasks
 
 | Task | Status | Owner |
 |------|--------|-------|
-| Extend schema + registry for `examples[]` | Complete | — |
-| Implement shared `DemoSpec` + `DemoPane` | Complete | — |
-| Build `ExampleGallery` / `ExampleCard` + models | Complete | — |
-| Wire project template + migrate Document Platform / Localization Analyzer | Complete | — |
-| Tests + CONTENT_MODEL / SHOWCASE_FRAMEWORK / PROJECT_STATUS | Complete | — |
+| Write `docs/PROJECT_INTEGRATION.md` (providers + ownership) | Complete | — |
+| Add `content/integrations/` for three products | Complete | — |
+| Place Document Platform `showcase/` contract + align portal cache | Complete | — |
+| Refactor terminology (Repository → Project Integration) | Complete | — |
+| Update ARCHITECTURE / CONTENT_MODEL / PROJECT_STATUS | Complete | — |
 
 ## Exit criteria
 
 Sprint is done when all of the following are true:
 
-- [x] Examples authored under `content/examples/` with `projectId` association
-- [x] Registry emits `examples[]`; validation enforces known `projectId`
-- [x] `ExampleGallery` works for any project without product-specific UI
-- [x] `DemoSpec` / `DemoPane` reusable shared abstractions
-- [x] No standalone example routes or feature module
-- [x] Docs and tests updated
+- [x] Project Integration contract, providers, and ownership documented
+- [x] Three projects registered under `content/integrations/`
+- [x] Document Platform contains `showcase/` and accurate git URL
+- [x] Portal Document Platform entry is provenance-aware (`integration`)
+- [x] No fetch automation / GitHub Actions implemented
+- [x] Local content still validates and regenerates the registry
 
 ---
 
@@ -116,6 +117,7 @@ Sprint is done when all of the following are true:
 - **Project governance:** `docs/GOVERNANCE.md` (core how-we-manage doc)
 - **Phase 2.1 Rich Project Pages:** hero media, unified gallery, architecture diagram, feature icons/media, contributors, downloads; Document Platform reference fill
 - **Project example infrastructure:** `content/examples/`, registry `examples[]`, shared `DemoSpec`/`DemoPane`/`ExampleGallery`; Document Platform + Localization Analyzer samples
+- **Project Integration Framework:** provider-driven Integration Definitions (`content/integrations/`), Document Platform `showcase/` SSOT + portal provenance cache
 - **UI refresh (D-028):** FlexScheme.tealM3 Material 3 theme, elevated cards/home/detail surfaces, hover motion
 
 ## In Progress
@@ -158,11 +160,12 @@ lib/
   generated/     reserved for Dart codegen (README only)
 
 assets/generated/registry.json   # projects[] + examples[]
-content/projects/<id>/metadata.json
-content/examples/<id>/metadata.json
+content/projects/<id>/metadata.json   # derived cache
+content/examples/<id>/metadata.json   # derived cache
+content/integrations/<projectId>.json  # Integration Definition + providers (D-029)
 scripts/         validate_content, generate_registry (+ fetch/publish stubs)
 .github/workflows/  ci.yml, deploy.yml, fetch-projects.yml
-docs/            CONTENT_MODEL, SHOWCASE_FRAMEWORK, governance, quality, roadmap
+docs/            CONTENT_MODEL, PROJECT_INTEGRATION, SHOWCASE_FRAMEWORK, governance, quality, roadmap
 test/            unit + widget tests
 ```
 
@@ -235,8 +238,9 @@ test/            unit + widget tests
 | D-024 | 2026-07-26 | Docs hub **local-first** under `content/projects/<id>/docs/` (+ media/); registry holds docs index only | Content-driven hub; automation-ready | Final (implement in 2.3) |
 | D-025 | 2026-07-26 | Dedicated `/search` with shared **DiscoveryQuery** (catalog + search) | One query model; scalable discovery | Final (implement in 2.4) |
 | D-026 | 2026-07-26 | Typed ecosystem **relations[]** + soft links from shared tech/tags | Reusable ecosystem navigation | Final (implement in 2.5) |
-| D-027 | 2026-07-26 | **Examples** authored independently under `content/examples/` with `projectId`; presented on project pages via `ExampleGallery` (supporting content, not a standalone app feature) | Automation-ready authoring; projects stay primary UX | Final |
+| D-027 | 2026-07-26 | **Examples** on project pages via `ExampleGallery` (supporting content). Portal `content/examples/` is cache; long-term SSOT: product `examples/` via providers | Projects stay primary UX | Final |
 | D-028 | 2026-07-26 | **UI theme:** FlexScheme.`tealM3` + Material 3 FlexSubThemes (blend ~14–16, surface app bar, standard density, card/button/chip radii) | Premium developer-centric showcase; stay within Material 3 / FlexColorScheme | Final |
+| D-029 | 2026-07-26 | **Project Integration** (provider-driven): product projects own SSOT; Integration Definitions in `content/integrations/` declare providers (repository is one of many); showcase consumes derived cache until Phase 3 sync | Extensible without new concepts per source type; Document Platform is the reference integrate | Final |
 
 ---
 
@@ -271,7 +275,8 @@ Status values: `Not Started` · `In Progress` · `Blocked` · `Complete`
 | Validation / generation scripts | Complete | Validates projects + examples (`projectId` must resolve) |
 | Showcase framework docs | Complete | `docs/SHOWCASE_FRAMEWORK.md` + example gallery notes |
 | Phase 2 planned schema | Complete (docs only) | Remaining 2.2–2.5 items still planned |
-| `content/examples/` | Complete | Document Platform (2) + Localization Analyzer (1) reference examples |
+| `content/examples/` | Complete | Document Platform (2) + Localization Analyzer (1) — portal cache; product `examples/` is long-term SSOT |
+| `content/integrations/` | Complete | document_platform (integrated), localization_analyzer + ai_tray (registered) |
 
 ## Assets status
 
@@ -293,17 +298,17 @@ Cell values: `Not Started` · `In Progress` · `Blocked` · `Complete`
 
 | Project ID | Metadata | Assets | Demo | Documentation | Integration Status |
 |------------|----------|--------|------|---------------|--------------------|
-| `document_platform` | Complete | Not Started | Not Started | In Progress (links) | In Progress — showcase + examples reference |
-| `localization_analyzer` | Complete | Not Started | Not Started | Not Started | In Progress — partial showcase + 1 example |
-| `ai_tray` | Complete | Not Started | Not Started | Not Started | In Progress — partial showcase |
+| `document_platform` | Complete | Not Started | Not Started | In Progress (repo docs links) | **Integrated** — product `showcase/` SSOT + portal cache |
+| `localization_analyzer` | Complete | Not Started | Not Started | Not Started | **Registered** — package in MBO; portal cache only |
+| `ai_tray` | Complete | Not Started | Not Started | Not Started | **Registered** — AI_Tray remote; portal cache only |
 
 **Folder map:**
 
 | ID | Folder |
 |----|--------|
-| `document_platform` | `content/projects/document_platform/` |
-| `localization_analyzer` | `content/projects/localization_analyzer/` |
-| `ai_tray` | `content/projects/ai_tray/` |
+| `document_platform` | `content/projects/document_platform/` + `content/integrations/document_platform.json` (+ product `showcase/`) |
+| `localization_analyzer` | `content/projects/localization_analyzer/` + `content/integrations/localization_analyzer.json` |
+| `ai_tray` | `content/projects/ai_tray/` + `content/integrations/ai_tray.json` |
 
 Metadata files are fully populated for required fields; Document Platform is `featured: true`.
 
@@ -490,10 +495,10 @@ Promote answers into the **Decisions** log (new `D-xxx` row) and remove from thi
 Ordered implementation sequence (promote into Current Sprint when starting work):
 
 1. Phase 2.2 — Wire project showcase Interactive Demo through DemoSpec + DemoPane
-2. Phase 2.3 — Docs hub + markdown viewer
+2. Phase 2.3 — Docs hub + markdown viewer (consume product `docs/` via documentation provider)
 3. Phase 2.4 — `/search` + collections
 4. Phase 2.5 — Ecosystem relations UI
-5. Phase 3 automation — CI gates, generate drift, publish/release (see `docs/roadmap/PHASE_3_AUTOMATION.md`)
+5. Phase 3 automation — sync from Integration Definitions (`content/integrations/`), CI gates, publish/release (see `docs/roadmap/PHASE_3_AUTOMATION.md`)
 6. Phase 4–5 when Phase 2–3 primitives are stable
 
 ---
@@ -519,6 +524,8 @@ Ordered implementation sequence (promote into Current Sprint when starting work)
 | 2026-07-26 | **Execution-first planning policy** in `docs/GOVERNANCE.md` §2a; **D-027** examples direction recorded |
 | 2026-07-26 | **UI refresh (D-028):** FlexScheme.tealM3 Material 3 theme, elevated cards/home/project surfaces, hover motion, brand docs |
 | 2026-07-26 | **Project example infrastructure:** `content/examples/` + registry `examples[]`; shared `DemoSpec`/`DemoPane`/`ExampleGallery`; Document Platform + Localization Analyzer; D-027 shape finalized |
+| 2026-07-26 | **Project Integration Framework:** provider-driven Integration Definitions (`content/integrations/`), Document Platform `showcase/` contract, portal provenance; D-029; Localization Analyzer + AI Tray registered |
+| 2026-07-26 | **Refactor:** Repository Integration → Project Integration (docs rename, `content/integrations/`, provider model); no runtime/automation changes |
 
 ---
 
@@ -527,7 +534,7 @@ Ordered implementation sequence (promote into Current Sprint when starting work)
 1. **Phase 0 — Architecture bootstrap** — Complete  
 2. **Phase 1 — Experience Foundation** — Complete  
 2b. **Phase 1.5 — Showcase Content Framework** — Complete  
-3. **Phase 2 — Showcase Excellence** — 2.0–2.1 + example infrastructure Complete; next 2.2 project DemoSpec wiring  
+3. **Phase 2 — Showcase Excellence** — 2.0–2.1 + examples + project integration Complete; next 2.2 project DemoSpec wiring  
 4. **Phase 3 — Automation & Publishing** — Planned  
 5. **Phase 4 — Ecosystem Intelligence** — Planned  
 6. **Phase 5 — Community & Developer Portal** — Planned  

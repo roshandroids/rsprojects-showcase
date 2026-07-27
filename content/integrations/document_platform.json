@@ -1,0 +1,38 @@
+{
+  "projectId": "document_platform",
+  "displayName": "Document Platform",
+  "status": "integrated",
+  "providers": {
+    "repository": {
+      "gitUrl": "https://github.com/roshandroids/Document_Platform",
+      "defaultBranch": "main",
+      "localDevPath": "../research_projects/Document_Platform",
+      "paths": {
+        "readme": "README.md",
+        "license": "LICENSE",
+        "pubspec": "pubspec.yaml",
+        "docs": "docs/",
+        "examples": "examples/",
+        "showcaseMetadata": "showcase/metadata.json",
+        "media": "showcase/media/",
+        "changelog": "docs/release/"
+      }
+    },
+    "documentation": {
+      "docsUrl": "https://github.com/roshandroids/Document_Platform/blob/main/docs/INDEX.md",
+      "wikiUrl": "https://github.com/roshandroids/Document_Platform/wiki"
+    },
+    "demo": {
+      "note": "Local examples/example_basic (Editor Playground); public portal embed planned"
+    },
+    "package": {
+      "note": "Melos workspace packages under packages/ (e.g. document_core @ 0.1.0)"
+    },
+    "website": {},
+    "releases": {},
+    "benchmarks": {
+      "path": "benchmarks/"
+    }
+  },
+  "notes": "Product showcase/ is SSOT for catalog fields. Portal content/projects/document_platform is a derived cache. Product examples/ is the long-term Example Gallery SSOT. New source types (design system, API reference, …) should be new keys under providers — not new integration concepts."
+}

@@ -1,20 +1,20 @@
 {
   "id": "product-brief-template",
   "title": "Product brief template",
-  "description": "Starter schema for problem, solution, and success metrics.",
+  "description": "Starter schema for problem, solution, and success metrics. Portal cache — product examples live under Document_Platform/examples/.",
   "projectId": "document_platform",
   "category": "template",
-  "tags": ["schema", "product"],
+  "tags": ["schema", "product", "cache"],
   "featured": true,
   "demo": {
     "available": false,
-    "note": "Interactive authoring demo ships with Document Platform playgrounds."
+    "note": "Prefer Document_Platform examples/example_basic (Editor Playground) for live demos."
   },
   "documentationLinks": [
     {
-      "label": "Content model",
-      "url": "https://github.com/roshandroids/rsprojects-showcase/blob/main/docs/CONTENT_MODEL.md"
+      "label": "Document Platform docs index",
+      "url": "https://github.com/roshandroids/Document_Platform/blob/main/docs/INDEX.md"
     }
   ],
-  "sourceUrl": "https://github.com/roshandroids/rsprojects-showcase"
+  "sourceUrl": "https://github.com/roshandroids/Document_Platform"
 }

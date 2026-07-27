@@ -1,0 +1,34 @@
+{
+  "projectId": "ai_tray",
+  "displayName": "AI Tray",
+  "status": "registered",
+  "providers": {
+    "repository": {
+      "gitUrl": "https://github.com/roshandroids/AI_Tray",
+      "defaultBranch": "main",
+      "packagePath": "ai_tray",
+      "localDevPath": "../AI_Tray_Project",
+      "paths": {
+        "readme": "README.md",
+        "license": null,
+        "pubspec": "ai_tray/pubspec.yaml",
+        "docs": "docs/",
+        "examples": null,
+        "showcaseMetadata": null,
+        "media": "ai_tray/assets/",
+        "changelog": "CHANGELOG.md"
+      }
+    },
+    "documentation": {
+      "docsPath": "docs/"
+    },
+    "demo": {},
+    "package": {
+      "path": "ai_tray"
+    },
+    "website": {},
+    "releases": {},
+    "benchmarks": {}
+  },
+  "notes": "Registered only — product showcase/ contract not added this milestone. Portal content under content/projects/ai_tray remains showcase-authored cache until integrated."
+}
