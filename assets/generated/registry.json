@@ -1,56 +1,138 @@
 {
-  "generatedAt": "2026-07-27T01:56:58.502483Z",
+  "generatedAt": "2026-07-27T02:00:29.173075Z",
   "projects": [
     {
       "id": "ai_tray",
       "name": "AI Tray",
-      "tagline": "Desktop AI helpers that stay out of the way",
-      "description": "AI Tray provides lightweight desktop assistants for everyday workflows — summarization, drafting, and quick actions — with a focus on privacy-conscious local and remote model options.",
-      "version": "0.1.0",
-      "status": "experimental",
+      "tagline": "Native desktop companion for Claude Code and GitHub Copilot usage",
+      "description": "AI Tray is a native desktop companion for Claude Code and GitHub Copilot subscription usage (macOS menu bar / Windows system tray), with provider dashboards, session and week rings, diagnostics, and settings.",
+      "version": "1.3.3",
+      "status": "active",
       "category": "app",
       "platforms": [
         "macos",
         "windows"
       ],
       "featured": false,
+      "repositoryUrl": "https://github.com/roshandroids/AI_Tray",
+      "docsUrl": "https://github.com/roshandroids/AI_Tray/blob/main/README.md",
       "tags": [
-        "ai",
+        "claude",
+        "copilot",
         "desktop",
-        "productivity"
+        "tray",
+        "flutter"
       ],
       "showcase": {
-        "problem": "Desktop AI tools are often heavyweight or browser-bound, interrupting focus when you only need a quick summary or draft.",
-        "solution": "A lightweight tray companion that keeps common AI actions one gesture away while respecting local and remote model choices.",
+        "heroMedia": {
+          "kind": "image",
+          "alt": "AI Tray dashboard (dark)"
+        },
+        "problem": "Tracking Claude Code and Copilot subscription usage usually means leaving your flow for a browser or CLI — and Windows/macOS tray experiences are inconsistent.",
+        "solution": "A lightweight Flutter tray app that surfaces provider health, session/week usage rings, diagnostics, and settings from the menu bar or system tray.",
         "features": [
           {
-            "title": "Quick actions",
-            "description": "Summarize, draft, and transform text without leaving your flow."
+            "title": "Multi-provider usage",
+            "description": "Claude Code (stable) and GitHub Copilot (experimental) dashboards.",
+            "icon": "platform"
           },
           {
-            "title": "Privacy-conscious options",
-            "description": "Prefer local models when possible; remote providers remain optional."
+            "title": "Tray rings",
+            "description": "Live, cached, refreshing, and error states in the menu bar / tray.",
+            "icon": "workflow"
+          },
+          {
+            "title": "Diagnostics and logs",
+            "description": "In-app diagnostics and log views for support and dogfood.",
+            "icon": "schema"
           }
         ],
         "demo": {
           "available": false,
-          "note": "Tray demo build is not available on the public showcase yet."
+          "note": "Install from GitHub Releases (macOS arm64 / Windows x64). No public web embed."
         },
+        "media": [
+          {
+            "kind": "image",
+            "alt": "AI Tray dashboard (dark)",
+            "caption": "Claude dashboard with session / week rings"
+          },
+          {
+            "kind": "image",
+            "alt": "AI Tray Copilot dashboard",
+            "caption": "GitHub Copilot quota dashboard (experimental)"
+          },
+          {
+            "kind": "image",
+            "alt": "Tray ring states",
+            "caption": "Live · Cached · Refreshing · Error"
+          }
+        ],
+        "architecture": "Flutter desktop app under ai_tray/ with Riverpod state, tray_manager / window_manager, and provider-specific usage pipelines (Claude CLI, Copilot sidecar).",
         "technologies": [
           "Flutter",
           "Dart",
-          "Desktop plugins"
+          "Riverpod",
+          "tray_manager",
+          "window_manager"
+        ],
+        "platformSupport": [
+          {
+            "platform": "macos",
+            "notes": "arm64 supported; primary release target"
+          },
+          {
+            "platform": "windows",
+            "notes": "Experimental (see PD-010)"
+          }
+        ],
+        "installation": "Download macOS arm64 or Windows x64 builds from GitHub Releases, or run from source: cd ai_tray && flutter run -d macos",
+        "documentationLinks": [
+          {
+            "label": "README",
+            "url": "https://github.com/roshandroids/AI_Tray/blob/main/README.md"
+          },
+          {
+            "label": "GitHub Copilot provider",
+            "url": "https://github.com/roshandroids/AI_Tray/blob/main/docs/providers/github-copilot.md"
+          },
+          {
+            "label": "Changelog",
+            "url": "https://github.com/roshandroids/AI_Tray/blob/main/CHANGELOG.md"
+          }
         ],
         "roadmap": [
           {
-            "item": "Public beta macOS build",
+            "item": "Windows tray stabilization",
             "status": "planned"
+          },
+          {
+            "item": "Multi-provider platform (EP-002)",
+            "status": "done"
+          }
+        ],
+        "changelog": [
+          {
+            "version": "1.3.3",
+            "date": "2026-07-17",
+            "notes": "Claude usage parsing fix for missing session reset suffix; macOS arm64 + Windows x64 release pipeline."
+          }
+        ],
+        "downloads": [
+          {
+            "label": "GitHub Releases",
+            "url": "https://github.com/roshandroids/AI_Tray/releases",
+            "platform": "all"
           }
         ],
         "relatedProjectIds": [
           "document_platform"
         ],
-        "contributing": "Ideas for tray actions and model adapters are welcome via issues."
+        "contributing": "Ideas for tray actions and provider adapters are welcome via GitHub issues."
+      },
+      "integration": {
+        "projectId": "ai_tray",
+        "source": "project-cache"
       }
     },
     {
@@ -76,10 +158,6 @@
         "documents",
         "embeddable"
       ],
-      "integration": {
-        "projectId": "document_platform",
-        "source": "project-cache"
-      },
       "showcase": {
         "heroMedia": {
           "kind": "image",
@@ -113,16 +191,6 @@
           "available": false,
           "note": "Run examples/example_basic locally (Editor Playground). Interactive web embed for the public portal is planned."
         },
-        "screenshots": [
-          {
-            "alt": "Editor Playground",
-            "caption": "Feature gallery in examples/example_basic"
-          },
-          {
-            "alt": "Email template editor",
-            "caption": "Official migration showcase: examples/email_template_editor"
-          }
-        ],
         "media": [
           {
             "kind": "diagram",
@@ -133,14 +201,9 @@
             "kind": "image",
             "alt": "Editor Playground",
             "caption": "Feature gallery in examples/example_basic"
-          },
-          {
-            "kind": "image",
-            "alt": "Email template editor",
-            "caption": "Official migration showcase host"
           }
         ],
-        "architecture": "Dependency direction is inward toward document_core. Layers: model → session → presentation → UI → interchange → plugins/theme. Cycles require an ADR. See docs/architecture/ in the Document Platform repository.",
+        "architecture": "Dependency direction is inward toward document_core. Layers: model → session → presentation → UI → interchange → plugins/theme. Cycles require an ADR. See docs/architecture/.",
         "architectureDiagram": {
           "kind": "diagram",
           "alt": "Document Platform layered packages",
@@ -229,15 +292,19 @@
           "localization_analyzer",
           "ai_tray"
         ],
-        "contributing": "See CONTRIBUTING.md and docs/process/ in the Document Platform repository. Prefer package-level changes with ADRs when dependency direction is affected."
+        "contributing": "See CONTRIBUTING.md and docs/process/ in this repository. Prefer package-level changes with ADRs when dependency direction is affected."
+      },
+      "integration": {
+        "projectId": "document_platform",
+        "source": "project-cache"
       }
     },
     {
       "id": "localization_analyzer",
       "name": "Localization Analyzer",
-      "tagline": "Find missing and unused localization keys",
-      "description": "Localization Analyzer scans Flutter ARB and localization usage to surface missing keys, unused entries, and consistency issues across locales before they reach production.",
-      "version": "0.3.1",
+      "tagline": "Find missing, unused, and hardcoded localization issues",
+      "description": "Pure-Dart localization analysis engine that scans Dart sources and ARB files for hardcoded text, missing keys, unused keys, and duplicates — with no Flutter or DevTools UI dependencies. Frontends (CLI, DevTools) only read files and present diagnostics.",
+      "version": "0.9.0",
       "status": "experimental",
       "category": "tool",
       "platforms": [
@@ -246,49 +313,98 @@
         "windows"
       ],
       "featured": false,
+      "repositoryUrl": "https://github.com/roshandroids/MBO",
+      "docsUrl": "https://github.com/roshandroids/MBO/blob/main/packages/localization_analyzer/README.md",
       "tags": [
-        "flutter",
+        "dart",
         "i18n",
-        "l10n"
+        "l10n",
+        "arb",
+        "analyzer"
       ],
       "showcase": {
-        "problem": "Localization drift—missing keys, unused entries, and locale inconsistencies—often appears only after QA or production releases.",
-        "solution": "A desktop analyzer that scans ARB files and Dart usage to report gaps early in the development loop.",
+        "problem": "Localization drift—hardcoded strings, missing keys, unused entries, and duplicates—often appears only after QA or production releases.",
+        "solution": "A Pure-Dart analyzer API that frontends call with source and ARB inputs to surface diagnostics early in the development loop.",
         "features": [
           {
-            "title": "Missing key detection",
-            "description": "Compare usage against ARB definitions across locales."
+            "title": "Hardcoded text detection",
+            "description": "Flag string literals that look like UI copy, with // loc-ignore suppressions.",
+            "icon": "schema"
           },
           {
-            "title": "Unused entry reports",
-            "description": "Find keys that no longer appear in code."
+            "title": "Missing and unused keys",
+            "description": "Compare Dart usage against ARB definitions across locales.",
+            "icon": "workflow"
+          },
+          {
+            "title": "Allowlist configuration",
+            "description": "Ignore exact strings, patterns, and path substrings via AnalyzerConfig or JSON.",
+            "icon": "export"
           }
         ],
         "demo": {
           "available": false,
-          "note": "CLI/desktop demo packaging is not published yet."
+          "note": "Run the workspace CLI (dart run tool/scan_localization.dart). Public interactive demo not published."
         },
+        "media": [
+          {
+            "kind": "diagram",
+            "alt": "Analyzer pipeline",
+            "caption": "Dart + ARB inputs → LocalizationAnalyzer → diagnostics"
+          }
+        ],
+        "architecture": "Pure-Dart package with no Flutter/DevTools dependencies. Hosts (CLI, DevTools) load files and present LocalizationAnalyzer results.",
         "technologies": [
-          "Flutter",
           "Dart",
+          "analyzer",
           "ARB",
           "Static analysis"
         ],
-        "installation": "Install via the upcoming desktop package or run from source with Flutter on macOS, Linux, or Windows.",
+        "platformSupport": [
+          {
+            "platform": "macos",
+            "notes": "CLI / host tooling"
+          },
+          {
+            "platform": "linux",
+            "notes": "CLI / host tooling"
+          },
+          {
+            "platform": "windows",
+            "notes": "CLI / host tooling"
+          }
+        ],
+        "installation": "Use from the MBO / cmic_localization_inspector workspace: depend on packages/localization_analyzer, or run dart run tool/scan_localization.dart from the workspace root.",
+        "documentationLinks": [
+          {
+            "label": "Package README",
+            "url": "https://github.com/roshandroids/MBO/blob/main/packages/localization_analyzer/README.md"
+          }
+        ],
         "roadmap": [
           {
             "item": "CI-friendly JSON report output",
             "status": "planned"
           },
           {
-            "item": "Core ARB scan pipeline",
-            "status": "in_progress"
+            "item": "Core ARB + Dart scan pipeline",
+            "status": "done"
+          }
+        ],
+        "changelog": [
+          {
+            "version": "0.9.0",
+            "notes": "Analyzer API with hardcoded/missing/unused/duplicate diagnostics and allowlist config."
           }
         ],
         "relatedProjectIds": [
           "document_platform"
         ],
-        "contributing": "Report false positives and locale edge cases via GitHub issues."
+        "contributing": "Report false positives and locale edge cases via GitHub issues on the MBO repository."
+      },
+      "integration": {
+        "projectId": "localization_analyzer",
+        "source": "project-cache"
       }
     }
   ],
@@ -320,19 +436,20 @@
     {
       "id": "arb-diff-sample",
       "title": "ARB diff sample",
-      "description": "Sample ARB pair highlighting missing and unused localization keys across locales.",
+      "description": "Sample ARB pair highlighting missing and unused localization keys. Portal cache — analyzer package lives under MBO packages/localization_analyzer.",
       "projectId": "localization_analyzer",
       "category": "sample",
       "tags": [
         "arb",
         "i18n",
-        "diff"
+        "diff",
+        "cache"
       ],
       "demo": {
         "available": false,
-        "note": "CLI sample output will ship with the desktop analyzer package."
+        "note": "Run dart run tool/scan_localization.dart from the MBO localization workspace."
       },
-      "sourceUrl": "https://github.com/roshandroids/rsprojects-showcase"
+      "sourceUrl": "https://github.com/roshandroids/MBO"
     },
     {
       "id": "product-brief-template",

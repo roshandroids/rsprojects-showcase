@@ -1,7 +1,7 @@
 {
   "projectId": "ai_tray",
   "displayName": "AI Tray",
-  "status": "registered",
+  "status": "integrated",
   "providers": {
     "repository": {
       "gitUrl": "https://github.com/roshandroids/AI_Tray",
@@ -14,21 +14,27 @@
         "pubspec": "ai_tray/pubspec.yaml",
         "docs": "docs/",
         "examples": null,
-        "showcaseMetadata": null,
-        "media": "ai_tray/assets/",
+        "showcaseMetadata": "showcase/metadata.json",
+        "media": "showcase/media/",
         "changelog": "CHANGELOG.md"
       }
     },
     "documentation": {
-      "docsPath": "docs/"
+      "docsUrl": "https://github.com/roshandroids/AI_Tray/blob/main/README.md",
+      "docsPath": "docs/",
+      "screenshotsPath": "docs/assets/screenshots/"
     },
-    "demo": {},
+    "demo": {
+      "note": "No web embed; distribute via GitHub Releases"
+    },
     "package": {
       "path": "ai_tray"
     },
     "website": {},
-    "releases": {},
+    "releases": {
+      "url": "https://github.com/roshandroids/AI_Tray/releases"
+    },
     "benchmarks": {}
   },
-  "notes": "Registered only — product showcase/ contract not added this milestone. Portal content under content/projects/ai_tray remains showcase-authored cache until integrated."
+  "notes": "Root LICENSE missing (onboarding friction). Screenshots live under docs/assets/screenshots/; showcase/media is the contract root for future bundling. Portal content/projects/ai_tray is a derived cache."
 }

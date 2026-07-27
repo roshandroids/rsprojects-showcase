@@ -1,7 +1,7 @@
 {
   "projectId": "localization_analyzer",
   "displayName": "Localization Analyzer",
-  "status": "registered",
+  "status": "integrated",
   "providers": {
     "repository": {
       "gitUrl": "https://github.com/roshandroids/MBO",
@@ -10,24 +10,28 @@
       "localDevPath": "../MBO_research/cmic_localization_inspector",
       "paths": {
         "readme": "packages/localization_analyzer/README.md",
-        "license": "LICENSE",
+        "license": null,
         "pubspec": "packages/localization_analyzer/pubspec.yaml",
-        "examples": "examples/",
-        "showcaseMetadata": null,
-        "media": null,
         "docs": null,
+        "examples": "examples/",
+        "showcaseMetadata": "packages/localization_analyzer/showcase/metadata.json",
+        "media": "packages/localization_analyzer/showcase/media/",
         "changelog": null
       }
     },
-    "documentation": {},
-    "demo": {},
+    "documentation": {
+      "docsUrl": "https://github.com/roshandroids/MBO/blob/main/packages/localization_analyzer/README.md"
+    },
+    "demo": {
+      "note": "CLI: dart run tool/scan_localization.dart from workspace root"
+    },
     "package": {
       "path": "packages/localization_analyzer",
-      "note": "Pure-Dart package inside MBO; not a standalone public product repo yet"
+      "note": "Pure-Dart package inside MBO monorepo"
     },
     "website": {},
     "releases": {},
     "benchmarks": {}
   },
-  "notes": "Registered only — product showcase/ contract not placed in MBO this milestone. Portal content under content/projects/localization_analyzer remains showcase-authored cache until integrated."
+  "notes": "Nested package: showcase/ lives under packagePath. Host monorepo has no root LICENSE recorded in paths.license. Portal content/projects/localization_analyzer is a derived cache."
 }

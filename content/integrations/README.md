@@ -4,7 +4,7 @@
 
 **Owner:** Showcase maintainers (integration layer only; product projects own SSOT).
 
-This is a **provider map**, not a copy of product content. See [`docs/PROJECT_INTEGRATION.md`](../../docs/PROJECT_INTEGRATION.md).
+See [`docs/PROJECT_INTEGRATION.md`](../../docs/PROJECT_INTEGRATION.md) and the onboarding workflow in [`docs/PROJECT_ONBOARDING.md`](../../docs/PROJECT_ONBOARDING.md).
 
 ## Layout
 
@@ -17,5 +17,5 @@ content/integrations/<projectId>.json
 | projectId | status |
 |-----------|--------|
 | `document_platform` | integrated |
-| `localization_analyzer` | registered |
-| `ai_tray` | registered |
+| `localization_analyzer` | integrated |
+| `ai_tray` | integrated |

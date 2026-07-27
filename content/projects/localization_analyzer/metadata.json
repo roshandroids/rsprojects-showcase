@@ -1,44 +1,108 @@
 {
   "id": "localization_analyzer",
   "name": "Localization Analyzer",
-  "tagline": "Find missing and unused localization keys",
-  "description": "Localization Analyzer scans Flutter ARB and localization usage to surface missing keys, unused entries, and consistency issues across locales before they reach production.",
-  "version": "0.3.1",
+  "tagline": "Find missing, unused, and hardcoded localization issues",
+  "description": "Pure-Dart localization analysis engine that scans Dart sources and ARB files for hardcoded text, missing keys, unused keys, and duplicates \u2014 with no Flutter or DevTools UI dependencies. Frontends (CLI, DevTools) only read files and present diagnostics.",
+  "version": "0.9.0",
   "status": "experimental",
   "category": "tool",
-  "platforms": ["macos", "linux", "windows"],
+  "platforms": [
+    "macos",
+    "linux",
+    "windows"
+  ],
   "featured": false,
-  "tags": ["flutter", "i18n", "l10n"],
+  "repositoryUrl": "https://github.com/roshandroids/MBO",
+  "docsUrl": "https://github.com/roshandroids/MBO/blob/main/packages/localization_analyzer/README.md",
+  "tags": [
+    "dart",
+    "i18n",
+    "l10n",
+    "arb",
+    "analyzer"
+  ],
   "showcase": {
-    "problem": "Localization drift—missing keys, unused entries, and locale inconsistencies—often appears only after QA or production releases.",
-    "solution": "A desktop analyzer that scans ARB files and Dart usage to report gaps early in the development loop.",
+    "problem": "Localization drift\u2014hardcoded strings, missing keys, unused entries, and duplicates\u2014often appears only after QA or production releases.",
+    "solution": "A Pure-Dart analyzer API that frontends call with source and ARB inputs to surface diagnostics early in the development loop.",
     "features": [
       {
-        "title": "Missing key detection",
-        "description": "Compare usage against ARB definitions across locales."
+        "title": "Hardcoded text detection",
+        "description": "Flag string literals that look like UI copy, with // loc-ignore suppressions.",
+        "icon": "schema"
       },
       {
-        "title": "Unused entry reports",
-        "description": "Find keys that no longer appear in code."
+        "title": "Missing and unused keys",
+        "description": "Compare Dart usage against ARB definitions across locales.",
+        "icon": "workflow"
+      },
+      {
+        "title": "Allowlist configuration",
+        "description": "Ignore exact strings, patterns, and path substrings via AnalyzerConfig or JSON.",
+        "icon": "export"
       }
     ],
     "demo": {
       "available": false,
-      "note": "CLI/desktop demo packaging is not published yet."
+      "note": "Run the workspace CLI (dart run tool/scan_localization.dart). Public interactive demo not published."
     },
-    "technologies": ["Flutter", "Dart", "ARB", "Static analysis"],
-    "installation": "Install via the upcoming desktop package or run from source with Flutter on macOS, Linux, or Windows.",
+    "media": [
+      {
+        "kind": "diagram",
+        "alt": "Analyzer pipeline",
+        "caption": "Dart + ARB inputs \u2192 LocalizationAnalyzer \u2192 diagnostics"
+      }
+    ],
+    "architecture": "Pure-Dart package with no Flutter/DevTools dependencies. Hosts (CLI, DevTools) load files and present LocalizationAnalyzer results.",
+    "technologies": [
+      "Dart",
+      "analyzer",
+      "ARB",
+      "Static analysis"
+    ],
+    "platformSupport": [
+      {
+        "platform": "macos",
+        "notes": "CLI / host tooling"
+      },
+      {
+        "platform": "linux",
+        "notes": "CLI / host tooling"
+      },
+      {
+        "platform": "windows",
+        "notes": "CLI / host tooling"
+      }
+    ],
+    "installation": "Use from the MBO / cmic_localization_inspector workspace: depend on packages/localization_analyzer, or run dart run tool/scan_localization.dart from the workspace root.",
+    "documentationLinks": [
+      {
+        "label": "Package README",
+        "url": "https://github.com/roshandroids/MBO/blob/main/packages/localization_analyzer/README.md"
+      }
+    ],
     "roadmap": [
       {
         "item": "CI-friendly JSON report output",
         "status": "planned"
       },
       {
-        "item": "Core ARB scan pipeline",
-        "status": "in_progress"
+        "item": "Core ARB + Dart scan pipeline",
+        "status": "done"
       }
     ],
-    "relatedProjectIds": ["document_platform"],
-    "contributing": "Report false positives and locale edge cases via GitHub issues."
+    "changelog": [
+      {
+        "version": "0.9.0",
+        "notes": "Analyzer API with hardcoded/missing/unused/duplicate diagnostics and allowlist config."
+      }
+    ],
+    "relatedProjectIds": [
+      "document_platform"
+    ],
+    "contributing": "Report false positives and locale edge cases via GitHub issues on the MBO repository."
+  },
+  "integration": {
+    "projectId": "localization_analyzer",
+    "source": "project-cache"
   }
 }

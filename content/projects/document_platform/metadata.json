@@ -2,25 +2,31 @@
   "id": "document_platform",
   "name": "Document Platform",
   "tagline": "Flutter-native document editing you can embed",
-  "description": "Document Platform is an independent Flutter document-editing stack: schema-driven model, commands, hybrid rendering, clipboard/HTML interchange, plugins, and templates — split into focused Melos packages hosts can compose without forking a monolith.",
+  "description": "Document Platform is an independent Flutter document-editing stack: schema-driven model, commands, hybrid rendering, clipboard/HTML interchange, plugins, and templates \u2014 split into focused Melos packages hosts can compose without forking a monolith.",
   "version": "0.1.0",
   "status": "beta",
   "category": "platform",
-  "platforms": ["macos", "web", "windows", "linux"],
+  "platforms": [
+    "macos",
+    "web",
+    "windows",
+    "linux"
+  ],
   "featured": true,
   "repositoryUrl": "https://github.com/roshandroids/Document_Platform",
   "docsUrl": "https://github.com/roshandroids/Document_Platform/blob/main/docs/INDEX.md",
-  "tags": ["flutter", "editor", "documents", "embeddable"],
-  "integration": {
-    "projectId": "document_platform",
-    "source": "project-cache"
-  },
+  "tags": [
+    "flutter",
+    "editor",
+    "documents",
+    "embeddable"
+  ],
   "showcase": {
     "heroMedia": {
       "kind": "image",
       "alt": "Document Platform editor playground"
     },
-    "problem": "Enterprise Flutter apps need structured rich documents, selection/IME, toolbar, and clipboard fidelity — without bolting those concerns onto an editor that was not designed for embedding.",
+    "problem": "Enterprise Flutter apps need structured rich documents, selection/IME, toolbar, and clipboard fidelity \u2014 without bolting those concerns onto an editor that was not designed for embedding.",
     "solution": "A Melos package monorepo with clear dependency direction toward document_core: model, session, presentation, UI, interchange, plugins, and theming that hosts compose.",
     "features": [
       {
@@ -48,16 +54,6 @@
       "available": false,
       "note": "Run examples/example_basic locally (Editor Playground). Interactive web embed for the public portal is planned."
     },
-    "screenshots": [
-      {
-        "alt": "Editor Playground",
-        "caption": "Feature gallery in examples/example_basic"
-      },
-      {
-        "alt": "Email template editor",
-        "caption": "Official migration showcase: examples/email_template_editor"
-      }
-    ],
     "media": [
       {
         "kind": "diagram",
@@ -68,14 +64,9 @@
         "kind": "image",
         "alt": "Editor Playground",
         "caption": "Feature gallery in examples/example_basic"
-      },
-      {
-        "kind": "image",
-        "alt": "Email template editor",
-        "caption": "Official migration showcase host"
       }
     ],
-    "architecture": "Dependency direction is inward toward document_core. Layers: model → session → presentation → UI → interchange → plugins/theme. Cycles require an ADR. See docs/architecture/ in the Document Platform repository.",
+    "architecture": "Dependency direction is inward toward document_core. Layers: model \u2192 session \u2192 presentation \u2192 UI \u2192 interchange \u2192 plugins/theme. Cycles require an ADR. See docs/architecture/.",
     "architectureDiagram": {
       "kind": "diagram",
       "alt": "Document Platform layered packages",
@@ -131,7 +122,7 @@
         "status": "in_progress"
       },
       {
-        "item": "Architecture freeze (ADRs 001–008)",
+        "item": "Architecture freeze (ADRs 001\u2013008)",
         "status": "done"
       },
       {
@@ -160,7 +151,14 @@
         "platform": "all"
       }
     ],
-    "relatedProjectIds": ["localization_analyzer", "ai_tray"],
-    "contributing": "See CONTRIBUTING.md and docs/process/ in the Document Platform repository. Prefer package-level changes with ADRs when dependency direction is affected."
+    "relatedProjectIds": [
+      "localization_analyzer",
+      "ai_tray"
+    ],
+    "contributing": "See CONTRIBUTING.md and docs/process/ in this repository. Prefer package-level changes with ADRs when dependency direction is affected."
+  },
+  "integration": {
+    "projectId": "document_platform",
+    "source": "project-cache"
   }
 }

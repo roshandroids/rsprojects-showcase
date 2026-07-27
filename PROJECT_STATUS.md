@@ -21,7 +21,7 @@ RSProjects Showcase is the public portal for discovering and presenting all RSPr
 
 ## Current objective
 
-Phase 2.1 Rich Project Pages and project example infrastructure are **Complete**. **Project Integration Framework** is **Complete** (provider-driven Integration Definitions + Document Platform validated). Next: Phase 2.2 Interactive Demos — wire project showcase demo section through `DemoSpec`/`DemoPane` under the execution-first policy ([`docs/GOVERNANCE.md`](docs/GOVERNANCE.md) §2a). Provider sync automation remains Phase 3. Long-term Phases 3–5 remain planning-only under [`docs/roadmap/`](docs/roadmap/).
+Phase 2.1, project examples, and **Project Integration** are **Complete**. **Project Onboarding Framework** is **Complete** — Document Platform, Localization Analyzer, and AI Tray follow the same lifecycle via [`docs/PROJECT_ONBOARDING.md`](docs/PROJECT_ONBOARDING.md). Next: Phase 2.2 Interactive Demos — wire project showcase demo section through `DemoSpec`/`DemoPane`. Provider sync automation remains Phase 3.
 
 ## Repository information
 
@@ -35,7 +35,7 @@ Phase 2.1 Rich Project Pages and project example infrastructure are **Complete**
 | Remote | `git@roshandroids.github.com:roshandroids/rsprojects-showcase.git` |
 | Default branch | `main` |
 | Latest remote commit | See git log / GitHub |
-| Latest local milestone | Project Integration Framework |
+| Latest local milestone | Project Onboarding Framework |
 | Working tree | See Recent Changes |
 
 ---
@@ -54,6 +54,7 @@ Phase 2.1 Rich Project Pages and project example infrastructure are **Complete**
 | 2.1 | Rich Project Pages | **Complete** | `heroMedia`, `media[]`, architecture diagram, feature icons/media, contributors, downloads; Document Platform reference |
 | 2.1b | Project example infrastructure | **Complete** | `content/examples/` → registry `examples[]`; shared `DemoSpec`/`DemoPane`/`ExampleGallery`; Document Platform + Localization Analyzer |
 | 2.1c | Project Integration Framework | **Complete** | Provider-driven Integration Definitions (`content/integrations/`); Document Platform `showcase/` SSOT; Localization Analyzer + AI Tray registered |
+| 2.1d | Project Onboarding Framework | **Complete** | `PROJECT_ONBOARDING.md`; DP + Localization Analyzer + AI Tray fully onboarded (`integrated`); nested-package rule documented |
 | 2.2–2.5 | Showcase Excellence — remaining | **Planned** | Project demo section via DemoSpec, docs hub, search/discovery, ecosystem navigation |
 | 3 | Automation & Publishing | **Planned** | Self-maintaining generate/validate/publish; see `docs/roadmap/PHASE_3_AUTOMATION.md` |
 | 4 | Ecosystem Intelligence | **Planned** | Graphs, explorers, timeline; see `docs/roadmap/PHASE_4_ECOSYSTEM.md` |
@@ -69,30 +70,29 @@ Phase 2.1 Rich Project Pages and project example infrastructure are **Complete**
 
 | Field | Value |
 |-------|--------|
-| **Sprint name** | Project Integration Framework |
-| **Goal** | Provider-driven Project Integration; validate Document Platform as SSOT |
+| **Sprint name** | Project Onboarding Framework |
+| **Goal** | Prove generic onboarding for three real projects; ship PROJECT_ONBOARDING.md |
 | **Status** | Complete |
 
 ## Active tasks
 
 | Task | Status | Owner |
 |------|--------|-------|
-| Write `docs/PROJECT_INTEGRATION.md` (providers + ownership) | Complete | — |
-| Add `content/integrations/` for three products | Complete | — |
-| Place Document Platform `showcase/` contract + align portal cache | Complete | — |
-| Refactor terminology (Repository → Project Integration) | Complete | — |
-| Update ARCHITECTURE / CONTENT_MODEL / PROJECT_STATUS | Complete | — |
+| Validate Document Platform reference onboarding | Complete | — |
+| Onboard Localization Analyzer (nested package) | Complete | — |
+| Onboard AI Tray | Complete | — |
+| Write `docs/PROJECT_ONBOARDING.md` + status/docs updates | Complete | — |
 
 ## Exit criteria
 
 Sprint is done when all of the following are true:
 
-- [x] Project Integration contract, providers, and ownership documented
-- [x] Three projects registered under `content/integrations/`
-- [x] Document Platform contains `showcase/` and accurate git URL
-- [x] Portal Document Platform entry is provenance-aware (`integration`)
-- [x] No fetch automation / GitHub Actions implemented
-- [x] Local content still validates and regenerates the registry
+- [x] Document Platform fully onboarded (contract, integration, registry, visible)
+- [x] Localization Analyzer onboarded without architecture forks
+- [x] AI Tray onboarded without architecture forks
+- [x] `PROJECT_ONBOARDING.md` is the canonical guide
+- [x] Friction captured; contract refined only for multi-project benefit (nested `packagePath` showcase path)
+- [x] No automation implemented
 
 ---
 
@@ -118,6 +118,7 @@ Sprint is done when all of the following are true:
 - **Phase 2.1 Rich Project Pages:** hero media, unified gallery, architecture diagram, feature icons/media, contributors, downloads; Document Platform reference fill
 - **Project example infrastructure:** `content/examples/`, registry `examples[]`, shared `DemoSpec`/`DemoPane`/`ExampleGallery`; Document Platform + Localization Analyzer samples
 - **Project Integration Framework:** provider-driven Integration Definitions (`content/integrations/`), Document Platform `showcase/` SSOT + portal provenance cache
+- **Project Onboarding Framework:** `PROJECT_ONBOARDING.md`; Document Platform, Localization Analyzer, and AI Tray all `integrated`
 - **UI refresh (D-028):** FlexScheme.tealM3 Material 3 theme, elevated cards/home/detail surfaces, hover motion
 
 ## In Progress
@@ -276,7 +277,8 @@ Status values: `Not Started` · `In Progress` · `Blocked` · `Complete`
 | Showcase framework docs | Complete | `docs/SHOWCASE_FRAMEWORK.md` + example gallery notes |
 | Phase 2 planned schema | Complete (docs only) | Remaining 2.2–2.5 items still planned |
 | `content/examples/` | Complete | Document Platform (2) + Localization Analyzer (1) — portal cache; product `examples/` is long-term SSOT |
-| `content/integrations/` | Complete | document_platform (integrated), localization_analyzer + ai_tray (registered) |
+| `content/integrations/` | Complete | All three projects `integrated` |
+| `docs/PROJECT_ONBOARDING.md` | Complete | Canonical onboarding lifecycle + checklists |
 
 ## Assets status
 
@@ -298,9 +300,9 @@ Cell values: `Not Started` · `In Progress` · `Blocked` · `Complete`
 
 | Project ID | Metadata | Assets | Demo | Documentation | Integration Status |
 |------------|----------|--------|------|---------------|--------------------|
-| `document_platform` | Complete | Not Started | Not Started | In Progress (repo docs links) | **Integrated** — product `showcase/` SSOT + portal cache |
-| `localization_analyzer` | Complete | Not Started | Not Started | Not Started | **Registered** — package in MBO; portal cache only |
-| `ai_tray` | Complete | Not Started | Not Started | Not Started | **Registered** — AI_Tray remote; portal cache only |
+| `document_platform` | Complete | Not Started | Not Started | In Progress (repo docs links) | **Integrated** — reference onboarding |
+| `localization_analyzer` | Complete | Not Started | Not Started | In Progress (package README) | **Integrated** — nested package showcase/ |
+| `ai_tray` | Complete | Not Started | Not Started | In Progress (docs + releases) | **Integrated** — LICENSE still missing on product |
 
 **Folder map:**
 
@@ -526,6 +528,7 @@ Ordered implementation sequence (promote into Current Sprint when starting work)
 | 2026-07-26 | **Project example infrastructure:** `content/examples/` + registry `examples[]`; shared `DemoSpec`/`DemoPane`/`ExampleGallery`; Document Platform + Localization Analyzer; D-027 shape finalized |
 | 2026-07-26 | **Project Integration Framework:** provider-driven Integration Definitions (`content/integrations/`), Document Platform `showcase/` contract, portal provenance; D-029; Localization Analyzer + AI Tray registered |
 | 2026-07-26 | **Refactor:** Repository Integration → Project Integration (docs rename, `content/integrations/`, provider model); no runtime/automation changes |
+| 2026-07-26 | **Project Onboarding Framework:** `docs/PROJECT_ONBOARDING.md`; Localization Analyzer + AI Tray product `showcase/` contracts; all three Integration Definitions `integrated` |
 
 ---
 

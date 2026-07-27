@@ -1,13 +1,13 @@
 {
   "id": "arb-diff-sample",
   "title": "ARB diff sample",
-  "description": "Sample ARB pair highlighting missing and unused localization keys across locales.",
+  "description": "Sample ARB pair highlighting missing and unused localization keys. Portal cache — analyzer package lives under MBO packages/localization_analyzer.",
   "projectId": "localization_analyzer",
   "category": "sample",
-  "tags": ["arb", "i18n", "diff"],
+  "tags": ["arb", "i18n", "diff", "cache"],
   "demo": {
     "available": false,
-    "note": "CLI sample output will ship with the desktop analyzer package."
+    "note": "Run dart run tool/scan_localization.dart from the MBO localization workspace."
   },
-  "sourceUrl": "https://github.com/roshandroids/rsprojects-showcase"
+  "sourceUrl": "https://github.com/roshandroids/MBO"
 }

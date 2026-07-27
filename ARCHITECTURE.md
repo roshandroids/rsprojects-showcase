@@ -30,7 +30,7 @@ lib/
 
 ## Content & discovery
 
-**Project Integration (D-029):** The showcase integrates **projects** via provider-driven **Integration Definitions** under `content/integrations/`. A Git repository is one **Project Provider** among many (documentation, demo, package, website, releases, benchmarks, …). Product projects own SSOT (including `showcase/`); the portal may keep a **derived cache** under `content/projects/` and `content/examples/` until Phase 3 sync. See [`docs/PROJECT_INTEGRATION.md`](docs/PROJECT_INTEGRATION.md).
+**Project Integration (D-029):** The showcase integrates **projects** via provider-driven **Integration Definitions** under `content/integrations/`. A Git repository is one **Project Provider** among many. Onboarding workflow: [`docs/PROJECT_ONBOARDING.md`](docs/PROJECT_ONBOARDING.md). Architecture: [`docs/PROJECT_INTEGRATION.md`](docs/PROJECT_INTEGRATION.md).
 
 ```
 Product Project (SSOT: showcase/, docs/, examples/, …)

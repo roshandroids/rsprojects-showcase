@@ -99,7 +99,9 @@ showcase/
 
 Initially implement only `metadata.json`, `README.md`, and `media/`. Document the rest as future capabilities.
 
-`metadata.json` shape matches portal project metadata in [`CONTENT_MODEL.md`](CONTENT_MODEL.md). Prefer a `repositoryUrl` (or other provider URLs) that point at the **product**, not the showcase app.
+`metadata.json` shape matches portal project metadata in [`CONTENT_MODEL.md`](CONTENT_MODEL.md). Prefer provider URLs that point at the **product**, not the showcase app.
+
+**Nested packages:** When `providers.repository.packagePath` is set, place the showcase contract at `{packagePath}/showcase/` by default (Localization Analyzer pattern). Standalone products use repo-root `showcase/`.
 
 ### Shared schema (documented only)
 
@@ -209,18 +211,20 @@ Legacy value `repository-cache` remains accepted by validators as an alias of `p
 
 ## Document Platform reference
 
-**Status:** `integrated`
+**Status:** `integrated` (reference onboarding)
 
 - Integration Definition: [`content/integrations/document_platform.json`](../content/integrations/document_platform.json)
 - Product contract: Document_Platform `showcase/`
 - Portal cache: [`content/projects/document_platform/metadata.json`](../content/projects/document_platform/metadata.json)
 
-Localization Analyzer and AI Tray are **registered** (providers partially filled; product `showcase/` not required yet).
+Localization Analyzer and AI Tray are also **integrated** (see [`PROJECT_ONBOARDING.md`](PROJECT_ONBOARDING.md) reference table). Nested-package and missing-LICENSE frictions are documented there — no architecture fork was required.
 
 ## Checklist — integrating another project
 
+Follow the full workflow in [`PROJECT_ONBOARDING.md`](PROJECT_ONBOARDING.md). Summary:
+
 1. Add `content/integrations/<projectId>.json` with the providers you know
-2. Add product `showcase/metadata.json` (+ README + media/) when ready to mark `integrated`
+2. Add product `showcase/metadata.json` (+ README + media/) — under `{packagePath}/showcase/` when nested
 3. Mirror into `content/projects/<projectId>/metadata.json` with `integration` provenance
 4. Optionally cache examples under `content/examples/` until provider sync lands
 5. Run `dart run scripts/validate_content.dart` and `dart run scripts/generate_registry.dart`

@@ -18,6 +18,7 @@
 | `CI_CD.md` | Pipelines |
 | [`CONTENT_MODEL.md`](CONTENT_MODEL.md) | Project metadata schema |
 | [`PROJECT_INTEGRATION.md`](PROJECT_INTEGRATION.md) | Project Integration, providers, Integration Definitions |
+| [`PROJECT_ONBOARDING.md`](PROJECT_ONBOARDING.md) | Canonical checklist to onboard any RSProjects project |
 | `SHOWCASE_FRAMEWORK.md` | Canonical project page template |
 | `BRAND.md` | Brand identity guidance |
 | `PHASE_2_SHOWCASE_EXCELLENCE.md` | Phase 2 planning brief |
