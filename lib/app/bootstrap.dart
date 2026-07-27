@@ -1,23 +1,25 @@
 /// Application bootstrap / startup orchestration.
 ///
-/// **Why:** Central place for binding Flutter, loading config, and launching the app.
+/// **Why:** Central place for binding Flutter, crash hooks, and launching the app.
 /// **Owner:** App layer.
-/// **When:** Expand when DI, remote config, and registry loading are introduced.
 library;
 
 import 'package:flutter/widgets.dart';
 import 'package:rsprojects_showcase/app/app.dart';
+import 'package:rsprojects_showcase/core/quality/quality.dart';
 
 /// Initializes the runtime and launches [RsProjectsShowcaseApp].
 ///
-/// TODO(app):
-/// - EnsureInitialized / error handlers
-/// - Load generated project registry
-/// - Configure providers / DI
+/// TODO(app): Load generated project registry; configure providers / DI.
 Future<void> bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // TODO(app): Perform async startup (registry, feature flags, etc.).
+  CrashHandler.install(
+    listener: LoggingErrorExperiencePresenter().present,
+  );
 
-  runApp(const RsProjectsShowcaseApp());
+  // Capture uncaught async errors while starting the app.
+  CrashHandler.runGuarded(() {
+    runApp(const RsProjectsShowcaseApp());
+  });
 }

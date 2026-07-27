@@ -1,13 +1,29 @@
-# CI — continuous integration
+# CI — quality engineering pipeline
 #
-# Why: Lint, analyze, and test gates on every PR.
-# Owner: Platform / CI.
-# When: Implement when first real feature lands.
+# Architecture (gates must eventually all pass before merge/deploy):
 #
-# TODO(ci): flutter pub get
-# TODO(ci): flutter analyze
-# TODO(ci): flutter test
-# TODO(ci): optionally dart run scripts/validate_content.dart
+#   Format
+#     ↓
+#   Analyze
+#     ↓
+#   Unit Tests
+#     ↓
+#   Widget Tests
+#     ↓
+#   Golden Tests
+#     ↓
+#   Integration Tests
+#     ↓
+#   Content Validation
+#     ↓
+#   Cross-Platform Build Validation
+#     ↓
+#   Deployment (deploy.yml)
+#
+# Owner: Platform / CI / Quality.
+# See: docs/quality/QUALITY_GATES.md
+#
+# TODO(ci): Implement real steps; enforce via branch protection.
 
 name: ci
 
@@ -17,8 +33,74 @@ on:
     branches: [main]
 
 jobs:
-  placeholder:
+  # --- Format ---
+  format:
+    name: Format
     runs-on: ubuntu-latest
     steps:
-      - name: Placeholder — CI not implemented
-        run: echo "CI workflow not implemented yet"
+      - name: Placeholder — dart format
+        run: echo "TODO: dart format --set-exit-if-changed ."
+
+  # --- Analyze ---
+  analyze:
+    name: Analyze
+    needs: format
+    runs-on: ubuntu-latest
+    steps:
+      - name: Placeholder — flutter analyze
+        run: echo "TODO: flutter analyze --fatal-infos"
+
+  # --- Unit + widget tests (split later) ---
+  unit_tests:
+    name: Unit Tests
+    needs: analyze
+    runs-on: ubuntu-latest
+    steps:
+      - name: Placeholder — unit tests
+        run: echo "TODO: flutter test test/unit"
+
+  widget_tests:
+    name: Widget Tests
+    needs: analyze
+    runs-on: ubuntu-latest
+    steps:
+      - name: Placeholder — widget tests
+        run: echo "TODO: flutter test test/widget test/*_test.dart"
+
+  golden_tests:
+    name: Golden Tests
+    needs: widget_tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Placeholder — golden tests
+        run: echo "TODO: flutter test test/golden"
+
+  integration_tests:
+    name: Integration Tests
+    needs: unit_tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Placeholder — integration tests
+        run: echo "TODO: flutter test integration_test"
+
+  content_validation:
+    name: Content Validation
+    needs: analyze
+    runs-on: ubuntu-latest
+    steps:
+      - name: Placeholder — validate content
+        run: echo "TODO: dart run scripts/validate_content.dart"
+
+  cross_platform_build:
+    name: Cross-Platform Build Validation
+    needs: [unit_tests, widget_tests, content_validation]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Architecture matrix — enable real builds when CI capacity allows.
+        target: [web, android, linux]
+        # TODO(ci): ios, macos, windows on appropriate runners
+    steps:
+      - name: Placeholder — flutter build ${{ matrix.target }}
+        run: echo "TODO: flutter build ${{ matrix.target }} (Web-first; all platforms required long-term)"

@@ -2,12 +2,15 @@
 ///
 /// **Why:** Shared side-effectful services consumed by features via DI.
 /// **Owner:** Core platform.
-/// **When:** Implement when observability / config needs appear.
 library;
 
-/// Placeholder for app-level services.
+export 'package:rsprojects_showcase/core/quality/quality.dart';
+
+/// Placeholder for app-level services registry.
 ///
-/// TODO(core): Define interfaces + implementations (logger, link launcher, etc.).
+/// Quality services live under `lib/core/quality/` and are exported above.
+///
+/// TODO(core): Add logger / link launcher ports when needed.
 abstract final class CoreServices {
   CoreServices._();
 }
