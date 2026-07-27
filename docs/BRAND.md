@@ -1,22 +1,24 @@
 # Brand Identity
 
-RSProjects Showcase visual language (Web-first, cross-platform).
+RSProjects Showcase visual language (Web-first, cross-platform, Material 3).
 
 ## Color
 
-- Brand seeds live in `AppBrand` / `AppColors` (`lib/design_system/app_colors.dart`).
+- **Theme engine:** FlexColorScheme with built-in **`FlexScheme.tealM3`** (Blue stone teal) — D-028.
+- Deep teal primary, cool slate surfaces, restrained tertiary; cyan/indigo accents live in semantic chrome where needed.
 - Semantic status colors (success / warning / info) via `AppSemanticColors`.
 - Widgets must use `Theme.of(context).colorScheme` or `context.semanticColors` — never raw hex.
 
 ## Typography
 
-- Display: serif fallbacks (`AppTypography.displayFallback`).
-- Body: Material 2021 baseline.
+- Material 2021 baseline with strengthened display/headline weights and tighter tracking.
 - Prefer `Theme.of(context).textTheme` roles (`displaySmall`, `titleLarge`, `bodyLarge`, …).
+- Avoid decorative serif stacks — keep a developer-centric product feel.
 
 ## Spacing & radius
 
-- `AppSpacing` (4px scale) and `AppRadius` for all layout rhythm and corners.
+- `AppSpacing` (4px scale).
+- `AppRadius`: chips ~11, buttons ~14, cards ~18, dialogs ~20.
 
 ## Iconography
 
@@ -27,7 +29,8 @@ RSProjects Showcase visual language (Web-first, cross-platform).
 ## Motion
 
 - Durations and curves: `AppMotion`.
-- Page transitions: short fade/slide; avoid noisy motion on catalog grids.
+- Page transitions: short fade/slide; card hover elevation on interactive surfaces.
+- Avoid noisy motion on catalog grids.
 
 ## Breakpoints
 

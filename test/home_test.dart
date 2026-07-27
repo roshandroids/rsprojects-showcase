@@ -90,6 +90,6 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
     expect(find.text('Document Platform'), findsOneWidget);
-    expect(find.text('Spotlight projects'), findsOneWidget);
+    expect(find.text('Featured projects'), findsOneWidget);
   });
 }

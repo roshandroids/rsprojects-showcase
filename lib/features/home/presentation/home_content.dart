@@ -1,10 +1,13 @@
 /// Static home copy (principles / tech / community). Project cards come from registry.
 library;
 
+import 'package:flutter/material.dart';
+
 /// Home landing content constants.
 abstract final class HomeContent {
   HomeContent._();
 
+  static const String heroEyebrow = 'RSProjects ecosystem';
   static const String heroHeadline =
       'A public portal for every RSProjects product';
   static const String heroSupport =
@@ -20,24 +23,28 @@ abstract final class HomeContent {
       body:
           'Projects enter the showcase through metadata and a generated '
           'registry — not one-off UI forks.',
+      icon: Icons.dataset_linked_outlined,
     ),
     HomePrinciple(
       title: 'Clean boundaries',
       body:
           'UI talks to application state; domain stays free of Flutter and '
           'DTOs never leak into widgets.',
+      icon: Icons.account_tree_outlined,
     ),
     HomePrinciple(
       title: 'Web-first, all platforms',
       body:
           'Primary experience targets the web while keeping Android, iOS, '
           'and desktop runners healthy.',
+      icon: Icons.devices_outlined,
     ),
     HomePrinciple(
       title: 'Observable quality',
       body:
           'Crash, diagnostics, and feedback hooks are first-class so '
           'production issues stay diagnosable.',
+      icon: Icons.health_and_safety_outlined,
     ),
   ];
 
@@ -50,6 +57,7 @@ abstract final class HomeContent {
     'Riverpod',
     'go_router',
     'FlexColorScheme',
+    'Material 3',
     'Content registry',
   ];
 
@@ -71,8 +79,13 @@ abstract final class HomeContent {
 
 /// Single engineering principle card.
 class HomePrinciple {
-  const HomePrinciple({required this.title, required this.body});
+  const HomePrinciple({
+    required this.title,
+    required this.body,
+    required this.icon,
+  });
 
   final String title;
   final String body;
+  final IconData icon;
 }

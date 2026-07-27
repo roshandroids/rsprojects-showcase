@@ -2,8 +2,9 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:rsprojects_showcase/design_system/app_radius.dart';
 
-/// Themed filter chip wrapper.
+/// Themed filter chip wrapper (always has a Material ancestor).
 class AppChip extends StatelessWidget {
   const AppChip({
     required this.label,
@@ -20,12 +21,17 @@ class AppChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FilterChip(
-      label: Text(label),
-      selected: selected,
-      onSelected: onSelected,
-      avatar: avatar,
-      showCheckmark: false,
+    return Material(
+      type: MaterialType.transparency,
+      child: FilterChip(
+        label: Text(label),
+        selected: selected,
+        onSelected: onSelected ?? (selected ? (_) {} : null),
+        avatar: avatar,
+        showCheckmark: selected && onSelected != null,
+        visualDensity: VisualDensity.standard,
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.borderChip),
+      ),
     );
   }
 }

@@ -1,4 +1,4 @@
-/// Status / platform / featured badges.
+/// Status / platform / featured badges — Material 3 tonal chips.
 library;
 
 import 'package:flutter/material.dart';
@@ -8,7 +8,7 @@ import 'package:rsprojects_showcase/design_system/app_spacing.dart';
 
 enum AppBadgeTone { neutral, primary, success, warning, info, featured }
 
-/// Compact label badge.
+/// Compact label badge with outline + tonal fill.
 class AppBadge extends StatelessWidget {
   const AppBadge({
     required this.label,
@@ -27,30 +27,36 @@ class AppBadge extends StatelessWidget {
     final scheme = theme.colorScheme;
     final semantic = context.semanticColors;
 
-    final (Color bg, Color fg) = switch (tone) {
+    final (Color bg, Color fg, Color border) = switch (tone) {
       AppBadgeTone.neutral => (
           scheme.surfaceContainerHighest,
-          scheme.onSurface.withValues(alpha: 0.8),
+          scheme.onSurfaceVariant,
+          scheme.outlineVariant,
         ),
       AppBadgeTone.primary => (
-          scheme.primary.withValues(alpha: 0.14),
-          scheme.primary,
+          scheme.primaryContainer.withValues(alpha: 0.72),
+          scheme.onPrimaryContainer,
+          scheme.primary.withValues(alpha: 0.28),
         ),
       AppBadgeTone.success => (
           semantic.successContainer,
           semantic.onSuccessContainer,
+          semantic.success.withValues(alpha: 0.28),
         ),
       AppBadgeTone.warning => (
           semantic.warningContainer,
           semantic.onWarningContainer,
+          semantic.warning.withValues(alpha: 0.28),
         ),
       AppBadgeTone.info => (
           semantic.infoContainer,
           semantic.onInfoContainer,
+          semantic.info.withValues(alpha: 0.28),
         ),
       AppBadgeTone.featured => (
-          scheme.tertiary.withValues(alpha: 0.16),
-          scheme.tertiary,
+          scheme.tertiaryContainer.withValues(alpha: 0.8),
+          scheme.onTertiaryContainer,
+          scheme.tertiary.withValues(alpha: 0.32),
         ),
     };
 
@@ -60,11 +66,12 @@ class AppBadge extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.sm,
-          vertical: AppSpacing.xxs,
+          vertical: AppSpacing.xxs + 1,
         ),
         decoration: BoxDecoration(
           color: bg,
-          borderRadius: AppRadius.borderSm,
+          borderRadius: AppRadius.borderChip,
+          border: Border.all(color: border),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -77,7 +84,8 @@ class AppBadge extends StatelessWidget {
               label,
               style: theme.textTheme.labelMedium?.copyWith(
                 color: fg,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.15,
               ),
             ),
           ],

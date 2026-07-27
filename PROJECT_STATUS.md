@@ -113,6 +113,7 @@ Sprint is done when all of the following are true:
 - **Long-term roadmap Phases 3–5:** Automation & Publishing, Ecosystem Intelligence, Community & Developer Portal (`docs/roadmap/`)
 - **Project governance:** `docs/GOVERNANCE.md` (core how-we-manage doc)
 - **Phase 2.1 Rich Project Pages:** hero media, unified gallery, architecture diagram, feature icons/media, contributors, downloads; Document Platform reference fill
+- **UI refresh (D-028):** FlexScheme.tealM3 Material 3 theme, elevated cards/home/detail surfaces, hover motion
 
 ## In Progress
 
@@ -197,7 +198,7 @@ integration_test/ placeholder
 | Field | Value |
 |-------|--------|
 | Status | Complete (foundation + components) |
-| Notes | `lib/design_system/` — custom RSProjects brand palette fed into FlexColorScheme (no predefined Flex schemes). Light/dark from same seeds. Semantic colors via `AppSemanticColors` ThemeExtension. Reusable components under `components/`. Brand guidance in `docs/BRAND.md`. |
+| Notes | `lib/design_system/` — FlexScheme.tealM3 + FlexColorScheme M3 sub-themes (D-028); semantic colors via `AppSemanticColors`. Reusable components under `components/`. Brand guidance in `docs/BRAND.md`. |
 
 ---
 
@@ -221,7 +222,7 @@ integration_test/ placeholder
 | D-012 | — | Repository license | Public repo needs a chosen license | Open |
 | D-013 | 2026-07-26 | Theme tokens centralized (superseded by D-015 location) | No hardcoded colors/magic layout numbers in features | Final |
 | D-014 | 2026-07-26 | Top nav: Home / Projects / About; Settings via footer | Keeps primary nav focused | Final |
-| D-015 | 2026-07-26 | Use FlexColorScheme as Material 3 theme engine with custom brand `FlexSchemeColor` (no predefined Flex schemes) | Scalable theming; light/dark from one palette | Final |
+| D-015 | 2026-07-26 | Use FlexColorScheme as Material 3 theme engine with custom brand `FlexSchemeColor` (no predefined Flex schemes) | Scalable theming; light/dark from one palette | **Superseded by D-028** |
 | D-016 | 2026-07-26 | Design system lives in `lib/design_system/` (token files + barrel) for future `rsprojects_design_system` extraction | Reuse across RSProjects | Final |
 | D-017 | 2026-07-26 | Semantic colors exposed via `AppSemanticColors` ThemeExtension + ColorScheme | Prefer semantics over raw Flutter colors | Final |
 | D-018 | 2026-07-26 | **Cross-platform architecture (Web-first)** — support Web, Android, iOS, macOS, Windows, Linux; Web is primary deploy target | Showcase must compile on all Flutter platforms; isolate platform code behind abstractions; evaluate deps for multi-platform support | Final |
@@ -234,6 +235,7 @@ integration_test/ placeholder
 | D-025 | 2026-07-26 | Dedicated `/search` with shared **DiscoveryQuery** (catalog + search) | One query model; scalable discovery | Final (implement in 2.4) |
 | D-026 | 2026-07-26 | Typed ecosystem **relations[]** + soft links from shared tech/tags | Reusable ecosystem navigation | Final (implement in 2.5) |
 | D-027 | 2026-07-26 | **Examples are first-class content** alongside projects—not nested assets owned only by a project | Enables independent automation, search/filter, and future playgrounds; project pages may still *reference* examples | Final (shape when implementing; do not expand planning now) |
+| D-028 | 2026-07-26 | **UI theme:** FlexScheme.`tealM3` + Material 3 FlexSubThemes (blend ~14–16, surface app bar, standard density, card/button/chip radii) | Premium developer-centric showcase; stay within Material 3 / FlexColorScheme | Final |
 
 ---
 
@@ -512,6 +514,7 @@ Ordered implementation sequence (promote into Current Sprint when starting work)
 | 2026-07-26 | **Project governance:** `docs/GOVERNANCE.md` as permanent core management doc; linked from ROADMAP / docs README / PROJECT_STATUS |
 | 2026-07-26 | **Phase 2.1 Rich Project Pages:** schema/domain/DTO/UI for hero media, `media[]`, architecture diagram, feature icons/media, contributors, downloads; Document Platform reference; registry + tests |
 | 2026-07-26 | **Execution-first planning policy** in `docs/GOVERNANCE.md` §2a; **D-027** examples are first-class content (alongside projects), not project-owned assets only |
+| 2026-07-26 | **UI refresh (D-028):** FlexScheme.tealM3 Material 3 theme, elevated cards/home/project surfaces, hover motion, brand docs |
 
 ---
 

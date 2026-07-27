@@ -8,7 +8,7 @@ enum AppButtonVariant { primary, secondary, text }
 
 enum AppButtonSize { small, medium, large }
 
-/// RSProjects button wrapper.
+/// RSProjects button wrapper — Filled / Outlined / Text with consistent padding.
 class AppButton extends StatelessWidget {
   const AppButton({
     required this.label,
@@ -34,12 +34,18 @@ class AppButton extends StatelessWidget {
           ),
         AppButtonSize.medium => const EdgeInsets.symmetric(
             horizontal: AppSpacing.lg,
-            vertical: AppSpacing.sm,
+            vertical: AppSpacing.sm + 2,
           ),
         AppButtonSize.large => const EdgeInsets.symmetric(
             horizontal: AppSpacing.xl,
             vertical: AppSpacing.md,
           ),
+      };
+
+  double get _iconSize => switch (size) {
+        AppButtonSize.small => 16,
+        AppButtonSize.medium => 18,
+        AppButtonSize.large => 20,
       };
 
   @override
@@ -49,7 +55,7 @@ class AppButton extends StatelessWidget {
         : Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, size: size == AppButtonSize.small ? 16 : 18),
+              Icon(icon, size: _iconSize),
               const SizedBox(width: AppSpacing.xs),
               Text(label),
             ],
@@ -58,17 +64,26 @@ class AppButton extends StatelessWidget {
     final button = switch (variant) {
       AppButtonVariant.primary => FilledButton(
           onPressed: onPressed,
-          style: FilledButton.styleFrom(padding: _padding),
+          style: FilledButton.styleFrom(
+            padding: _padding,
+            visualDensity: VisualDensity.standard,
+          ),
           child: child,
         ),
       AppButtonVariant.secondary => OutlinedButton(
           onPressed: onPressed,
-          style: OutlinedButton.styleFrom(padding: _padding),
+          style: OutlinedButton.styleFrom(
+            padding: _padding,
+            visualDensity: VisualDensity.standard,
+          ),
           child: child,
         ),
       AppButtonVariant.text => TextButton(
           onPressed: onPressed,
-          style: TextButton.styleFrom(padding: _padding),
+          style: TextButton.styleFrom(
+            padding: _padding,
+            visualDensity: VisualDensity.standard,
+          ),
           child: child,
         ),
     };

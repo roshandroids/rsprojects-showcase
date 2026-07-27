@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 import 'package:rsprojects_showcase/app/router.dart';
 import 'package:rsprojects_showcase/core/constants/app_constants.dart';
 import 'package:rsprojects_showcase/design_system/app_breakpoints.dart';
-import 'package:rsprojects_showcase/design_system/app_elevation.dart';
 import 'package:rsprojects_showcase/design_system/app_radius.dart';
 import 'package:rsprojects_showcase/design_system/app_spacing.dart';
 
@@ -53,13 +52,14 @@ class AppNavBar extends StatelessWidget {
     final compact = AppBreakpoints.isCompact(MediaQuery.sizeOf(context).width);
 
     return Material(
-      color: theme.colorScheme.surface.withValues(alpha: AppElevation.chromeOpacity),
+      color: theme.colorScheme.surface.withValues(alpha: 0.92),
+      surfaceTintColor: theme.colorScheme.surfaceTint,
       elevation: 0,
       child: DecoratedBox(
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
-              color: theme.colorScheme.outline.withValues(alpha: 0.35),
+              color: theme.colorScheme.outlineVariant.withValues(alpha: 0.8),
             ),
           ),
         ),
@@ -242,8 +242,9 @@ class _NavLink extends StatelessWidget {
         style: TextButton.styleFrom(
           foregroundColor: color,
           backgroundColor: selected
-              ? theme.colorScheme.primary.withValues(alpha: 0.1)
+              ? theme.colorScheme.primary.withValues(alpha: 0.12)
               : Colors.transparent,
+          shape: RoundedRectangleBorder(borderRadius: AppRadius.borderButton),
         ),
         child: Text(
           label,

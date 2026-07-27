@@ -118,90 +118,115 @@ class _HeroSection extends StatelessWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final heroMedia = project.showcase?.heroMedia;
+    final compact = AppBreakpoints.isCompact(MediaQuery.sizeOf(context).width);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        if (heroMedia != null) ...[
-          _HeroMediaBanner(media: heroMedia),
-          const SizedBox(height: AppSpacing.xl),
-        ],
-        if (project.featured) ...[
-          const Align(
-            alignment: Alignment.centerLeft,
-            child: AppBadge(
-              label: 'Featured',
-              tone: AppBadgeTone.featured,
-              icon: Icons.star_rounded,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-        ],
-        Text(project.name, style: theme.textTheme.displaySmall),
-        if (project.tagline != null) ...[
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            project.tagline!,
-            style: theme.textTheme.titleMedium?.copyWith(
-              color: scheme.onSurface.withValues(alpha: 0.72),
-            ),
-          ),
-        ],
-        const SizedBox(height: AppSpacing.lg),
-        Wrap(
-          spacing: AppSpacing.sm,
-          runSpacing: AppSpacing.sm,
-          children: [
-            AppBadge(
-              label: project.status.name,
-              tone: statusTone(project.status),
-            ),
-            AppBadge(
-              label: project.category.name,
-              tone: AppBadgeTone.primary,
-            ),
-            AppBadge(label: 'v${project.version}'),
-            ...project.platforms.map((platform) => AppBadge(label: platform)),
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: AppRadius.borderCard,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            scheme.primary.withValues(alpha: 0.1),
+            scheme.surfaceContainerLow,
+            scheme.tertiary.withValues(alpha: 0.06),
           ],
         ),
-        const SizedBox(height: AppSpacing.xl),
-        Text(
-          project.description,
-          style: theme.textTheme.bodyLarge?.copyWith(
-            color: scheme.onSurface.withValues(alpha: 0.84),
-          ),
-        ),
-        if (_hasPrimaryActions(project)) ...[
-          const SizedBox(height: AppSpacing.xl),
-          Wrap(
-            spacing: AppSpacing.md,
-            runSpacing: AppSpacing.sm,
-            children: [
-              if (project.demoUrl != null)
-                _UrlAction(
-                  label: 'Demo',
-                  url: project.demoUrl!,
-                  variant: AppButtonVariant.primary,
-                  icon: Icons.play_circle_outline_rounded,
-                ),
-              if (project.repositoryUrl != null)
-                _UrlAction(
-                  label: 'GitHub',
-                  url: project.repositoryUrl!,
-                  variant: AppButtonVariant.secondary,
-                  icon: Icons.code_rounded,
-                ),
-              if (project.docsUrl != null)
-                _UrlAction(
-                  label: 'Documentation',
-                  url: project.docsUrl!,
-                  variant: AppButtonVariant.text,
-                  icon: Icons.menu_book_rounded,
-                ),
+        border: Border.all(color: scheme.outlineVariant.withValues(alpha: 0.7)),
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(compact ? AppSpacing.lg : AppSpacing.xl),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (heroMedia != null) ...[
+              _HeroMediaBanner(media: heroMedia),
+              const SizedBox(height: AppSpacing.xl),
             ],
-          ),
-        ],
-      ],
+            if (project.featured) ...[
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: AppBadge(
+                  label: 'Featured',
+                  tone: AppBadgeTone.featured,
+                  icon: Icons.star_rounded,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+            ],
+            Text(
+              project.name,
+              style: compact
+                  ? theme.textTheme.headlineMedium
+                  : theme.textTheme.displaySmall,
+            ),
+            if (project.tagline != null) ...[
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                project.tagline!,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: scheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+            const SizedBox(height: AppSpacing.lg),
+            Wrap(
+              spacing: AppSpacing.sm,
+              runSpacing: AppSpacing.sm,
+              children: [
+                AppBadge(
+                  label: project.status.name,
+                  tone: statusTone(project.status),
+                ),
+                AppBadge(
+                  label: project.category.name,
+                  tone: AppBadgeTone.primary,
+                ),
+                AppBadge(label: 'v${project.version}'),
+                ...project.platforms.map((platform) => AppBadge(label: platform)),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.xl),
+            Text(
+              project.description,
+              style: theme.textTheme.bodyLarge?.copyWith(
+                color: scheme.onSurface.withValues(alpha: 0.88),
+                height: 1.55,
+              ),
+            ),
+            if (_hasPrimaryActions(project)) ...[
+              const SizedBox(height: AppSpacing.xl),
+              Wrap(
+                spacing: AppSpacing.md,
+                runSpacing: AppSpacing.sm,
+                children: [
+                  if (project.demoUrl != null)
+                    _UrlAction(
+                      label: 'Demo',
+                      url: project.demoUrl!,
+                      variant: AppButtonVariant.primary,
+                      icon: Icons.play_circle_outline_rounded,
+                    ),
+                  if (project.repositoryUrl != null)
+                    _UrlAction(
+                      label: 'GitHub',
+                      url: project.repositoryUrl!,
+                      variant: AppButtonVariant.secondary,
+                      icon: Icons.code_rounded,
+                    ),
+                  if (project.docsUrl != null)
+                    _UrlAction(
+                      label: 'Documentation',
+                      url: project.docsUrl!,
+                      variant: AppButtonVariant.text,
+                      icon: Icons.menu_book_rounded,
+                    ),
+                ],
+              ),
+            ],
+          ],
+        ),
+      ),
     );
   }
 

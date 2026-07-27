@@ -1,25 +1,25 @@
-/// RSProjects brand palette and semantic color tokens.
+/// RSProjects semantic color tokens (status / chrome) layered on FlexScheme.
 ///
-/// **Why:** Single source for brand seeds + semantic colors consumed by
-/// FlexColorScheme and [ThemeExtension]s — never scatter raw [Color]s in UI.
+/// **Why:** FlexScheme.tealM3 drives Material [ColorScheme]; this file holds
+/// brand-adjacent seeds for semantics and chrome that ColorScheme does not cover.
 /// **Owner:** Design system (extractable to `rsprojects_design_system`).
 library;
 
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
-/// Immutable brand seeds shared by light and dark FlexColorScheme themes.
+/// Brand-adjacent seeds aligned with FlexScheme.tealM3 (Blue stone teal).
 ///
-/// Do not use FlexColorScheme's built-in [FlexScheme] presets for branding.
+/// Prefer [ColorScheme] from the theme for UI colors. Use [AppBrand] only for
+/// semantic extensions and rare chrome that sits outside Material roles.
 abstract final class AppBrand {
   AppBrand._();
 
-  // Cool slate + teal identity (avoid purple / cream-terracotta clichés).
-  static const Color primary = Color(0xFF0F766E);
-  static const Color primaryContainer = Color(0xFFCCFBF1);
-  static const Color secondary = Color(0xFF0369A1);
-  static const Color secondaryContainer = Color(0xFFE0F2FE);
-  static const Color tertiary = Color(0xFF4338CA);
+  // Align with FlexColor.tealM3 light primary / cool slate neutrals.
+  static const Color primary = Color(0xFF006A60);
+  static const Color primaryContainer = Color(0xFFBBEDE6);
+  static const Color secondary = Color(0xFF0E7490); // cyan accent (developer stack)
+  static const Color secondaryContainer = Color(0xFFCFFAFE);
+  static const Color tertiary = Color(0xFF4338CA); // subtle indigo accent
   static const Color tertiaryContainer = Color(0xFFE0E7FF);
 
   static const Color error = Color(0xFFB42318);
@@ -32,33 +32,10 @@ abstract final class AppBrand {
   static const Color info = Color(0xFF175CD3);
   static const Color infoContainer = Color(0xFFEFF8FF);
 
-  static const Color ink = Color(0xFF0B1220);
-  static const Color mist = Color(0xFFE8EEF5);
+  static const Color ink = Color(0xFF0F172A);
+  static const Color mist = Color(0xFFF1F5F9);
   static const Color outline = Color(0xFF94A3B8);
   static const Color muted = Color(0xFF64748B);
-}
-
-/// FlexColorScheme color set derived from [AppBrand] (light baseline).
-///
-/// Dark themes are produced from this same palette via [toDark] / factories
-/// in [AppTheme] — not from a separate hardcoded dark brand.
-abstract final class AppColors {
-  AppColors._();
-
-  /// Custom brand [FlexSchemeColor] — not a predefined Flex scheme.
-  static const FlexSchemeColor brandScheme = FlexSchemeColor(
-    primary: AppBrand.primary,
-    primaryContainer: AppBrand.primaryContainer,
-    secondary: AppBrand.secondary,
-    secondaryContainer: AppBrand.secondaryContainer,
-    tertiary: AppBrand.tertiary,
-    tertiaryContainer: AppBrand.tertiaryContainer,
-    error: AppBrand.error,
-    errorContainer: AppBrand.errorContainer,
-  );
-
-  /// Dark counterpart computed from the same brand seeds.
-  static FlexSchemeColor get brandSchemeDark => brandScheme.toDark(35, true);
 }
 
 /// Semantic colors beyond the Material [ColorScheme] (success / warning / info).
@@ -120,7 +97,7 @@ class AppSemanticColors extends ThemeExtension<AppSemanticColors> {
     brandMark: AppBrand.primary,
   );
 
-  /// Dark semantic overlay seeded from the same [AppBrand] hues.
+  /// Dark semantic overlay — slate-forward, not pure black.
   static const AppSemanticColors dark = AppSemanticColors(
     success: Color(0xFF47CD89),
     onSuccess: Color(0xFF053321),
@@ -136,7 +113,7 @@ class AppSemanticColors extends ThemeExtension<AppSemanticColors> {
     onInfoContainer: AppBrand.infoContainer,
     muted: Color(0xFF94A3B8),
     outlineSubtle: Color(0xFF334155),
-    brandMark: Color(0xFF2DD4BF),
+    brandMark: Color(0xFF53DBCA),
   );
 
   @override
