@@ -7,12 +7,14 @@ version: 0.0.1+1
 environment:
   sdk: ^3.12.2
 
-# TODO(deps): Add packages only when a feature requires them
-# (e.g. go_router, flutter_riverpod, markdown).
+# Add packages only when a feature requires them.
+# Prefer cross-platform packages (Web + Android + iOS + macOS + Windows + Linux).
+# (next candidates: flutter_riverpod, markdown).
 dependencies:
+  flex_color_scheme: ^8.4.0
   flutter:
     sdk: flutter
-
+  go_router: ^17.3.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
