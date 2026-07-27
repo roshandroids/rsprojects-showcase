@@ -2,12 +2,12 @@
 ///
 /// **Why:** Renders about / credits / contact content.
 /// **Owner:** About feature team.
-/// **When:** Implement when final copy is available.
 library;
 
 import 'package:flutter/material.dart';
+import 'package:rsprojects_showcase/shared/widgets/placeholder_page_body.dart';
 
-/// Placeholder about screen.
+/// Placeholder about screen (shell-hosted).
 ///
 /// TODO(about): Build about content sections and external links.
 class AboutScreen extends StatelessWidget {
@@ -15,9 +15,12 @@ class AboutScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO(about): Replace placeholder with branded about content.
-    return const Scaffold(
-      body: Center(child: Text('About — TODO')),
+    return const PlaceholderPageBody(
+      eyebrow: 'About',
+      title: 'RSProjects',
+      subtitle:
+          'This portal will introduce the RSProjects organization and how '
+          'products in the showcase are selected and maintained.',
     );
   }
 }

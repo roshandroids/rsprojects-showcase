@@ -2,15 +2,29 @@
 ///
 /// **Why:** Avoids magic strings/numbers scattered across features.
 /// **Owner:** Core platform.
-/// **When:** Populate as real config values are introduced.
 library;
 
 /// Global constants for RSProjects Showcase.
-///
-/// TODO(core): Add content paths, registry asset path, analytics keys, etc.
 abstract final class AppConstants {
   AppConstants._();
 
-  // TODO(core): static const String appName = 'RSProjects Showcase';
+  static const String appName = 'RSProjects';
+  static const String appTagline = 'Showcase';
+  static const String fullTitle = 'RSProjects Showcase';
+
+  /// Mirrors `pubspec.yaml` version name (keep in sync manually for now).
+  static const String appVersion = '0.0.1';
+
+  /// Mirrors `pubspec.yaml` build number (keep in sync manually for now).
+  static const String buildNumber = '1';
+
+  /// Canonical public repository (issues tracker).
+  static const String githubRepoUrl =
+      'https://github.com/roshandroids/rsprojects-showcase';
+
+  /// Fallback maintainer contact for mailto reports.
+  /// TODO(quality): Confirm public contact address.
+  static const String maintainerEmail = 'maintainers@rsprojects.dev';
+
   // TODO(core): static const String registryAssetPath = 'generated/registry.json';
 }

@@ -1,16 +1,104 @@
-/// Application routing configuration.
+/// Application routing configuration (go_router).
 ///
 /// **Why:** Single source of truth for navigation paths across features.
-/// **Owner:** App layer (coordinates with feature presentation owners).
-/// **When:** Implement when home / projects / search / settings / about routes exist.
+/// **Owner:** App layer.
+/// **When:** Milestone 1 — application shell.
 library;
 
-/// Route path constants and navigator configuration.
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:rsprojects_showcase/features/about/presentation/about_screen.dart';
+import 'package:rsprojects_showcase/features/home/presentation/home_screen.dart';
+import 'package:rsprojects_showcase/features/projects/presentation/project_detail_screen.dart';
+import 'package:rsprojects_showcase/features/projects/presentation/projects_screen.dart';
+import 'package:rsprojects_showcase/features/settings/presentation/settings_screen.dart';
+import 'package:rsprojects_showcase/shared/layouts/app_shell.dart';
+import 'package:rsprojects_showcase/shared/widgets/not_found_page.dart';
+
+/// Canonical route path constants.
+abstract final class AppRoutes {
+  AppRoutes._();
+
+  static const String home = '/';
+  static const String projects = '/projects';
+  static const String projectDetail = '/projects/:id';
+  static const String about = '/about';
+  static const String settings = '/settings';
+
+  static String projectDetailPath(String id) => '/projects/$id';
+}
+
+/// Builds the application [GoRouter].
 ///
-/// TODO(app): Choose router package (e.g. go_router) and register feature routes.
+/// Pass [navigatorKey] from tests when needed.
+GoRouter createAppRouter({GlobalKey<NavigatorState>? navigatorKey}) {
+  return GoRouter(
+    navigatorKey: navigatorKey,
+    initialLocation: AppRoutes.home,
+    routes: [
+      ShellRoute(
+        builder: (context, state, child) => AppShell(child: child),
+        routes: [
+          GoRoute(
+            path: AppRoutes.home,
+            name: 'home',
+            pageBuilder: (context, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: const HomeScreen(),
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.projects,
+            name: 'projects',
+            pageBuilder: (context, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: const ProjectsScreen(),
+            ),
+            routes: [
+              GoRoute(
+                path: ':id',
+                name: 'projectDetail',
+                pageBuilder: (context, state) {
+                  final id = state.pathParameters['id'] ?? '';
+                  return NoTransitionPage(
+                    key: state.pageKey,
+                    child: ProjectDetailScreen(projectId: id),
+                  );
+                },
+              ),
+            ],
+          ),
+          GoRoute(
+            path: AppRoutes.about,
+            name: 'about',
+            pageBuilder: (context, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: const AboutScreen(),
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.settings,
+            name: 'settings',
+            pageBuilder: (context, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: const SettingsScreen(),
+            ),
+          ),
+        ],
+      ),
+    ],
+    errorBuilder: (context, state) {
+      return AppShell(
+        locationOverride: state.uri.path,
+        child: NotFoundPage(uri: state.uri.toString()),
+      );
+    },
+  );
+}
+
+/// Application router holder used by [RsProjectsShowcaseApp].
 abstract final class AppRouter {
   AppRouter._();
 
-  // TODO(app): Define path constants (/, /projects, /search, /settings, /about).
-  // TODO(app): Expose router instance used by [RsProjectsShowcaseApp].
+  static final GoRouter router = createAppRouter();
 }

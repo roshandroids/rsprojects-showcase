@@ -1,28 +1,34 @@
-/// Root [MaterialApp] / [WidgetsApp] composition for RSProjects Showcase.
+/// Root [MaterialApp.router] composition for RSProjects Showcase.
 ///
-/// **Why:** Owns the top-level widget tree (theme, router, localization hooks).
+/// **Why:** Owns theme + router wiring for the whole portal.
 /// **Owner:** App layer.
-/// **When:** Implement when routing and theme placeholders are ready.
 library;
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:rsprojects_showcase/app/router.dart';
+import 'package:rsprojects_showcase/app/theme.dart';
+import 'package:rsprojects_showcase/core/constants/app_constants.dart';
 
 /// Root application widget.
-///
-/// TODO(app): Wire [theme], [router], and feature shells.
 class RsProjectsShowcaseApp extends StatelessWidget {
-  const RsProjectsShowcaseApp({super.key});
+  const RsProjectsShowcaseApp({
+    super.key,
+    this.router,
+  });
+
+  /// Optional router override for tests; defaults to [AppRouter.router].
+  final GoRouter? router;
 
   @override
   Widget build(BuildContext context) {
-    // TODO(app): Replace with themed MaterialApp.router (or equivalent).
-    return const MaterialApp(
-      title: 'RSProjects Showcase',
-      home: Scaffold(
-        body: Center(
-          child: Text('RSProjects Showcase — architecture bootstrap'),
-        ),
-      ),
+    return MaterialApp.router(
+      title: AppConstants.fullTitle,
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      themeMode: ThemeMode.system,
+      routerConfig: router ?? AppRouter.router,
     );
   }
 }

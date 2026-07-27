@@ -2,12 +2,12 @@
 ///
 /// **Why:** UI for theme, locale, and other portal preferences.
 /// **Owner:** Settings feature team.
-/// **When:** Implement alongside preference storage.
 library;
 
 import 'package:flutter/material.dart';
+import 'package:rsprojects_showcase/shared/widgets/placeholder_page_body.dart';
 
-/// Placeholder settings screen.
+/// Placeholder settings screen (shell-hosted).
 ///
 /// TODO(settings): Build preference controls and persistence feedback.
 class SettingsScreen extends StatelessWidget {
@@ -15,9 +15,12 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO(settings): Wire preference state and save/error handling.
-    return const Scaffold(
-      body: Center(child: Text('Settings — TODO')),
+    return const PlaceholderPageBody(
+      eyebrow: 'Preferences',
+      title: 'Settings',
+      subtitle:
+          'Theme and locale preferences will live here. '
+          'The shell currently follows the system theme mode.',
     );
   }
 }
