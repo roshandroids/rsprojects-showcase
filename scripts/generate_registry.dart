@@ -1,4 +1,4 @@
-/// Generates `generated/registry.json` from `content/projects/`.
+/// Generates `assets/generated/registry.json` from `content/projects/`.
 ///
 /// Usage: `dart run scripts/generate_registry.dart`
 library;
@@ -11,7 +11,7 @@ import 'package:rsprojects_showcase/core/content/content_schema.dart';
 Future<void> main(List<String> args) async {
   final root = Directory.current;
   final projectsDir = Directory('${root.path}/content/projects');
-  final outFile = File('${root.path}/generated/registry.json');
+  final outFile = File('${root.path}/assets/generated/registry.json');
 
   if (!projectsDir.existsSync()) {
     stderr.writeln('Missing content/projects directory');

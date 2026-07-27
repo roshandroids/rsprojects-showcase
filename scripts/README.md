@@ -11,7 +11,7 @@
 | Script | Future responsibility |
 |--------|------------------------|
 | `fetch_projects.dart` | Pull / sync project sources into content |
-| `generate_registry.dart` | Build `generated/registry.json` from content |
+| `generate_registry.dart` | Build `assets/generated/registry.json` from content |
 | `validate_content.dart` | Validate metadata + asset references |
 | `publish.dart` | Build and deploy the Flutter web app |
 

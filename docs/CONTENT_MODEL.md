@@ -55,9 +55,80 @@ Optional nested object. Every RSProjects product page uses the same template; se
 
 See also [`SHOWCASE_FRAMEWORK.md`](SHOWCASE_FRAMEWORK.md).
 
+## Phase 2 (planned) — not implemented yet
+
+Planning brief: [`PHASE_2_SHOWCASE_EXCELLENCE.md`](PHASE_2_SHOWCASE_EXCELLENCE.md).
+
+These fields and folders are **documented for future work**. Do not treat them as required by current validators or UI.
+
+### Planned showcase extensions
+
+| Field | Type | Notes |
+|-------|------|--------|
+| `heroMedia` | `{kind, src, alt?}` | `kind`: `image` \| `video` \| `lottie` — asset path or URL |
+| `media` | `{kind, src?, alt, caption?, poster?}[]` | Unified gallery; `kind`: `image` \| `video` \| `diagram`. Augments/supersedes `screenshots` |
+| `demo.kind` | string | `embedded_web` \| `external` \| `media` \| omit → unavailable |
+| `demo.embedUrl` | string | Used when `kind: embedded_web` |
+| `demo.url` | string | Used when `kind: external` (complements top-level `demoUrl`) |
+| `architectureDiagram` | `{src, alt?}` | Optional diagram asset/URL beside `architecture` |
+| `features[].icon` | string | Optional icon key |
+| `features[].media` | media ref | Optional feature visual |
+| `contributors` | `{name, role?, url?, avatar?}[]` | People section |
+| `downloads` | `{label, url, platform?, checksum?}[]` | Download / release artifacts |
+| `relations` | `{targetId, type}[]` | Ecosystem edges; see below |
+
+**Relation `type` enum (planned):** `related` \| `depends_on` \| `depended_on_by` \| `shares_tech` \| `alternative`.
+
+`relatedProjectIds` remains valid; Phase 2.5 prefers `relations[]` and may keep ids as a shorthand for `type: related`.
+
+### Planned content folders
+
+```
+content/projects/<id>/
+  metadata.json          # required today
+  docs/                  # planned: README, guides/, tutorials/, examples/, CHANGELOG, ROADMAP, api/
+  media/                 # planned: screenshots, videos, diagrams
+```
+
+### Planned collections (discovery)
+
+```
+content/collections/<collectionId>.json
+```
+
+Example shape (planned):
+
+```json
+{
+  "id": "flutter-tooling",
+  "name": "Flutter tooling",
+  "description": "…",
+  "projectIds": ["localization_analyzer"]
+}
+```
+
+### Planned registry additions
+
+```json
+{
+  "generatedAt": "ISO-8601",
+  "projects": [ /* metadata + showcase */ ],
+  "collections": [ /* optional */ ],
+  "docsIndex": { "<projectId>": [ /* { title, path, type } */ ] }
+}
+```
+
+Docs/markdown **bodies** stay on disk (or remote URLs); the registry holds indexes only.
+
+### Planned validation additions
+
+- Enum checks for `demo.kind`, `media[].kind`, `relations[].type`, `heroMedia.kind`
+- When media/docs assets are referenced, validate path existence under `content/projects/<id>/media` or registered Flutter assets
+- Collection `projectIds` must resolve to known project ids
+
 ## Registry output
 
-`generated/registry.json` (produced by `scripts/generate_registry.dart`):
+`assets/generated/registry.json` (produced by `scripts/generate_registry.dart`, bundled via `pubspec.yaml`):
 
 ```json
 {
@@ -74,4 +145,4 @@ Required catalog fields are always validated. When `showcase` is present, struct
 
 ## Ownership
 
-Project owners maintain their `content/projects/<id>/` folder. CI regenerates the registry; do not hand-edit `generated/registry.json` for releases.
+Project owners maintain their `content/projects/<id>/` folder. CI regenerates the registry; do not hand-edit `assets/generated/registry.json` for releases.

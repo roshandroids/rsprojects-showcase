@@ -1,19 +1,9 @@
 # generated/
 
-**Why:** Holds machine-generated artifacts consumed at build/runtime (especially the project registry).
+**Why:** Historical location note for registry tooling.
 
-**Owner:** CI workflows (`fetch-projects.yml`, generate scripts) — not hand-maintained.
+**Current registry path:** [`assets/generated/registry.json`](../assets/generated/registry.json)
 
-**When:** Produced by `scripts/generate_registry.dart` (and related CI) after content discovery exists.
+The showcase registry lives under `assets/generated/` so Flutter Web (and all platforms) can load it as a normal bundled asset via `rootBundle`.
 
-## Contents
-
-| File | Purpose |
-|------|---------|
-| `registry.json` | Aggregated catalog of all projects discovered under `content/projects/` |
-
-## Rules
-
-- Do not hand-edit `registry.json` for production; regenerate from content.
-- Treat this folder as CI output; local generation is for development only.
-- Dart codegen output belongs under `lib/generated/`, not here.
+Dart codegen output still belongs under `lib/generated/`.

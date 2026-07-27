@@ -29,7 +29,8 @@ abstract final class CrashHandler {
 
   /// Registers listeners and Flutter error hooks.
   ///
-  /// Call once from [bootstrap] before [runApp].
+  /// Call once from bootstrap inside the same zone as [runApp]
+  /// (typically inside [runGuarded], after [WidgetsFlutterBinding.ensureInitialized]).
   static void install({
     CrashReportListener? listener,
     DiagnosticsService diagnostics = const DiagnosticsService(),
@@ -63,6 +64,9 @@ abstract final class CrashHandler {
   static bool get isInstalled => _installed;
 
   /// Runs [body] inside a guarded zone that captures uncaught async errors.
+  ///
+  /// Call [WidgetsFlutterBinding.ensureInitialized] and [runApp] from within
+  /// [body] so they share this zone (avoids Flutter "Zone mismatch").
   static void runGuarded(void Function() body) {
     runZonedGuarded(body, (error, stack) {
       _capture(

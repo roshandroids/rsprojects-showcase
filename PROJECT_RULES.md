@@ -77,7 +77,7 @@ Quality is a **core product feature**. See `docs/quality/` and `lib/core/quality
 ## Content
 
 - Project source of truth lives under `content/projects/`.
-- `generated/registry.json` is produced by tooling/CI, not hand-edited for releases.
+- `assets/generated/registry.json` is produced by tooling/CI, not hand-edited for releases.
 
 ## Commits
 

@@ -26,5 +26,6 @@ abstract final class AppConstants {
   /// TODO(quality): Confirm public contact address.
   static const String maintainerEmail = 'maintainers@rsprojects.dev';
 
-  // TODO(core): static const String registryAssetPath = 'generated/registry.json';
+  /// Bundled project registry (must match `pubspec.yaml` assets entry).
+  static const String registryAssetPath = 'assets/generated/registry.json';
 }

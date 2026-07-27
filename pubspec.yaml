@@ -28,7 +28,7 @@ flutter:
   uses-material-design: true
 
   assets:
-    - generated/registry.json
+    - assets/generated/registry.json
     # - assets/branding/
     # - assets/icons/
     # - assets/images/

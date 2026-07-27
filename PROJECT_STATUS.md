@@ -9,7 +9,7 @@
 | **Last updated** | 2026-07-26 |
 | **Document owner** | Project maintainers |
 | **Status vocabulary** | `Not Started` · `In Progress` · `Blocked` · `Complete` |
-| **Supporting docs** | `ARCHITECTURE.md`, `ROADMAP.md`, `PROJECT_RULES.md`, `docs/*` (not status SSOT) |
+| Supporting docs | `ARCHITECTURE.md`, `ROADMAP.md`, `PROJECT_RULES.md`, `docs/*` (incl. `PHASE_2_SHOWCASE_EXCELLENCE.md`; not status SSOT) |
 
 ---
 
@@ -21,7 +21,7 @@ RSProjects Showcase is the public portal for discovering and presenting all RSPr
 
 ## Current objective
 
-Phase 1.5 Showcase Content Framework is in place: generic `ProjectShowcaseTemplate`, nested `showcase` metadata, and Document Platform as the reference fill. Next: CI gates, hosting/deploy, markdown docs viewer.
+Phase 2 Showcase Excellence planning is locked (2.0). Next: implement milestones 2.1–2.5 per [`docs/PHASE_2_SHOWCASE_EXCELLENCE.md`](docs/PHASE_2_SHOWCASE_EXCELLENCE.md) and [`ROADMAP.md`](ROADMAP.md)—starting with schema/index for media/docs, then rich pages, demos, docs hub, search, ecosystem.
 
 ## Repository information
 
@@ -35,8 +35,8 @@ Phase 1.5 Showcase Content Framework is in place: generic `ProjectShowcaseTempla
 | Remote | `git@roshandroids.github.com:roshandroids/rsprojects-showcase.git` |
 | Default branch | `main` |
 | Latest remote commit | See git log / GitHub |
-| Latest local milestone | Phase 1.5 — Showcase Content Framework |
-| Working tree | Phase 1.5 complete locally (pending commit/push) |
+| Latest local milestone | Phase 2.0 — Showcase Excellence planning lock |
+| Working tree | Phase 2 planning docs (see Recent Changes) |
 
 ---
 
@@ -50,9 +50,9 @@ Phase 1.5 Showcase Content Framework is in place: generic `ProjectShowcaseTempla
 | 1c | Quality Engineering Foundation | **Complete** | Testing strategy, crash/diagnostics/feedback abstractions, quality docs, CI gate architecture |
 | 1d | Experience Foundation | **Complete** | Design-system components, content pipeline, Riverpod catalog/detail, Home sections, Document Platform featured |
 | 1.5 | Showcase Content Framework | **Complete** | Canonical project page template; conditional sections from `showcase` metadata; automation-ready schema |
-| 2 | Content pipeline scale | **Planned** | Remote fetch, CI sync, markdown project docs |
-| 3 | Product surfaces polish | **Planned** | Search route, settings persistence, richer demos |
-| 4 | Polish and scale | **Planned** | Motion polish, SEO/perf, automatic discovery of many projects |
+| 2.0 | Showcase Excellence — planning | **Complete** | Roadmap + Phase 2 brief + planned schema/abstractions (no feature UI yet) |
+| 2.1–2.5 | Showcase Excellence — build | **Planned** | Rich pages, DemoSpec, docs hub, search/discovery, ecosystem navigation |
+| 3 | Polish and scale | **Planned** | CI gates, hosting/deploy, SEO/perf, fetch automation, settings persistence |
 
 **Long-term:** Adding a project is primarily a content change under `content/projects/`; CI produces the registry the app consumes.
 
@@ -64,29 +64,28 @@ Phase 1.5 Showcase Content Framework is in place: generic `ProjectShowcaseTempla
 
 | Field | Value |
 |-------|--------|
-| **Sprint name** | Phase 1.5 Showcase Content Framework (complete) |
-| **Goal** | Canonical project page structure; conditional metadata-driven sections |
+| **Sprint name** | Phase 2.0 Showcase Excellence planning (complete) |
+| **Goal** | Lock roadmap, schema extensions, and reusable abstractions for Phase 2 |
 | **Status** | Complete |
 
 ## Active tasks
 
 | Task | Status | Owner |
 |------|--------|-------|
-| Extend CONTENT_MODEL + showcase validation | Complete | — |
-| Domain/DTO `ProjectShowcase` mapping | Complete | — |
-| Generic `ProjectShowcaseTemplate` | Complete | — |
-| Fill Document Platform (+ siblings) showcase | Complete | — |
-| Tests + PROJECT_STATUS / docs | Complete | — |
+| Rewrite `ROADMAP.md` for Phase 2 milestones | Complete | — |
+| Add `docs/PHASE_2_SHOWCASE_EXCELLENCE.md` | Complete | — |
+| Document planned schema in CONTENT_MODEL + SHOWCASE_FRAMEWORK | Complete | — |
+| Update PROJECT_STATUS + ARCHITECTURE + decisions D-023–D-026 | Complete | — |
 
 ## Exit criteria
 
 Sprint is done when all of the following are true:
 
-- [x] Canonical section list documented (`docs/SHOWCASE_FRAMEWORK.md` + CONTENT_MODEL)
-- [x] One generic template renders all sections conditionally
-- [x] No project-specific detail UI
-- [x] Document Platform filled as reference; siblings have partial showcase
-- [x] Registry regenerated; tests green; status dashboard updated
+- [x] Roadmap lists Phase 2.0–2.5 with clear outcomes
+- [x] Phase 2 brief covers demos, docs hub, search, ecosystem
+- [x] Planned content-model extensions documented (not implemented)
+- [x] Decisions D-023–D-026 recorded
+- [x] No feature implementation shipped in this sprint
 
 ---
 
@@ -101,11 +100,12 @@ Sprint is done when all of the following are true:
 - **Design system foundation:** FlexColorScheme + tokens + reusable components (`AppButton`, `AppCard`, `AppBadge`, `AppChip`, `AppSectionHeader`, async states, `AppNavBar`/`AppFooter`, `AppPage`/`AppGrid`)
 - **Cross-platform foundation:** Android, iOS, macOS, Windows, Linux runners (D-018)
 - **Quality Engineering Foundation:** `lib/core/quality/*`, `docs/quality/*`, CI gate stubs
-- **Content pipeline:** locked `CONTENT_MODEL`, `validate_content` / `generate_registry`, three filled projects, `generated/registry.json` asset
+- **Content pipeline:** locked `CONTENT_MODEL`, `validate_content` / `generate_registry`, three filled projects, `assets/generated/registry.json` asset
 - **Projects stack:** domain + DTO/mapper + `AssetRegistryProjectRepository` + Riverpod catalog/detail (search/filter/sort)
 - **Home landing:** brand-first hero, featured from registry, principles/tech/open source/community/CTA
 - **Showcase Content Framework:** `ProjectShowcase` domain, nested metadata, generic template with conditional sections (hero → contributing)
 - Unit + widget tests green (`flutter test`)
+- **Phase 2.0 planning lock:** `ROADMAP.md`, `docs/PHASE_2_SHOWCASE_EXCELLENCE.md`, planned schema notes, decisions D-023–D-026
 
 ## In Progress
 
@@ -117,14 +117,14 @@ Sprint is done when all of the following are true:
 
 ## Not Started
 
+- Phase 2.1–2.5 implementation (rich pages, DemoSpec, docs hub, search, ecosystem)
 - Full CI quality gate implementation (real format/analyze/test/build steps)
 - Friendly error UI wiring beyond placeholder presenter
 - Clipboard / URL launcher ports for diagnostics & feedback
-- Dedicated `/search` feature route
 - Theme persistence settings UI
-- Markdown project docs viewer
 - Hosting selection and production deploy
 - Optional bundled brand font assets
+- Remote `fetch_projects` automation
 
 ---
 
@@ -201,13 +201,13 @@ integration_test/ placeholder
 | ID | Date | Decision | Rationale | Status |
 |----|------|----------|-----------|--------|
 | D-001 | 2026-07-26 | Feature-first Clean Architecture (UI → State → Domain → Data) | Scales per-product work; matches RSProjects Flutter standards | Final |
-| D-002 | 2026-07-26 | Content-driven discovery: `content/projects` → `generate_registry` → `generated/registry.json` | Adding products should be content + CI, not hardcoded lists | Final |
+| D-002 | 2026-07-26 | Content-driven discovery: `content/projects` → `generate_registry` → registry JSON asset | Adding products should be content + CI, not hardcoded lists | Final |
 | D-003 | 2026-07-26 | No premature dependencies; add packages only when a feature needs them | Keeps bootstrap lean; avoids speculative architecture | Final |
 | D-004 | 2026-07-26 | No business logic in bootstrap placeholders | Structure first; implement incrementally | Final |
 | D-005 | 2026-07-26 | `projects` gets full layers first; other features start at presentation | Catalog is the primary surface; avoid empty layer trees elsewhere | Final |
 | D-006 | 2026-07-26 | DTOs never used directly in UI; mapping layer mandatory | Clean Architecture boundary | Final |
 | D-007 | 2026-07-26 | `PROJECT_STATUS.md` is the single source of truth for project operational state | One file for planning/reviews; other docs are supporting | Final |
-| D-008 | 2026-07-26 | Dual generated locations: `lib/generated/` (Dart codegen) vs root `generated/` (registry JSON) | Separates codegen from content registry | Final |
+| D-008 | 2026-07-26 | Dual generated locations: `lib/generated/` (Dart codegen) vs registry JSON under `assets/generated/` (was root `generated/`) | Separates codegen from bundled content registry | Final |
 | D-009 | 2026-07-26 | Riverpod (Notifier / AsyncNotifier / AsyncValue) for application state | Aligns with RSProjects standards; catalog uses AsyncNotifier + AsyncValue | Final |
 | D-010 | 2026-07-26 | Use `go_router` with `MaterialApp.router` + `ShellRoute` | Declarative routing, deep links, shared shell | Final |
 | D-011 | — | Hosting target (GitHub Pages / Firebase / Cloudflare / other) | Required before real deploy | Open |
@@ -222,6 +222,10 @@ integration_test/ placeholder
 | D-020 | 2026-07-26 | **Regression policy** — no bug fix without a regression test | Prevents defect recurrence | Final |
 | D-021 | 2026-07-26 | **Friendly error experience** — never ship default Flutter release red screen as UX | Restart / diagnostics / report actions; thank-you after feedback | Final |
 | D-022 | 2026-07-26 | Accessibility is a default quality requirement | Build a11y into components; do not retrofit only | Final |
+| D-023 | 2026-07-26 | **DemoSpec** sealed variants: `embedded_web` / `external` / `media` / unavailable | Generic demos; never hardcode product iframes | Final (implement in 2.2) |
+| D-024 | 2026-07-26 | Docs hub **local-first** under `content/projects/<id>/docs/` (+ media/); registry holds docs index only | Content-driven hub; automation-ready | Final (implement in 2.3) |
+| D-025 | 2026-07-26 | Dedicated `/search` with shared **DiscoveryQuery** (catalog + search) | One query model; scalable discovery | Final (implement in 2.4) |
+| D-026 | 2026-07-26 | Typed ecosystem **relations[]** + soft links from shared tech/tags | Reusable ecosystem navigation | Final (implement in 2.5) |
 
 ---
 
@@ -233,10 +237,13 @@ Status values: `Not Started` · `In Progress` · `Blocked` · `Complete`
 |---------|--------|----------------|-------|
 | home | Complete | presentation | Brand-first hero, featured from registry, principles/tech/open source/community/CTA |
 | projects | Complete | presentation, application, domain, infrastructure | Registry catalog + generic `ProjectShowcaseTemplate` detail (conditional sections) |
-| search | Not Started | presentation | Catalog-local search covers Phase 1; dedicated `/search` deferred |
+| search | Not Started | presentation | Catalog-local today; Phase 2.4 plans dedicated `/search` + DiscoveryQuery |
 | settings | In Progress | presentation | Shell-hosted placeholder; linked from footer. Persistence Not Started. |
 | about | In Progress | presentation | Shell-hosted polished placeholder. Final copy Not Started. |
 | 404 | Complete | shared | Restyled with design-system empty/error patterns via `errorBuilder` |
+| docs hub | Not Started | — | Phase 2.3 — `/projects/:id/docs` |
+| demos | Not Started | — | Phase 2.2 — DemoSpec + DemoPane |
+| collections | Not Started | — | Phase 2.4 — `content/collections/` |
 
 ---
 
@@ -246,11 +253,12 @@ Status values: `Not Started` · `In Progress` · `Blocked` · `Complete`
 
 | Item | Status | Notes |
 |------|--------|-------|
-| Schema finalization (`docs/CONTENT_MODEL.md`) | Complete | Required fields + enums + optional `showcase` framework |
+| Schema finalization (`docs/CONTENT_MODEL.md`) | Complete | Required + showcase shipped; Phase 2 extensions documented as planned |
 | Placeholder fields present | Complete | All three projects have complete required fields + showcase (full or partial) |
-| `generated/registry.json` | Complete | Generated from content including showcase objects |
+| `assets/generated/registry.json` | Complete | Generated from content including showcase objects |
 | Validation / generation scripts | Complete | Validates showcase shapes when present |
-| Showcase framework docs | Complete | `docs/SHOWCASE_FRAMEWORK.md` |
+| Showcase framework docs | Complete | `docs/SHOWCASE_FRAMEWORK.md` + Phase 2 planned notes |
+| Phase 2 planned schema | Complete (docs only) | See CONTENT_MODEL “Phase 2 (planned)” — not implemented in validators/UI yet |
 
 ## Assets status
 
@@ -260,7 +268,7 @@ Status values: `Not Started` · `In Progress` · `Blocked` · `Complete`
 | `assets/icons/` | Not Started | README only |
 | `assets/images/` | Not Started | README only |
 | `assets/screenshots/` | Not Started | README only |
-| `pubspec.yaml` assets | Complete | `generated/registry.json` registered |
+| `pubspec.yaml` assets | Complete | `assets/generated/registry.json` registered |
 | `web/` icons / favicon | Complete | Default from `flutter create` (separate from `assets/`) |
 
 ---
@@ -296,7 +304,7 @@ A project is **fully integrated** into the showcase when all items below are che
 
 - [ ] `content/projects/<id>/metadata.json` exists and passes `validate_content`
 - [ ] All required schema fields populated (no empty required values)
-- [ ] Project appears in generated `generated/registry.json` via tooling (not hand-edited for release)
+- [ ] Project appears in generated `assets/generated/registry.json` via tooling (not hand-edited for release)
 
 ### Assets
 
@@ -364,7 +372,7 @@ Engineering improvements (platform, quality, delivery).
 |------|-------|
 | Implement `validate_content.dart` | **Complete** |
 | Implement `generate_registry.dart` | **Complete** |
-| Register registry/assets in `pubspec.yaml` | **Complete** (`generated/registry.json`) |
+| Register registry/assets in `pubspec.yaml` | **Complete** (`assets/generated/registry.json`) |
 | Real CI quality gates (format → deploy pipeline) | Replace placeholder steps in `ci.yml` (see QUALITY_GATES.md) |
 | Wire ErrorExperience UI + clipboard/URL ports | Complete crash/feedback UX |
 | Golden test baselines for shell surfaces | When UI stabilizes |
@@ -415,7 +423,7 @@ Engineering improvements (platform, quality, delivery).
 | Script | Responsibility | Status |
 |--------|----------------|--------|
 | `scripts/fetch_projects.dart` | Sync remote project sources | Not Started |
-| `scripts/generate_registry.dart` | Build `generated/registry.json` | Complete |
+| `scripts/generate_registry.dart` | Build `assets/generated/registry.json` | Complete |
 | `scripts/validate_content.dart` | Validate metadata/assets | Complete |
 | `scripts/publish.dart` | Build + deploy web | Not Started |
 
@@ -452,14 +460,15 @@ Promote answers into the **Decisions** log (new `D-xxx` row) and remove from thi
 
 | ID | Risk | Impact | Likelihood | Mitigation |
 |----|------|--------|------------|------------|
-| R-001 | Content schema churn after registry/UI built | Rework of scripts, DTOs, UI | Medium | Lock schema (Phase 2 / content pipeline) before catalog UI |
+| R-001 | Content schema churn after registry/UI built | Rework of scripts, DTOs, UI | Medium | Phase 1.5 schema locked; Phase 2 extensions documented before coding |
 | R-002 | Premature package adoption | Dependency churn, unused abstractions | Medium | Keep D-003; add deps only with active feature |
 | R-003 | Hosting undecided delays launch | No public URL | Medium | Decide D-011 before polish phase |
-| R-004 | Confusion between `lib/generated` and `generated/` | Wrong edit paths, broken CI | Low | Keep D-008; document in onboarding |
+| R-004 | Confusion between `lib/generated` and registry asset path | Wrong edit paths, broken CI | Low | Keep D-008; registry lives under `assets/generated/` |
 | R-005 | SSH account mismatch on contributor machines | Failed pushes | Low | Document host alias in getting started |
 | R-006 | Empty metadata shipped as “registered” projects | Misleading catalog | Medium | DoD + validate_content before listing |
-| R-007 | Scope creep into full product apps inside showcase | Slow portal delivery | Medium | Showcase = discover/present; deep demos optional |
+| R-007 | Scope creep into full product apps inside showcase | Slow portal delivery | Medium | Showcase = discover/present; demos via DemoSpec only |
 | R-008 | Accidental web-only APIs or deps break mobile/desktop builds | Platform drift; CI gaps | Medium | Enforce D-018 / PROJECT_RULES Platform Support; prefer portable packages |
+| R-009 | Phase 2 embeds break non-web platforms | Platform regressions | Medium | DemoSpec: iframe on Web only; CTA fallback elsewhere |
 
 ---
 
@@ -467,14 +476,14 @@ Promote answers into the **Decisions** log (new `D-xxx` row) and remove from thi
 
 Ordered implementation sequence (promote into Current Sprint when starting work):
 
-1. Turn on real CI (analyze + test + content validation)
-2. Choose hosting and implement deploy (`publish.dart` / `deploy.yml`)
-3. Markdown project documentation viewer
-4. Dedicated search route (beyond catalog-local search)
-5. Settings theme persistence
-6. Wire ErrorExperience UI + clipboard/URL ports
-7. Enrich Document Platform assets / demo embeds
-8. Golden baselines for shell surfaces
+1. Phase 2.1 prep — schema/validation/index for `media`, `heroMedia`, contributors, downloads (no rich UI yet)
+2. Rich project page sections on `ProjectShowcaseTemplate`
+3. DemoSpec + DemoPane (2.2)
+4. Docs hub + markdown viewer (2.3)
+5. `/search` + collections (2.4)
+6. Ecosystem relations UI (2.5)
+7. Real CI quality gates + hosting/deploy (Phase 3 overlap OK)
+8. Settings theme persistence; ErrorExperience UI wiring
 
 ---
 
@@ -492,17 +501,17 @@ Ordered implementation sequence (promote into Current Sprint when starting work)
 | 2026-07-26 | **Quality Engineering Foundation** (D-019–D-022): quality module, docs, CI gate architecture, feedback/crash/diagnostics abstractions |
 | 2026-07-26 | **Phase 1 Experience Foundation:** design-system components, shell polish, content pipeline, Riverpod projects catalog/detail, Home landing, Document Platform featured; D-009 Final |
 | 2026-07-26 | **Phase 1.5 Showcase Content Framework:** `showcase` schema, `ProjectShowcaseTemplate`, conditional sections, Document Platform reference fill, docs + tests |
+| 2026-07-26 | **Phase 2.0 Showcase Excellence planning:** rewritten `ROADMAP.md`, `docs/PHASE_2_SHOWCASE_EXCELLENCE.md`, planned schema notes, D-023–D-026 |
 
 ---
 
 # Future Vision
 
 1. **Phase 0 — Architecture bootstrap** — Complete  
-2. **Phase 1 — Application shell + Experience Foundation** — Complete  
+2. **Phase 1 — Experience Foundation** — Complete  
 2b. **Phase 1.5 — Showcase Content Framework** — Complete  
-3. **Phase 2 — Content pipeline scale** — Planned  
-4. **Phase 3 — Product surfaces polish** — Planned  
-5. **Phase 4 — Polish and scale** — Planned  
+3. **Phase 2 — Showcase Excellence** — Planning locked (2.0); build 2.1–2.5  
+4. **Phase 3 — Polish and scale** — Planned  
 
 Maintainable public showcase: new products land mainly as content under `content/projects/`, with CI producing the registry the app consumes. Detail also tracked in `ROADMAP.md`.
 

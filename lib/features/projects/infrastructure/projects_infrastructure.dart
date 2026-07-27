@@ -4,6 +4,7 @@ library;
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
+import 'package:rsprojects_showcase/core/constants/app_constants.dart';
 import 'package:rsprojects_showcase/features/projects/domain/projects_domain.dart';
 
 /// JSON DTO for registry entries (never used in UI).
@@ -285,10 +286,10 @@ class ProjectShowcaseDto {
   }
 }
 
-/// Loads projects from `generated/registry.json` via [rootBundle].
+/// Loads projects from the bundled registry via [rootBundle].
 class AssetRegistryProjectRepository implements ProjectRepository {
   AssetRegistryProjectRepository({
-    this.assetPath = 'generated/registry.json',
+    this.assetPath = AppConstants.registryAssetPath,
     AssetBundle? bundle,
   }) : _bundle = bundle ?? rootBundle;
 
