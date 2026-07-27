@@ -20,6 +20,6 @@ Future<void> bootstrap() async {
 
   // Capture uncaught async errors while starting the app.
   CrashHandler.runGuarded(() {
-    runApp(const RsProjectsShowcaseApp());
+    runApp(const RsProjectsShowcaseRoot());
   });
 }

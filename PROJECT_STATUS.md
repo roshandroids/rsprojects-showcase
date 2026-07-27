@@ -21,7 +21,7 @@ RSProjects Showcase is the public portal for discovering and presenting all RSPr
 
 ## Current objective
 
-Quality Engineering Foundation is in place (architecture + docs). Next: content model + registry pipeline, then deepen quality gate implementations.
+Phase 1.5 Showcase Content Framework is in place: generic `ProjectShowcaseTemplate`, nested `showcase` metadata, and Document Platform as the reference fill. Next: CI gates, hosting/deploy, markdown docs viewer.
 
 ## Repository information
 
@@ -34,9 +34,9 @@ Quality Engineering Foundation is in place (architecture + docs). Next: content 
 | GitHub | https://github.com/roshandroids/rsprojects-showcase |
 | Remote | `git@roshandroids.github.com:roshandroids/rsprojects-showcase.git` |
 | Default branch | `main` |
-| Latest remote commit | `6a0c3a5` — `chore: bootstrap RSProjects Showcase architecture` |
-| Latest local milestone | Quality Engineering Foundation — pending commit/push |
-| Working tree | Dirty with shell + design system + platforms + quality foundation (as of last update) |
+| Latest remote commit | See git log / GitHub |
+| Latest local milestone | Phase 1.5 — Showcase Content Framework |
+| Working tree | Phase 1.5 complete locally (pending commit/push) |
 
 ---
 
@@ -48,9 +48,11 @@ Quality Engineering Foundation is in place (architecture + docs). Next: content 
 | 1 | Application shell | **Complete** | `go_router`, `MaterialApp.router`, responsive `AppShell`, nav, placeholders, 404 |
 | 1b | Design system / FlexColorScheme | **Complete** | Custom brand palette, token files, light/dark themes, semantic colors |
 | 1c | Quality Engineering Foundation | **Complete** | Testing strategy, crash/diagnostics/feedback abstractions, quality docs, CI gate architecture |
-| 2 | Content pipeline | **Planned** | Validate content, generate registry, CI sync/fetch |
-| 3 | Feature surfaces | **Planned** | Real home/projects/search/settings/about content + catalog wiring |
-| 4 | Polish and scale | **Planned** | Markdown, motion, SEO/perf, automatic discovery of many projects |
+| 1d | Experience Foundation | **Complete** | Design-system components, content pipeline, Riverpod catalog/detail, Home sections, Document Platform featured |
+| 1.5 | Showcase Content Framework | **Complete** | Canonical project page template; conditional sections from `showcase` metadata; automation-ready schema |
+| 2 | Content pipeline scale | **Planned** | Remote fetch, CI sync, markdown project docs |
+| 3 | Product surfaces polish | **Planned** | Search route, settings persistence, richer demos |
+| 4 | Polish and scale | **Planned** | Motion polish, SEO/perf, automatic discovery of many projects |
 
 **Long-term:** Adding a project is primarily a content change under `content/projects/`; CI produces the registry the app consumes.
 
@@ -62,28 +64,29 @@ Quality Engineering Foundation is in place (architecture + docs). Next: content 
 
 | Field | Value |
 |-------|--------|
-| **Sprint name** | Content pipeline foundation |
-| **Goal** | Finalize content schema and implement validate + generate registry scripts |
-| **Status** | Not Started |
+| **Sprint name** | Phase 1.5 Showcase Content Framework (complete) |
+| **Goal** | Canonical project page structure; conditional metadata-driven sections |
+| **Status** | Complete |
 
 ## Active tasks
 
 | Task | Status | Owner |
 |------|--------|-------|
-| Finalize `metadata.json` schema in `docs/CONTENT_MODEL.md` | Not Started | — |
-| Fill sample project metadata with real placeholder values | Not Started | — |
-| Implement `validate_content.dart` | Not Started | — |
-| Implement `generate_registry.dart` | Not Started | — |
+| Extend CONTENT_MODEL + showcase validation | Complete | — |
+| Domain/DTO `ProjectShowcase` mapping | Complete | — |
+| Generic `ProjectShowcaseTemplate` | Complete | — |
+| Fill Document Platform (+ siblings) showcase | Complete | — |
+| Tests + PROJECT_STATUS / docs | Complete | — |
 
 ## Exit criteria
 
 Sprint is done when all of the following are true:
 
-- [ ] Content schema documented and agreed in `docs/CONTENT_MODEL.md`
-- [ ] Three sample projects have complete metadata fields (no empty required strings)
-- [ ] `dart run scripts/validate_content.dart` passes on sample content
-- [ ] `dart run scripts/generate_registry.dart` writes a non-empty `generated/registry.json`
-- [ ] This dashboard updated (Milestones / Features / Content / Recent Changes)
+- [x] Canonical section list documented (`docs/SHOWCASE_FRAMEWORK.md` + CONTENT_MODEL)
+- [x] One generic template renders all sections conditionally
+- [x] No project-specific detail UI
+- [x] Document Platform filled as reference; siblings have partial showcase
+- [x] Registry regenerated; tests green; status dashboard updated
 
 ---
 
@@ -93,22 +96,16 @@ Sprint is done when all of the following are true:
 
 - Flutter Web project scaffold (`pubspec.yaml`, `web/`, analysis/lints)
 - Feature-first folder architecture under `lib/`
-- App entry: `main` → `bootstrap` → `RsProjectsShowcaseApp`
-- Feature placeholders: home, projects (+ detail route), search, settings, about
-- Full layer stubs for `projects` (presentation / application / domain / infrastructure)
-- Core/shared modules (breakpoints, spacing, shell, placeholder page body)
-- Content stubs for three projects under `content/projects/`
-- Generated registry placeholder (`generated/registry.json`)
-- Tooling script stubs (`scripts/*.dart`)
-- Docs templates (`docs/*`, root architecture/rules/roadmap)
-- GitHub workflow stubs (ci / deploy / fetch-projects)
-- Unit tests for app shell navigation + feature placeholders
-- Repository connected and pushed to GitHub (`main`) — bootstrap commit
-- `PROJECT_STATUS.md` established as operational SSOT
-- **Milestone 1 — Application shell:** routing, responsive shell, navigation, placeholder pages
-- **Design system foundation:** `flex_color_scheme` + `lib/design_system/*` token files (colors, typography, spacing, radius, breakpoints, motion, theme)
-- **Cross-platform foundation:** Android, iOS, macOS, Windows, Linux runners added alongside Web; architecture constraint documented (D-018)
-- **Quality Engineering Foundation:** `lib/core/quality/*`, `docs/quality/*`, CI gate stub pipeline, GitHub issue templates, unit tests for report builders
+- App entry: `main` → `bootstrap` → `RsProjectsShowcaseRoot` (`ProviderScope` + app)
+- **Milestone 1 — Application shell:** routing, responsive shell, navigation, 404
+- **Design system foundation:** FlexColorScheme + tokens + reusable components (`AppButton`, `AppCard`, `AppBadge`, `AppChip`, `AppSectionHeader`, async states, `AppNavBar`/`AppFooter`, `AppPage`/`AppGrid`)
+- **Cross-platform foundation:** Android, iOS, macOS, Windows, Linux runners (D-018)
+- **Quality Engineering Foundation:** `lib/core/quality/*`, `docs/quality/*`, CI gate stubs
+- **Content pipeline:** locked `CONTENT_MODEL`, `validate_content` / `generate_registry`, three filled projects, `generated/registry.json` asset
+- **Projects stack:** domain + DTO/mapper + `AssetRegistryProjectRepository` + Riverpod catalog/detail (search/filter/sort)
+- **Home landing:** brand-first hero, featured from registry, principles/tech/open source/community/CTA
+- **Showcase Content Framework:** `ProjectShowcase` domain, nested metadata, generic template with conditional sections (hero → contributing)
+- Unit + widget tests green (`flutter test`)
 
 ## In Progress
 
@@ -120,17 +117,14 @@ Sprint is done when all of the following are true:
 
 ## Not Started
 
-- Content schema finalization and validation
-- Registry generation implementation
 - Full CI quality gate implementation (real format/analyze/test/build steps)
 - Friendly error UI wiring beyond placeholder presenter
 - Clipboard / URL launcher ports for diagnostics & feedback
-- Feature business logic / project loading / metadata parsing
-- Riverpod (or other) state management
-- Real assets and filled project metadata
-- CI quality gates and deploy automation
+- Dedicated `/search` feature route
+- Theme persistence settings UI
+- Markdown project docs viewer
 - Hosting selection and production deploy
-- Optional further brand polish (bundled font assets) beyond design-system foundation
+- Optional bundled brand font assets
 
 ---
 
@@ -169,7 +163,8 @@ integration_test/ placeholder
 
 - `flutter` (SDK)
 - `go_router: ^17.3.0`
-- `flex_color_scheme: ^8.4.0` (only theming dependency)
+- `flex_color_scheme: ^8.4.0`
+- `flutter_riverpod: ^3.4.1`
 
 **Dev**
 
@@ -178,10 +173,10 @@ integration_test/ placeholder
 
 **Explicitly deferred**
 
-- State management (e.g. `flutter_riverpod`)
 - Markdown rendering
 - `integration_test` SDK package
-- Optional bundled brand fonts (typography currently uses web-safe stacks)
+- Optional bundled brand fonts (typography currently uses cross-platform stacks)
+- `url_launcher` (detail links shown as selectable URLs for Phase 1)
 
 ## Current routing
 
@@ -194,8 +189,8 @@ integration_test/ placeholder
 
 | Field | Value |
 |-------|--------|
-| Status | Complete (foundation) |
-| Notes | `lib/design_system/` — custom RSProjects brand palette fed into FlexColorScheme (no predefined Flex schemes). Light/dark from same seeds. Semantic colors via `AppSemanticColors` ThemeExtension (`success`/`warning`/`info`/…). Tokens: `app_colors`, `app_typography`, `app_spacing`, `app_radius`, `app_breakpoints`, `app_motion`, `app_theme`. Extractable later as `rsprojects_design_system`. |
+| Status | Complete (foundation + components) |
+| Notes | `lib/design_system/` — custom RSProjects brand palette fed into FlexColorScheme (no predefined Flex schemes). Light/dark from same seeds. Semantic colors via `AppSemanticColors` ThemeExtension. Reusable components under `components/`. Brand guidance in `docs/BRAND.md`. |
 
 ---
 
@@ -213,7 +208,7 @@ integration_test/ placeholder
 | D-006 | 2026-07-26 | DTOs never used directly in UI; mapping layer mandatory | Clean Architecture boundary | Final |
 | D-007 | 2026-07-26 | `PROJECT_STATUS.md` is the single source of truth for project operational state | One file for planning/reviews; other docs are supporting | Final |
 | D-008 | 2026-07-26 | Dual generated locations: `lib/generated/` (Dart codegen) vs root `generated/` (registry JSON) | Separates codegen from content registry | Final |
-| D-009 | — | Riverpod (Notifier / AsyncNotifier / AsyncValue) for application state | Aligns with RSProjects standards | Proposed (not added to pubspec yet) |
+| D-009 | 2026-07-26 | Riverpod (Notifier / AsyncNotifier / AsyncValue) for application state | Aligns with RSProjects standards; catalog uses AsyncNotifier + AsyncValue | Final |
 | D-010 | 2026-07-26 | Use `go_router` with `MaterialApp.router` + `ShellRoute` | Declarative routing, deep links, shared shell | Final |
 | D-011 | — | Hosting target (GitHub Pages / Firebase / Cloudflare / other) | Required before real deploy | Open |
 | D-012 | — | Repository license | Public repo needs a chosen license | Open |
@@ -236,12 +231,12 @@ Status values: `Not Started` · `In Progress` · `Blocked` · `Complete`
 
 | Feature | Status | Layers present | Notes |
 |---------|--------|----------------|-------|
-| home | In Progress | presentation | Shell-hosted polished placeholder (brand eyebrow + CTAs). Real hero/featured content Not Started. |
-| projects | In Progress | presentation, application, domain, infrastructure | Shell-hosted catalog + `/projects/:id` placeholders. Domain/infra/loading Not Started. |
-| search | Not Started | presentation | `SearchScreen` stub only; not in top nav yet. |
+| home | Complete | presentation | Brand-first hero, featured from registry, principles/tech/open source/community/CTA |
+| projects | Complete | presentation, application, domain, infrastructure | Registry catalog + generic `ProjectShowcaseTemplate` detail (conditional sections) |
+| search | Not Started | presentation | Catalog-local search covers Phase 1; dedicated `/search` deferred |
 | settings | In Progress | presentation | Shell-hosted placeholder; linked from footer. Persistence Not Started. |
 | about | In Progress | presentation | Shell-hosted polished placeholder. Final copy Not Started. |
-| 404 | Complete | shared | `NotFoundPage` via router `errorBuilder`, wrapped in `AppShell`. |
+| 404 | Complete | shared | Restyled with design-system empty/error patterns via `errorBuilder` |
 
 ---
 
@@ -251,10 +246,11 @@ Status values: `Not Started` · `In Progress` · `Blocked` · `Complete`
 
 | Item | Status | Notes |
 |------|--------|-------|
-| Schema finalization (`docs/CONTENT_MODEL.md`) | Not Started | Headings + TODOs only |
-| Placeholder fields present | Complete | `id`, `name`, `description`, `version`, `status`, `category` |
-| `generated/registry.json` | Not Started | Empty shell: `{ "generatedAt": "", "projects": [] }` |
-| Validation / generation scripts | Not Started | Throw `UnimplementedError` |
+| Schema finalization (`docs/CONTENT_MODEL.md`) | Complete | Required fields + enums + optional `showcase` framework |
+| Placeholder fields present | Complete | All three projects have complete required fields + showcase (full or partial) |
+| `generated/registry.json` | Complete | Generated from content including showcase objects |
+| Validation / generation scripts | Complete | Validates showcase shapes when present |
+| Showcase framework docs | Complete | `docs/SHOWCASE_FRAMEWORK.md` |
 
 ## Assets status
 
@@ -264,7 +260,7 @@ Status values: `Not Started` · `In Progress` · `Blocked` · `Complete`
 | `assets/icons/` | Not Started | README only |
 | `assets/images/` | Not Started | README only |
 | `assets/screenshots/` | Not Started | README only |
-| `pubspec.yaml` assets | Not Started | Commented out — not registered |
+| `pubspec.yaml` assets | Complete | `generated/registry.json` registered |
 | `web/` icons / favicon | Complete | Default from `flutter create` (separate from `assets/`) |
 
 ---
@@ -276,11 +272,11 @@ Cell values: `Not Started` · `In Progress` · `Blocked` · `Complete`
 
 | Project ID | Metadata | Assets | Demo | Documentation | Integration Status |
 |------------|----------|--------|------|---------------|--------------------|
-| `document_platform` | Not Started | Not Started | Not Started | Not Started | Not Started |
-| `localization_analyzer` | Not Started | Not Started | Not Started | Not Started | Not Started |
-| `ai_tray` | Not Started | Not Started | Not Started | Not Started | Not Started |
+| `document_platform` | Complete | Not Started | Not Started | In Progress (links) | In Progress — full showcase template reference |
+| `localization_analyzer` | Complete | Not Started | Not Started | Not Started | In Progress — partial showcase |
+| `ai_tray` | Complete | Not Started | Not Started | Not Started | In Progress — partial showcase |
 
-**Folder map (stubs exist):**
+**Folder map:**
 
 | ID | Folder |
 |----|--------|
@@ -288,7 +284,7 @@ Cell values: `Not Started` · `In Progress` · `Blocked` · `Complete`
 | `localization_analyzer` | `content/projects/localization_analyzer/` |
 | `ai_tray` | `content/projects/ai_tray/` |
 
-Metadata files exist with empty string fields (except `id` seeded to the folder name).
+Metadata files are fully populated for required fields; Document Platform is `featured: true`.
 
 ---
 
@@ -333,16 +329,16 @@ Future product/features work (not the current sprint unless promoted).
 
 | Item | Notes |
 |------|-------|
-| Content model + sample metadata filled | Unblocks registry and catalog |
-| Projects catalog + detail UI | Primary showcase surface |
-| Home landing (brand-first) | Portal entry; depends on brand direction |
+| ~~Content model + sample metadata filled~~ | **Complete** |
+| ~~Projects catalog + detail UI~~ | **Complete** |
+| ~~Home landing (brand-first)~~ | **Complete** |
 | ~~App shell: theme + router wired to features~~ | **Complete** (Milestone 1) |
 
 ### Medium
 
 | Item | Notes |
 |------|-------|
-| Search across catalog | Needed as project count grows |
+| Search across catalog | Dedicated `/search` route; catalog-local search already shipped |
 | About page with org/product copy | Credibility / context |
 | Settings (theme / locale preferences) | Nice-to-have early; not blocking catalog |
 | Per-project demo embeds or deep links | Enrich Integration Matrix “Demo” column |
@@ -352,8 +348,8 @@ Future product/features work (not the current sprint unless promoted).
 
 | Item | Notes |
 |------|-------|
-| Featured / highlighted projects on home | After catalog exists |
-| Categories / filters UX | After taxonomy finalized in content model |
+| ~~Featured / highlighted projects on home~~ | **Complete** (registry `featured`) |
+| ~~Categories / filters UX~~ | **Complete** (catalog chips) |
 | Multi-language showcase UI | After settings/locale story exists |
 
 ---
@@ -366,9 +362,9 @@ Engineering improvements (platform, quality, delivery).
 
 | Item | Notes |
 |------|-------|
-| Implement `validate_content.dart` | Gate bad metadata early |
-| Implement `generate_registry.dart` | Enable discovery |
-| Register registry/assets in `pubspec.yaml` | Runtime load path |
+| Implement `validate_content.dart` | **Complete** |
+| Implement `generate_registry.dart` | **Complete** |
+| Register registry/assets in `pubspec.yaml` | **Complete** (`generated/registry.json`) |
 | Real CI quality gates (format → deploy pipeline) | Replace placeholder steps in `ci.yml` (see QUALITY_GATES.md) |
 | Wire ErrorExperience UI + clipboard/URL ports | Complete crash/feedback UX |
 | Golden test baselines for shell surfaces | When UI stabilizes |
@@ -378,7 +374,7 @@ Engineering improvements (platform, quality, delivery).
 
 | Item | Notes |
 |------|-------|
-| Add Riverpod when application layer starts | Aligns with D-009 |
+| ~~Add Riverpod when application layer starts~~ | **Complete** (D-009 Final) |
 | ~~Add router package when navigation starts~~ | **Complete** (`go_router`, D-010) |
 | `fetch_projects` automation + workflow | Remote discovery / sync |
 | Enable `integration_test` properly | File exists; package not in pubspec |
@@ -391,7 +387,7 @@ Engineering improvements (platform, quality, delivery).
 | Flutter Web SEO / indexing strategy | Phase 3 |
 | Performance budgets (bundle size, LCP) | Phase 3 |
 | Accessibility pass (semantics, focus, contrast) | Phase 3 |
-| Motion / shared animations | After UI exists |
+| ~~Motion / shared animations~~ | **Complete** (page fade/slide via `AppMotion`) |
 | Archive or relocate `proposal.md` | Repo hygiene |
 
 ---
@@ -419,8 +415,8 @@ Engineering improvements (platform, quality, delivery).
 | Script | Responsibility | Status |
 |--------|----------------|--------|
 | `scripts/fetch_projects.dart` | Sync remote project sources | Not Started |
-| `scripts/generate_registry.dart` | Build `generated/registry.json` | Not Started |
-| `scripts/validate_content.dart` | Validate metadata/assets | Not Started |
+| `scripts/generate_registry.dart` | Build `generated/registry.json` | Complete |
+| `scripts/validate_content.dart` | Validate metadata/assets | Complete |
 | `scripts/publish.dart` | Build + deploy web | Not Started |
 
 ---
@@ -443,12 +439,10 @@ Engineering improvements (platform, quality, delivery).
 
 ## Open questions
 
-1. Final content metadata schema (required fields, enums for `status` / `category`)?
-2. Hosting target (GitHub Pages, Firebase, Cloudflare, other)?
-3. Confirm Riverpod as state management when application layer starts? (see D-009)
-4. How will remote project discovery work (APIs, git remotes, manual content only)?
-5. License selection for the public repository?
-6. Should `proposal.md` remain in the repo or move to docs/archive?
+1. Hosting target (GitHub Pages, Firebase, Cloudflare, other)?
+2. How will remote project discovery work (APIs, git remotes, manual content only)?
+3. License selection for the public repository?
+4. Should `proposal.md` remain in the repo or move to docs/archive?
 
 Promote answers into the **Decisions** log (new `D-xxx` row) and remove from this list.
 
@@ -473,15 +467,14 @@ Promote answers into the **Decisions** log (new `D-xxx` row) and remove from thi
 
 Ordered implementation sequence (promote into Current Sprint when starting work):
 
-1. Finalize content model — lock schema in `docs/CONTENT_MODEL.md`; fill three sample projects
-2. Implement `validate_content.dart` + `generate_registry.dart`
-3. Register assets / registry in `pubspec.yaml`
-4. Implement `projects` domain + infrastructure (registry → DTO → domain → repository)
-5. Add Riverpod application layer for projects (AsyncValue: loading / empty / error / data)
-6. Build minimal projects catalog + detail UI on existing routes
-7. Implement home landing content (after brand direction)
-8. Turn on real CI (analyze + test + content validation)
-9. Choose hosting and implement deploy (`publish.dart` / `deploy.yml`)
+1. Turn on real CI (analyze + test + content validation)
+2. Choose hosting and implement deploy (`publish.dart` / `deploy.yml`)
+3. Markdown project documentation viewer
+4. Dedicated search route (beyond catalog-local search)
+5. Settings theme persistence
+6. Wire ErrorExperience UI + clipboard/URL ports
+7. Enrich Document Platform assets / demo embeds
+8. Golden baselines for shell surfaces
 
 ---
 
@@ -497,15 +490,18 @@ Ordered implementation sequence (promote into Current Sprint when starting work)
 | 2026-07-26 | **Design system foundation:** FlexColorScheme + `lib/design_system/` tokens; removed `google_fonts`; semantic colors ThemeExtension |
 | 2026-07-26 | **Cross-platform architecture (Web-first)** finalized (D-018): enabled Android/iOS/macOS/Windows/Linux runners; Platform Support rules in `PROJECT_RULES.md` |
 | 2026-07-26 | **Quality Engineering Foundation** (D-019–D-022): quality module, docs, CI gate architecture, feedback/crash/diagnostics abstractions |
+| 2026-07-26 | **Phase 1 Experience Foundation:** design-system components, shell polish, content pipeline, Riverpod projects catalog/detail, Home landing, Document Platform featured; D-009 Final |
+| 2026-07-26 | **Phase 1.5 Showcase Content Framework:** `showcase` schema, `ProjectShowcaseTemplate`, conditional sections, Document Platform reference fill, docs + tests |
 
 ---
 
 # Future Vision
 
 1. **Phase 0 — Architecture bootstrap** — Complete  
-2. **Phase 1 — Application shell** — Complete  
-3. **Phase 2 — Content pipeline** — Planned  
-4. **Phase 3 — Feature surfaces** — Planned  
+2. **Phase 1 — Application shell + Experience Foundation** — Complete  
+2b. **Phase 1.5 — Showcase Content Framework** — Complete  
+3. **Phase 2 — Content pipeline scale** — Planned  
+4. **Phase 3 — Product surfaces polish** — Planned  
 5. **Phase 4 — Polish and scale** — Planned  
 
 Maintainable public showcase: new products land mainly as content under `content/projects/`, with CI producing the registry the app consumes. Detail also tracked in `ROADMAP.md`.

@@ -1,16 +1,334 @@
-/// Projects infrastructure layer (DTOs, mappers, repository implementations).
-///
-/// **Why:** Loads registry / content and maps DTOs → domain entities.
-/// **Owner:** Projects feature team.
-/// **When:** Implement after `generated/registry.json` and content schema exist.
+/// Projects infrastructure — DTO, mapper, registry repository.
 library;
 
-/// Placeholder for projects infrastructure.
-///
-/// TODO(projects):
-/// - ProjectDto + mapper
-/// - RegistryProjectRepository reading generated registry
-/// - Never expose DTOs to presentation
-abstract final class ProjectsInfrastructure {
-  ProjectsInfrastructure._();
+import 'dart:convert';
+
+import 'package:flutter/services.dart';
+import 'package:rsprojects_showcase/features/projects/domain/projects_domain.dart';
+
+/// JSON DTO for registry entries (never used in UI).
+class ProjectDto {
+  const ProjectDto({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.version,
+    required this.status,
+    required this.category,
+    required this.platforms,
+    required this.featured,
+    this.tagline,
+    this.repositoryUrl,
+    this.demoUrl,
+    this.docsUrl,
+    this.tags = const [],
+    this.icon,
+    this.showcase,
+  });
+
+  factory ProjectDto.fromJson(Map<String, Object?> json) {
+    final showcaseRaw = json['showcase'];
+    return ProjectDto(
+      id: json['id'] as String? ?? '',
+      name: json['name'] as String? ?? '',
+      description: json['description'] as String? ?? '',
+      version: json['version'] as String? ?? '',
+      status: json['status'] as String? ?? 'experimental',
+      category: json['category'] as String? ?? 'other',
+      platforms: (json['platforms'] as List<dynamic>? ?? const [])
+          .map((e) => e.toString())
+          .toList(),
+      featured: json['featured'] as bool? ?? false,
+      tagline: json['tagline'] as String?,
+      repositoryUrl: json['repositoryUrl'] as String?,
+      demoUrl: json['demoUrl'] as String?,
+      docsUrl: json['docsUrl'] as String?,
+      tags: (json['tags'] as List<dynamic>? ?? const [])
+          .map((e) => e.toString())
+          .toList(),
+      icon: json['icon'] as String?,
+      showcase: showcaseRaw is Map
+          ? ProjectShowcaseDto.fromJson(Map<String, Object?>.from(showcaseRaw))
+          : null,
+    );
+  }
+
+  final String id;
+  final String name;
+  final String description;
+  final String version;
+  final String status;
+  final String category;
+  final List<String> platforms;
+  final bool featured;
+  final String? tagline;
+  final String? repositoryUrl;
+  final String? demoUrl;
+  final String? docsUrl;
+  final List<String> tags;
+  final String? icon;
+  final ProjectShowcaseDto? showcase;
+
+  Project toDomain() {
+    return Project(
+      id: id,
+      name: name,
+      description: description,
+      version: version,
+      status: ProjectStatus.fromString(status),
+      category: ProjectCategory.fromString(category),
+      platforms: platforms,
+      featured: featured,
+      tagline: tagline,
+      repositoryUrl: repositoryUrl,
+      demoUrl: demoUrl,
+      docsUrl: docsUrl,
+      tags: tags,
+      icon: icon,
+      showcase: showcase?.toDomain(),
+    );
+  }
+}
+
+/// Showcase DTO (never used in UI).
+class ProjectShowcaseDto {
+  const ProjectShowcaseDto({
+    this.problem,
+    this.solution,
+    this.features = const [],
+    this.demo,
+    this.screenshots = const [],
+    this.architecture,
+    this.technologies = const [],
+    this.platformSupport = const [],
+    this.installation,
+    this.documentationLinks = const [],
+    this.examples = const [],
+    this.benchmarks = const [],
+    this.roadmap = const [],
+    this.changelog = const [],
+    this.relatedProjectIds = const [],
+    this.contributing,
+  });
+
+  factory ProjectShowcaseDto.fromJson(Map<String, Object?> json) {
+    List<Map<String, Object?>> maps(String key) {
+      final raw = json[key];
+      if (raw is! List) return const [];
+      return [
+        for (final item in raw)
+          if (item is Map) Map<String, Object?>.from(item),
+      ];
+    }
+
+    final demoRaw = json['demo'];
+    return ProjectShowcaseDto(
+      problem: json['problem'] as String?,
+      solution: json['solution'] as String?,
+      features: [
+        for (final m in maps('features'))
+          (
+            title: m['title'] as String? ?? '',
+            description: m['description'] as String?,
+          ),
+      ].where((e) => e.title.isNotEmpty).toList(),
+      demo: demoRaw is Map
+          ? (
+              url: demoRaw['url'] as String?,
+              note: demoRaw['note'] as String?,
+              available: demoRaw['available'] as bool? ?? false,
+            )
+          : null,
+      screenshots: [
+        for (final m in maps('screenshots'))
+          (
+            alt: m['alt'] as String? ?? '',
+            src: m['src'] as String?,
+            caption: m['caption'] as String?,
+          ),
+      ].where((e) => e.alt.isNotEmpty).toList(),
+      architecture: json['architecture'] as String?,
+      technologies: (json['technologies'] as List<dynamic>? ?? const [])
+          .map((e) => e.toString())
+          .toList(),
+      platformSupport: [
+        for (final m in maps('platformSupport'))
+          (
+            platform: m['platform'] as String? ?? '',
+            notes: m['notes'] as String?,
+          ),
+      ].where((e) => e.platform.isNotEmpty).toList(),
+      installation: json['installation'] as String?,
+      documentationLinks: [
+        for (final m in maps('documentationLinks'))
+          (
+            label: m['label'] as String? ?? '',
+            url: m['url'] as String? ?? '',
+          ),
+      ].where((e) => e.label.isNotEmpty && e.url.isNotEmpty).toList(),
+      examples: [
+        for (final m in maps('examples'))
+          (
+            title: m['title'] as String? ?? '',
+            description: m['description'] as String?,
+            url: m['url'] as String?,
+          ),
+      ].where((e) => e.title.isNotEmpty).toList(),
+      benchmarks: [
+        for (final m in maps('benchmarks'))
+          (
+            label: m['label'] as String? ?? '',
+            value: m['value'] as String? ?? '',
+            note: m['note'] as String?,
+          ),
+      ].where((e) => e.label.isNotEmpty && e.value.isNotEmpty).toList(),
+      roadmap: [
+        for (final m in maps('roadmap'))
+          (
+            item: m['item'] as String? ?? '',
+            status: m['status'] as String?,
+          ),
+      ].where((e) => e.item.isNotEmpty).toList(),
+      changelog: [
+        for (final m in maps('changelog'))
+          (
+            version: m['version'] as String? ?? '',
+            date: m['date'] as String?,
+            notes: m['notes'] as String? ?? '',
+          ),
+      ].where((e) => e.version.isNotEmpty && e.notes.isNotEmpty).toList(),
+      relatedProjectIds:
+          (json['relatedProjectIds'] as List<dynamic>? ?? const [])
+              .map((e) => e.toString())
+              .toList(),
+      contributing: json['contributing'] as String?,
+    );
+  }
+
+  final String? problem;
+  final String? solution;
+  final List<({String title, String? description})> features;
+  final ({String? url, String? note, bool available})? demo;
+  final List<({String alt, String? src, String? caption})> screenshots;
+  final String? architecture;
+  final List<String> technologies;
+  final List<({String platform, String? notes})> platformSupport;
+  final String? installation;
+  final List<({String label, String url})> documentationLinks;
+  final List<({String title, String? description, String? url})> examples;
+  final List<({String label, String value, String? note})> benchmarks;
+  final List<({String item, String? status})> roadmap;
+  final List<({String version, String? date, String notes})> changelog;
+  final List<String> relatedProjectIds;
+  final String? contributing;
+
+  ProjectShowcase toDomain() {
+    return ProjectShowcase(
+      problem: problem,
+      solution: solution,
+      features: [
+        for (final f in features)
+          ShowcaseFeature(title: f.title, description: f.description),
+      ],
+      demo: demo == null
+          ? null
+          : ShowcaseDemo(
+              url: demo!.url,
+              note: demo!.note,
+              available: demo!.available,
+            ),
+      screenshots: [
+        for (final s in screenshots)
+          ShowcaseScreenshot(alt: s.alt, src: s.src, caption: s.caption),
+      ],
+      architecture: architecture,
+      technologies: technologies,
+      platformSupport: [
+        for (final p in platformSupport)
+          ShowcasePlatformSupport(platform: p.platform, notes: p.notes),
+      ],
+      installation: installation,
+      documentationLinks: [
+        for (final l in documentationLinks)
+          ShowcaseLink(label: l.label, url: l.url),
+      ],
+      examples: [
+        for (final e in examples)
+          ShowcaseExample(
+            title: e.title,
+            description: e.description,
+            url: e.url,
+          ),
+      ],
+      benchmarks: [
+        for (final b in benchmarks)
+          ShowcaseBenchmark(label: b.label, value: b.value, note: b.note),
+      ],
+      roadmap: [
+        for (final r in roadmap)
+          ShowcaseRoadmapItem(
+            item: r.item,
+            status: ShowcaseRoadmapStatus.fromString(r.status),
+          ),
+      ],
+      changelog: [
+        for (final c in changelog)
+          ShowcaseChangelogEntry(
+            version: c.version,
+            date: c.date,
+            notes: c.notes,
+          ),
+      ],
+      relatedProjectIds: relatedProjectIds,
+      contributing: contributing,
+    );
+  }
+}
+
+/// Loads projects from `generated/registry.json` via [rootBundle].
+class AssetRegistryProjectRepository implements ProjectRepository {
+  AssetRegistryProjectRepository({
+    this.assetPath = 'generated/registry.json',
+    AssetBundle? bundle,
+  }) : _bundle = bundle ?? rootBundle;
+
+  final String assetPath;
+  final AssetBundle _bundle;
+
+  List<Project>? _cache;
+
+  @override
+  Future<List<Project>> fetchProjects() async {
+    if (_cache != null) return _cache!;
+
+    final raw = await _bundle.loadString(assetPath);
+    final decoded = jsonDecode(raw);
+    if (decoded is! Map<String, dynamic>) {
+      throw const FormatException('Registry root must be a JSON object');
+    }
+    final list = decoded['projects'];
+    if (list is! List) {
+      throw const FormatException('Registry "projects" must be a list');
+    }
+
+    final projects = <Project>[];
+    for (final item in list) {
+      if (item is Map) {
+        projects.add(
+          ProjectDto.fromJson(Map<String, Object?>.from(item)).toDomain(),
+        );
+      }
+    }
+    _cache = projects;
+    return projects;
+  }
+
+  @override
+  Future<Project?> fetchById(String id) async {
+    final all = await fetchProjects();
+    for (final p in all) {
+      if (p.id == id) return p;
+    }
+    return null;
+  }
 }

@@ -1,8 +1,44 @@
 {
   "id": "localization_analyzer",
-  "name": "",
-  "description": "",
-  "version": "",
-  "status": "",
-  "category": ""
+  "name": "Localization Analyzer",
+  "tagline": "Find missing and unused localization keys",
+  "description": "Localization Analyzer scans Flutter ARB and localization usage to surface missing keys, unused entries, and consistency issues across locales before they reach production.",
+  "version": "0.3.1",
+  "status": "experimental",
+  "category": "tool",
+  "platforms": ["macos", "linux", "windows"],
+  "featured": false,
+  "tags": ["flutter", "i18n", "l10n"],
+  "showcase": {
+    "problem": "Localization drift—missing keys, unused entries, and locale inconsistencies—often appears only after QA or production releases.",
+    "solution": "A desktop analyzer that scans ARB files and Dart usage to report gaps early in the development loop.",
+    "features": [
+      {
+        "title": "Missing key detection",
+        "description": "Compare usage against ARB definitions across locales."
+      },
+      {
+        "title": "Unused entry reports",
+        "description": "Find keys that no longer appear in code."
+      }
+    ],
+    "demo": {
+      "available": false,
+      "note": "CLI/desktop demo packaging is not published yet."
+    },
+    "technologies": ["Flutter", "Dart", "ARB", "Static analysis"],
+    "installation": "Install via the upcoming desktop package or run from source with Flutter on macOS, Linux, or Windows.",
+    "roadmap": [
+      {
+        "item": "CI-friendly JSON report output",
+        "status": "planned"
+      },
+      {
+        "item": "Core ARB scan pipeline",
+        "status": "in_progress"
+      }
+    ],
+    "relatedProjectIds": ["document_platform"],
+    "contributing": "Report false positives and locale edge cases via GitHub issues."
+  }
 }

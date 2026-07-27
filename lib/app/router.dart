@@ -1,8 +1,4 @@
 /// Application routing configuration (go_router).
-///
-/// **Why:** Single source of truth for navigation paths across features.
-/// **Owner:** App layer.
-/// **When:** Milestone 1 — application shell.
 library;
 
 import 'package:flutter/material.dart';
@@ -12,6 +8,7 @@ import 'package:rsprojects_showcase/features/home/presentation/home_screen.dart'
 import 'package:rsprojects_showcase/features/projects/presentation/project_detail_screen.dart';
 import 'package:rsprojects_showcase/features/projects/presentation/projects_screen.dart';
 import 'package:rsprojects_showcase/features/settings/presentation/settings_screen.dart';
+import 'package:rsprojects_showcase/shared/animations/shared_animations.dart';
 import 'package:rsprojects_showcase/shared/layouts/app_shell.dart';
 import 'package:rsprojects_showcase/shared/widgets/not_found_page.dart';
 
@@ -29,8 +26,6 @@ abstract final class AppRoutes {
 }
 
 /// Builds the application [GoRouter].
-///
-/// Pass [navigatorKey] from tests when needed.
 GoRouter createAppRouter({GlobalKey<NavigatorState>? navigatorKey}) {
   return GoRouter(
     navigatorKey: navigatorKey,
@@ -42,7 +37,7 @@ GoRouter createAppRouter({GlobalKey<NavigatorState>? navigatorKey}) {
           GoRoute(
             path: AppRoutes.home,
             name: 'home',
-            pageBuilder: (context, state) => NoTransitionPage(
+            pageBuilder: (context, state) => appFadeSlidePage(
               key: state.pageKey,
               child: const HomeScreen(),
             ),
@@ -50,7 +45,7 @@ GoRouter createAppRouter({GlobalKey<NavigatorState>? navigatorKey}) {
           GoRoute(
             path: AppRoutes.projects,
             name: 'projects',
-            pageBuilder: (context, state) => NoTransitionPage(
+            pageBuilder: (context, state) => appFadeSlidePage(
               key: state.pageKey,
               child: const ProjectsScreen(),
             ),
@@ -60,7 +55,7 @@ GoRouter createAppRouter({GlobalKey<NavigatorState>? navigatorKey}) {
                 name: 'projectDetail',
                 pageBuilder: (context, state) {
                   final id = state.pathParameters['id'] ?? '';
-                  return NoTransitionPage(
+                  return appFadeSlidePage(
                     key: state.pageKey,
                     child: ProjectDetailScreen(projectId: id),
                   );
@@ -71,7 +66,7 @@ GoRouter createAppRouter({GlobalKey<NavigatorState>? navigatorKey}) {
           GoRoute(
             path: AppRoutes.about,
             name: 'about',
-            pageBuilder: (context, state) => NoTransitionPage(
+            pageBuilder: (context, state) => appFadeSlidePage(
               key: state.pageKey,
               child: const AboutScreen(),
             ),
@@ -79,7 +74,7 @@ GoRouter createAppRouter({GlobalKey<NavigatorState>? navigatorKey}) {
           GoRoute(
             path: AppRoutes.settings,
             name: 'settings',
-            pageBuilder: (context, state) => NoTransitionPage(
+            pageBuilder: (context, state) => appFadeSlidePage(
               key: state.pageKey,
               child: const SettingsScreen(),
             ),

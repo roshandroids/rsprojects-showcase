@@ -1,8 +1,39 @@
 {
   "id": "ai_tray",
-  "name": "",
-  "description": "",
-  "version": "",
-  "status": "",
-  "category": ""
+  "name": "AI Tray",
+  "tagline": "Desktop AI helpers that stay out of the way",
+  "description": "AI Tray provides lightweight desktop assistants for everyday workflows — summarization, drafting, and quick actions — with a focus on privacy-conscious local and remote model options.",
+  "version": "0.1.0",
+  "status": "experimental",
+  "category": "app",
+  "platforms": ["macos", "windows"],
+  "featured": false,
+  "tags": ["ai", "desktop", "productivity"],
+  "showcase": {
+    "problem": "Desktop AI tools are often heavyweight or browser-bound, interrupting focus when you only need a quick summary or draft.",
+    "solution": "A lightweight tray companion that keeps common AI actions one gesture away while respecting local and remote model choices.",
+    "features": [
+      {
+        "title": "Quick actions",
+        "description": "Summarize, draft, and transform text without leaving your flow."
+      },
+      {
+        "title": "Privacy-conscious options",
+        "description": "Prefer local models when possible; remote providers remain optional."
+      }
+    ],
+    "demo": {
+      "available": false,
+      "note": "Tray demo build is not available on the public showcase yet."
+    },
+    "technologies": ["Flutter", "Dart", "Desktop plugins"],
+    "roadmap": [
+      {
+        "item": "Public beta macOS build",
+        "status": "planned"
+      }
+    ],
+    "relatedProjectIds": ["document_platform"],
+    "contributing": "Ideas for tray actions and model adapters are welcome via issues."
+  }
 }

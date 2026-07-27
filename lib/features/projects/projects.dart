@@ -1,13 +1,9 @@
-/// Projects feature — catalog, detail, and discovery of RSProjects products.
-///
-/// **Why:** Primary product surface for browsing showcase projects.
-/// **Owner:** Projects feature team.
-/// **When:** Implement after content model + registry generation exist.
+/// Projects feature barrel.
 library;
 
-/// Projects feature marker / future exports.
-///
-/// TODO(projects): Export presentation, application, and domain public APIs.
-abstract final class ProjectsFeature {
-  ProjectsFeature._();
-}
+export 'package:rsprojects_showcase/features/projects/application/projects_application.dart';
+export 'package:rsprojects_showcase/features/projects/domain/projects_domain.dart';
+export 'package:rsprojects_showcase/features/projects/presentation/project_detail_screen.dart';
+export 'package:rsprojects_showcase/features/projects/presentation/projects_screen.dart';
+export 'package:rsprojects_showcase/features/projects/presentation/widgets/project_card.dart';
+export 'package:rsprojects_showcase/features/projects/presentation/widgets/project_showcase_template.dart';

@@ -1,8 +1,132 @@
 {
   "id": "document_platform",
-  "name": "",
-  "description": "",
-  "version": "",
-  "status": "",
-  "category": ""
+  "name": "Document Platform",
+  "tagline": "Structured documents for modern product teams",
+  "description": "Document Platform is an RSProjects product for authoring, organizing, and shipping living product documentation. It emphasizes clear content models, multi-format export, and workflows that keep engineering and product writing in sync.",
+  "version": "0.9.0",
+  "status": "beta",
+  "category": "platform",
+  "platforms": ["web", "macos", "windows", "linux"],
+  "featured": true,
+  "repositoryUrl": "https://github.com/roshandroids",
+  "docsUrl": "https://github.com/roshandroids/rsprojects-showcase",
+  "tags": ["documentation", "content", "productivity"],
+  "showcase": {
+    "problem": "Product and engineering documentation often lives in disconnected tools—wikis, tickets, and ad-hoc markdown—making it hard to keep structure, ownership, and shipping formats aligned as teams grow.",
+    "solution": "Document Platform provides a shared content model, authoring workflows, and export paths so living docs stay consistent from draft to delivery across web and desktop.",
+    "features": [
+      {
+        "title": "Structured content model",
+        "description": "Typed document schemas keep sections, metadata, and ownership explicit."
+      },
+      {
+        "title": "Multi-format export",
+        "description": "Ship the same source as web, printable, and engineering-friendly formats."
+      },
+      {
+        "title": "Cross-team workflows",
+        "description": "Review loops that keep product writing and engineering updates in sync."
+      },
+      {
+        "title": "Cross-platform clients",
+        "description": "Primary web experience with desktop companions for focused writing."
+      }
+    ],
+    "demo": {
+      "available": false,
+      "note": "Interactive demo is planned for a later release. Use Documentation for current guidance."
+    },
+    "screenshots": [
+      {
+        "alt": "Document editor overview",
+        "caption": "Structured editor with section outline and metadata"
+      },
+      {
+        "alt": "Export pipeline",
+        "caption": "Multi-format export from a single content source"
+      }
+    ],
+    "architecture": "Feature-first Flutter clients consume a content registry and document APIs. Domain models stay free of UI; presentation uses a shared showcase template so every RSProjects product page follows the same structure.",
+    "technologies": [
+      "Flutter",
+      "Dart",
+      "Riverpod",
+      "Content registry",
+      "Markdown / structured docs"
+    ],
+    "platformSupport": [
+      {
+        "platform": "web",
+        "notes": "Primary authoring and review experience"
+      },
+      {
+        "platform": "macos",
+        "notes": "Desktop companion for focused writing"
+      },
+      {
+        "platform": "windows",
+        "notes": "Desktop companion"
+      },
+      {
+        "platform": "linux",
+        "notes": "Desktop companion"
+      }
+    ],
+    "installation": "Clone the repository, run flutter pub get, then flutter run -d chrome for the web client. Desktop targets follow the same Flutter toolchain.",
+    "documentationLinks": [
+      {
+        "label": "Showcase repository",
+        "url": "https://github.com/roshandroids/rsprojects-showcase"
+      },
+      {
+        "label": "Content model",
+        "url": "https://github.com/roshandroids/rsprojects-showcase/blob/main/docs/CONTENT_MODEL.md"
+      }
+    ],
+    "examples": [
+      {
+        "title": "Product brief template",
+        "description": "Starter schema for problem, solution, and success metrics."
+      },
+      {
+        "title": "API changelog note",
+        "description": "Structured release notes that export to eng and support channels."
+      }
+    ],
+    "benchmarks": [
+      {
+        "label": "Cold open (web)",
+        "value": "< 2.5s",
+        "note": "Target budget on mid-tier laptop; not a published measurement yet"
+      }
+    ],
+    "roadmap": [
+      {
+        "item": "Interactive in-app demo surface",
+        "status": "planned"
+      },
+      {
+        "item": "Content model + showcase template integration",
+        "status": "done"
+      },
+      {
+        "item": "Screenshot asset pipeline",
+        "status": "in_progress"
+      }
+    ],
+    "changelog": [
+      {
+        "version": "0.9.0",
+        "date": "2026-07",
+        "notes": "Beta content model, multi-platform clients, and showcase metadata for the public portal."
+      },
+      {
+        "version": "0.8.0",
+        "date": "2026-06",
+        "notes": "Initial structured authoring workflows and export stubs."
+      }
+    ],
+    "relatedProjectIds": ["localization_analyzer", "ai_tray"],
+    "contributing": "Issues and pull requests are welcome on the public RSProjects repositories. Prefer content and schema changes that keep the showcase template generic—avoid project-specific UI forks."
+  }
 }
