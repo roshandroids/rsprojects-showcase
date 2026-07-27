@@ -48,3 +48,4 @@ TODO: Wire `app/router.dart` to feature screens.
 - No business logic in placeholders
 - No guessed UI
 - No premature dependencies
+- No platform-specific feature work yet — architecture is **Web-first, all Flutter platforms supported** (see `PROJECT_RULES.md` → Platform Support)

@@ -6,6 +6,8 @@ Public portal for all RSProjects products.
 
 Architecture bootstrap only. Features are not implemented yet.
 
+**Source of truth for implementation status:** [PROJECT_STATUS.md](PROJECT_STATUS.md)
+
 ## Quick start
 
 TODO: See [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md).
@@ -19,6 +21,7 @@ flutter run -d chrome
 
 | Doc | Description |
 |-----|-------------|
+| [PROJECT_STATUS.md](PROJECT_STATUS.md) | **Canonical status** — share for planning / reviews |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | High-level architecture |
 | [PROJECT_RULES.md](PROJECT_RULES.md) | Contribution / engineering rules |
 | [ROADMAP.md](ROADMAP.md) | Planned milestones |

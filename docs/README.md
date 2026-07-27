@@ -16,3 +16,4 @@
 | `DEPLOYMENT.md` | Hosting / release |
 | `CI_CD.md` | Pipelines |
 | `CONTENT_MODEL.md` | Project metadata schema |
+| [`quality/`](quality/README.md) | Testing, gates, crash/diagnostics, feedback, a11y, perf |
