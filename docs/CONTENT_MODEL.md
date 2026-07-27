@@ -126,6 +126,12 @@ Docs/markdown **bodies** stay on disk (or remote URLs); the registry holds index
 - When media/docs assets are referenced, validate path existence under `content/projects/<id>/media` or registered Flutter assets
 - Collection `projectIds` must resolve to known project ids
 
+### Later phases (planning only)
+
+- **Phase 3:** authored vs generated boundaries, docs/media/demo artifact pipelines — [`docs/roadmap/PHASE_3_AUTOMATION.md`](roadmap/PHASE_3_AUTOMATION.md)
+- **Phase 4:** `Technology`, `PackageReference`, `TimelineEvent`, richer relation indexes — [`docs/roadmap/PHASE_4_ECOSYSTEM.md`](roadmap/PHASE_4_ECOSYSTEM.md)
+- **Phase 5:** portal/community content types (contributors, gallery, templates, engineering notes) — [`docs/roadmap/PHASE_5_DEVELOPER_PORTAL.md`](roadmap/PHASE_5_DEVELOPER_PORTAL.md)
+
 ## Registry output
 
 `assets/generated/registry.json` (produced by `scripts/generate_registry.dart`, bundled via `pubspec.yaml`):

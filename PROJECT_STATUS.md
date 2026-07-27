@@ -9,7 +9,7 @@
 | **Last updated** | 2026-07-26 |
 | **Document owner** | Project maintainers |
 | **Status vocabulary** | `Not Started` · `In Progress` · `Blocked` · `Complete` |
-| Supporting docs | `ARCHITECTURE.md`, `ROADMAP.md`, `PROJECT_RULES.md`, `docs/*` (incl. `PHASE_2_SHOWCASE_EXCELLENCE.md`; not status SSOT) |
+| **Supporting docs** | `ARCHITECTURE.md`, `ROADMAP.md`, `PROJECT_RULES.md`, `docs/*` (incl. Phase 2 brief + `docs/roadmap/`; not status SSOT) |
 
 ---
 
@@ -21,7 +21,7 @@ RSProjects Showcase is the public portal for discovering and presenting all RSPr
 
 ## Current objective
 
-Phase 2 Showcase Excellence planning is locked (2.0). Next: implement milestones 2.1–2.5 per [`docs/PHASE_2_SHOWCASE_EXCELLENCE.md`](docs/PHASE_2_SHOWCASE_EXCELLENCE.md) and [`ROADMAP.md`](ROADMAP.md)—starting with schema/index for media/docs, then rich pages, demos, docs hub, search, ecosystem.
+Phase 2 Showcase Excellence planning is locked (2.0). Long-term Phases 3–5 are documented under [`docs/roadmap/`](docs/roadmap/). Next product work: implement Phase 2.1–2.5; automation/publishing follows as Phase 3.
 
 ## Repository information
 
@@ -35,8 +35,8 @@ Phase 2 Showcase Excellence planning is locked (2.0). Next: implement milestones
 | Remote | `git@roshandroids.github.com:roshandroids/rsprojects-showcase.git` |
 | Default branch | `main` |
 | Latest remote commit | See git log / GitHub |
-| Latest local milestone | Phase 2.0 — Showcase Excellence planning lock |
-| Working tree | Phase 2 planning docs (see Recent Changes) |
+| Latest local milestone | Long-term roadmap Phases 3–5 planning docs |
+| Working tree | See Recent Changes |
 
 ---
 
@@ -52,7 +52,9 @@ Phase 2 Showcase Excellence planning is locked (2.0). Next: implement milestones
 | 1.5 | Showcase Content Framework | **Complete** | Canonical project page template; conditional sections from `showcase` metadata; automation-ready schema |
 | 2.0 | Showcase Excellence — planning | **Complete** | Roadmap + Phase 2 brief + planned schema/abstractions (no feature UI yet) |
 | 2.1–2.5 | Showcase Excellence — build | **Planned** | Rich pages, DemoSpec, docs hub, search/discovery, ecosystem navigation |
-| 3 | Polish and scale | **Planned** | CI gates, hosting/deploy, SEO/perf, fetch automation, settings persistence |
+| 3 | Automation & Publishing | **Planned** | Self-maintaining generate/validate/publish; see `docs/roadmap/PHASE_3_AUTOMATION.md` |
+| 4 | Ecosystem Intelligence | **Planned** | Graphs, explorers, timeline; see `docs/roadmap/PHASE_4_ECOSYSTEM.md` |
+| 5 | Community & Developer Portal | **Planned** | Community + develop portal; see `docs/roadmap/PHASE_5_DEVELOPER_PORTAL.md` |
 
 **Long-term:** Adding a project is primarily a content change under `content/projects/`; CI produces the registry the app consumes.
 
@@ -106,6 +108,7 @@ Sprint is done when all of the following are true:
 - **Showcase Content Framework:** `ProjectShowcase` domain, nested metadata, generic template with conditional sections (hero → contributing)
 - Unit + widget tests green (`flutter test`)
 - **Phase 2.0 planning lock:** `ROADMAP.md`, `docs/PHASE_2_SHOWCASE_EXCELLENCE.md`, planned schema notes, decisions D-023–D-026
+- **Long-term roadmap Phases 3–5:** Automation & Publishing, Ecosystem Intelligence, Community & Developer Portal (`docs/roadmap/`)
 
 ## In Progress
 
@@ -482,8 +485,8 @@ Ordered implementation sequence (promote into Current Sprint when starting work)
 4. Docs hub + markdown viewer (2.3)
 5. `/search` + collections (2.4)
 6. Ecosystem relations UI (2.5)
-7. Real CI quality gates + hosting/deploy (Phase 3 overlap OK)
-8. Settings theme persistence; ErrorExperience UI wiring
+7. Phase 3 automation — CI gates, generate drift, publish/release (see `docs/roadmap/PHASE_3_AUTOMATION.md`)
+8. Phase 4–5 when Phase 2–3 primitives are stable
 
 ---
 
@@ -502,6 +505,7 @@ Ordered implementation sequence (promote into Current Sprint when starting work)
 | 2026-07-26 | **Phase 1 Experience Foundation:** design-system components, shell polish, content pipeline, Riverpod projects catalog/detail, Home landing, Document Platform featured; D-009 Final |
 | 2026-07-26 | **Phase 1.5 Showcase Content Framework:** `showcase` schema, `ProjectShowcaseTemplate`, conditional sections, Document Platform reference fill, docs + tests |
 | 2026-07-26 | **Phase 2.0 Showcase Excellence planning:** rewritten `ROADMAP.md`, `docs/PHASE_2_SHOWCASE_EXCELLENCE.md`, planned schema notes, D-023–D-026 |
+| 2026-07-26 | **Long-term Phases 3–5 planning:** `docs/roadmap/PHASE_{3,4,5}_*.md`; ROADMAP strategy for Automation, Ecosystem, Community & Developer Portal |
 
 ---
 
@@ -511,7 +515,9 @@ Ordered implementation sequence (promote into Current Sprint when starting work)
 2. **Phase 1 — Experience Foundation** — Complete  
 2b. **Phase 1.5 — Showcase Content Framework** — Complete  
 3. **Phase 2 — Showcase Excellence** — Planning locked (2.0); build 2.1–2.5  
-4. **Phase 3 — Polish and scale** — Planned  
+4. **Phase 3 — Automation & Publishing** — Planned  
+5. **Phase 4 — Ecosystem Intelligence** — Planned  
+6. **Phase 5 — Community & Developer Portal** — Planned  
 
 Maintainable public showcase: new products land mainly as content under `content/projects/`, with CI producing the registry the app consumes. Detail also tracked in `ROADMAP.md`.
 

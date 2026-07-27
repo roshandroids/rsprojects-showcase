@@ -10,6 +10,7 @@ Architecture and planning brief. **No features are implemented by this document 
 | Schema (current) | [`CONTENT_MODEL.md`](CONTENT_MODEL.md) |
 | Template | [`SHOWCASE_FRAMEWORK.md`](SHOWCASE_FRAMEWORK.md) |
 | Operational SSOT | [`PROJECT_STATUS.md`](../PROJECT_STATUS.md) |
+| Later phases | [`docs/roadmap/`](roadmap/) (Phases 3–5) |
 
 ---
 

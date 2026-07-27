@@ -16,4 +16,8 @@
 | `DEPLOYMENT.md` | Hosting / release |
 | `CI_CD.md` | Pipelines |
 | `CONTENT_MODEL.md` | Project metadata schema |
+| `SHOWCASE_FRAMEWORK.md` | Canonical project page template |
+| `BRAND.md` | Brand identity guidance |
+| `PHASE_2_SHOWCASE_EXCELLENCE.md` | Phase 2 planning brief |
+| [`roadmap/`](roadmap/README.md) | Phases 3–5 long-term planning briefs |
 | [`quality/`](quality/README.md) | Testing, gates, crash/diagnostics, feedback, a11y, perf |

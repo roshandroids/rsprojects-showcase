@@ -43,6 +43,8 @@ content/projects/<id>/metadata.json
 
 **Phase 2 (planned):** also `content/projects/<id>/docs/`, `media/`, and `content/collections/` → registry indexes. See [`docs/PHASE_2_SHOWCASE_EXCELLENCE.md`](docs/PHASE_2_SHOWCASE_EXCELLENCE.md).
 
+**Phases 3–5 (planned):** automation/publishing, ecosystem intelligence, community & developer portal — [`docs/roadmap/`](docs/roadmap/).
+
 ## State management
 
 **Riverpod** (`Notifier` / `AsyncNotifier` / `AsyncValue`) — D-009 Final.

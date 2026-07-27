@@ -1,122 +1,189 @@
 # Roadmap
 
-> Supporting plan for phases and milestones.  
-> Operational status lives in [`PROJECT_STATUS.md`](PROJECT_STATUS.md).  
-> Phase 2 architecture brief: [`docs/PHASE_2_SHOWCASE_EXCELLENCE.md`](docs/PHASE_2_SHOWCASE_EXCELLENCE.md).
+> Long-term product strategy for RSProjects Showcase.  
+> Operational status: [`PROJECT_STATUS.md`](PROJECT_STATUS.md).  
+> Phase briefs: [`docs/PHASE_2_SHOWCASE_EXCELLENCE.md`](docs/PHASE_2_SHOWCASE_EXCELLENCE.md) · [`docs/roadmap/`](docs/roadmap/).
+
+Priorities may reorder as the product evolves; phase **purpose** stays stable.
+
+---
+
+## Guiding principles
+
+1. **Every phase should increase value for users while reducing maintenance for the maintainer.**
+2. **Prefer reusable platform capabilities over project-specific features.**
+3. **Keep all architecture metadata-driven.**
+4. **Avoid hardcoded project behavior** (UI never branches on `project.id`).
+5. **Preserve** content → registry → domain → application → presentation.
+6. **Treat planning documents as architectural guidance, not implementation specifications.**
+
+### Hard rules (all phases)
+
+- One generic showcase template for every RSProjects product.
+- Sections render only when content exists.
+- DTOs never reach the UI; mapping layer mandatory.
+- Web-first; all Flutter platforms must stay healthy.
+- Authored content and generated artifacts stay clearly separated.
 
 ---
 
 ## Phase 0 — Architecture bootstrap
 
-**Status:** Complete
+**Status:** Complete  
+**Purpose:** Establish a safe, scalable repo shape before product UI.
 
-- [x] Folder structure and placeholders
-- [x] Docs templates, scripts stubs, workflow stubs
-- [x] GitHub repository connected
-- [ ] Choose hosting target (open — D-011)
+**Vision:** A feature-first Flutter foundation that can grow without rewrites.
+
+**Major milestones:** Folder structure · docs/scripts/workflow stubs · GitHub connected.
+
+**Exit criteria:** Repository usable for incremental delivery; platforms and docs placeholders in place.
+
+**Dependencies:** None.
 
 ---
 
 ## Phase 1 — Experience Foundation
 
-**Status:** Complete
+**Status:** Complete  
+**Purpose:** Ship a real portal shell with content-driven catalog and home.
 
-- [x] Application shell (`go_router`, `AppShell`, nav, 404)
-- [x] Design system (FlexColorScheme tokens + components)
-- [x] Quality engineering foundation
-- [x] Cross-platform runners (Web-first)
-- [x] Content schema + `validate_content` / `generate_registry`
-- [x] Riverpod projects catalog + metadata-driven detail
-- [x] Home landing (featured from registry)
+**Vision:** Visitors can browse RSProjects products from a generated registry.
+
+**Major milestones:** App shell · design system · quality foundation · content pipeline · Riverpod catalog/detail · Home.
 
 ### Phase 1.5 — Showcase Content Framework
 
-**Status:** Complete
+**Status:** Complete  
+**Purpose:** One canonical project page for every product.
 
-- [x] Canonical `showcase` metadata + [`docs/SHOWCASE_FRAMEWORK.md`](docs/SHOWCASE_FRAMEWORK.md)
-- [x] Generic `ProjectShowcaseTemplate` (conditional sections)
-- [x] Document Platform as reference fill; siblings partial
-- [x] Registry asset under `assets/generated/registry.json`
+**Vision:** Adding a project is content + template, not a custom screen.
+
+**Major milestones:** `showcase` schema · `ProjectShowcaseTemplate` · Document Platform reference fill.
+
+**Exit criteria:** Generic template live; conditional sections; registry asset loading.
+
+**Dependencies:** Phase 1 catalog/detail stack.
 
 ---
 
 ## Phase 2 — Showcase Excellence
 
-**Status:** Planning (2.0) → implementation follows 2.1–2.5  
+**Status:** Planning locked (2.0); build 2.1–2.5  
+**Purpose:** Elevate the portal into a compelling developer showcase—still fully generic.  
 **Brief:** [`docs/PHASE_2_SHOWCASE_EXCELLENCE.md`](docs/PHASE_2_SHOWCASE_EXCELLENCE.md)
 
-Goal: elevate the portal from a polished catalog into a compelling, reusable developer showcase platform—still content-driven and **never** project-specific UI.
+**Vision:** Rich pages, demos, docs, search, and ecosystem rails without product-specific UI.
 
-### 2.0 — Planning lock
+**Major milestones:**
 
-- [x] Phase 2 brief published
-- [x] Roadmap milestones defined
-- [x] Planned content-model extensions documented
-- [x] Decisions logged (DemoSpec, docs hub, search, ecosystem)
+| Milestone | Focus |
+|-----------|--------|
+| 2.0 | Planning lock |
+| 2.1 | Rich project pages (media, contributors, downloads) |
+| 2.2 | Interactive demos (`DemoSpec`) |
+| 2.3 | Documentation hub |
+| 2.4 | Search & discovery (+ collections) |
+| 2.5 | Ecosystem navigation (typed relations foundation) |
 
-### 2.1 — Rich Project Pages
+**Exit criteria:** Showcase template carries rich media/demos/docs entry points; `/search` and relations primitives exist; no `project.id` branching.
 
-Elevate the existing generic template (still one page for all products).
+**Dependencies:** Phase 1.5 template + content model.
 
-- [ ] Hero media (`showcase.heroMedia`)
-- [ ] Richer feature highlights (optional icon/media)
-- [ ] Architecture diagram support
-- [ ] Unified media gallery (images + videos)
-- [ ] Contributors + downloads sections
-- [ ] Stronger changelog / benchmarks presentation
-
-### 2.2 — Interactive Demos
-
-- [ ] Sealed `DemoSpec` domain model (`embeddedWeb` | `externalLink` | `mediaFallback` | `unavailable`)
-- [ ] Generic `DemoPane` renderer (no per-product embeds)
-- [ ] Embedded Flutter Web demos where `embedUrl` is provided
-- [ ] Screenshot/video fallback for non-web projects
-
-### 2.3 — Documentation Hub
-
-- [ ] Local-first `content/projects/<id>/docs/` (+ `media/`)
-- [ ] Generated docs index in registry (not full markdown bodies)
-- [ ] Route `/projects/:id/docs` (+ optional path)
-- [ ] Shared markdown viewer (`shared/markdown/`)
-- [ ] Keep external `documentationLinks` for remote/API docs
-
-### 2.4 — Search & Discovery
-
-- [ ] Dedicated `/search` feature route
-- [ ] Shared `DiscoveryQuery` (catalog + search)
-- [ ] Advanced filters (tags, tech, collection)
-- [ ] Collections content (`content/collections/`) → registry slice
-- [ ] Home collection / featured rails remain registry-driven
-
-### 2.5 — Ecosystem Navigation
-
-- [ ] Typed `relations[]` (`related` | `depends_on` | `depended_on_by` | `shares_tech` | `alternative`)
-- [ ] Soft edges from shared technologies/tags
-- [ ] Reusable rails: related projects, tech chips, (later) ecosystem graph
-- [ ] UI never branches on `project.id`
-
-**Suggested implementation order:** schema/index → rich media → DemoSpec → docs hub → search/collections → ecosystem UI.
+**Suggested build order:** schema/index → rich media → DemoSpec → docs hub → search/collections → ecosystem UI.
 
 ---
 
-## Phase 3 — Polish and scale
+## Phase 3 — Automation & Publishing
 
-**Status:** Planned (after Phase 2)
+**Status:** Planned  
+**Purpose:** Make the showcase largely self-maintaining.  
+**Brief:** [`docs/roadmap/PHASE_3_AUTOMATION.md`](docs/roadmap/PHASE_3_AUTOMATION.md)
 
-- [ ] Motion polish / performance budgets
-- [ ] Flutter Web SEO / indexing strategy
-- [ ] Automatic discovery of many projects (`fetch_projects` + CI)
-- [ ] Real CI quality gates (format → analyze → test → validate content → build)
-- [ ] Hosting + production deploy
-- [ ] Settings persistence (theme / locale)
-- [ ] Accessibility pass beyond foundation defaults
+**Vision:** Authors maintain intentional content; CI generates indexes, validates drift, builds demos, and publishes releases.
+
+**Major milestones:**
+
+| Milestone | Focus |
+|-----------|--------|
+| 3.1 | Authored vs generated boundary lock |
+| 3.2 | Generation toolchain (registry, docs/media indexes, enrichment) |
+| 3.3 | CI quality gates as product automation |
+| 3.4 | Artifact & demo pipelines (lifecycle) |
+| 3.5 | Publishing & GitHub Release integration |
+
+**Exit criteria:** Documented publish workflow · artifact lifecycle · generated-asset ownership · named Actions responsibilities · version sync policy—ready to implement without redesigning the content model.
+
+**Dependencies:** Phase 2 content shapes (docs/media/collections); hosting decision (D-011) for production deploy.
+
+**Also absorbs:** production deploy, quality-gate CI, and release-oriented polish formerly sketched as “polish and scale.”
 
 ---
 
-## Hard rules (all phases)
+## Phase 4 — Ecosystem Intelligence
 
-1. One generic showcase template for every RSProjects product.
-2. Sections render only when content exists.
-3. UI never branches on `project.id`.
-4. DTOs never reach the UI; mapping layer mandatory.
-5. Web-first; all Flutter platforms must stay healthy.
+**Status:** Planned  
+**Purpose:** Help visitors see how RSProjects products relate.  
+**Brief:** [`docs/roadmap/PHASE_4_ECOSYSTEM.md`](docs/roadmap/PHASE_4_ECOSYSTEM.md)
+
+**Vision:** Data-driven explorers for relations, technologies, packages, timelines, and collections—platform capabilities, not one-off graphs.
+
+**Major milestones:**
+
+| Milestone | Focus |
+|-----------|--------|
+| 4.1 | Domain model lock (`ProjectRelation`, `Technology`, `Collection`, `TimelineEvent`, `PackageReference`) |
+| 4.2 | Registry/index enrichment |
+| 4.3 | Technology / package / graph explorer surfaces |
+| 4.4 | Cross-project timeline |
+| 4.5 | Authored vs inferred edge quality |
+
+**Exit criteria:** Documented domain models and explorer contracts; clear authored vs inferred policy; builds on Phase 2.4/2.5 without duplicating them.
+
+**Dependencies:** Phase 2 relations/collections foundations; Phase 3 generation preferred at scale.
+
+---
+
+## Phase 5 — Community & Developer Portal
+
+**Status:** Planned  
+**Purpose:** Evolve the showcase into a public engineering portal.  
+**Brief:** [`docs/roadmap/PHASE_5_DEVELOPER_PORTAL.md`](docs/roadmap/PHASE_5_DEVELOPER_PORTAL.md)
+
+**Vision:** Community participation and developer tooling share one shell and one content architecture—feedback, contributors, releases, docs, playgrounds, downloads, templates, and a design-system explorer.
+
+**Major milestones:**
+
+| Milestone | Focus |
+|-----------|--------|
+| 5.1 | Portal information architecture (Community + Develop) |
+| 5.2 | Community surfaces (feedback, profiles, roadmap, releases, beta, gallery) |
+| 5.3 | Developer surfaces (docs, API refs, playgrounds, downloads, templates, DS explorer, notes) |
+| 5.4 | Trust & moderation boundaries |
+| 5.5 | Continuity with Phases 2–4 primitives |
+
+**Exit criteria:** Portal IA and reusable abstractions documented; community and developer capabilities planned as one phase (no split that would duplicate planning); reuse of DemoSpec, docs indexes, downloads, releases, and explorers explicit.
+
+**Dependencies:** Phase 2 docs/demos/downloads; Phase 3 publishing/releases; Phase 4 aggregation optional but complementary.
+
+---
+
+## Phase map (at a glance)
+
+```mermaid
+flowchart LR
+  p0["0 Bootstrap"] --> p1["1 Experience"]
+  p1 --> p15["1.5 Framework"]
+  p15 --> p2["2 Excellence"]
+  p2 --> p3["3 Automation"]
+  p2 --> p4["4 Ecosystem"]
+  p3 --> p5["5 Community and Portal"]
+  p4 --> p5
+```
+
+---
+
+## Flexibility
+
+- Milestones inside a phase may reorder when user value or maintainer cost changes.
+- Phase 3 and 4 may overlap once Phase 2 primitives exist.
+- Open product decisions (hosting D-011, license D-012) can gate deploy automation without blocking planning or earlier UX work.
