@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 abstract final class HomeContent {
   HomeContent._();
 
-  static const String heroEyebrow = 'RSProjects ecosystem';
   static const String heroHeadline =
       'A public portal for every RSProjects product';
   static const String heroSupport =

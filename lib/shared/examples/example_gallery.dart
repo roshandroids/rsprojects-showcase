@@ -33,34 +33,31 @@ class ExampleGallery extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    return Padding(
-      padding: const EdgeInsets.only(top: AppSpacing.section),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          AppSectionHeader(title: title),
-          const SizedBox(height: AppSpacing.xl),
-          AppGrid(
-            minTileWidth: 240,
-            children: [
-              for (final example in resolved) ExampleCard(example: example),
-            ],
-          ),
-          if (showDemoPanes) ...[
-            const SizedBox(height: AppSpacing.xl),
-            for (final example in resolved)
-              if (example.demo != null ||
-                  example.demoUrl != null ||
-                  example.media.isNotEmpty) ...[
-                DemoPane(
-                  spec: example.resolvedDemo,
-                  title: example.title,
-                ),
-                const SizedBox(height: AppSpacing.md),
-              ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        AppSectionHeader(title: title),
+        const SizedBox(height: AppSpacing.md),
+        AppGrid(
+          minTileWidth: 240,
+          children: [
+            for (final example in resolved) ExampleCard(example: example),
           ],
+        ),
+        if (showDemoPanes) ...[
+          const SizedBox(height: AppSpacing.md),
+          for (final example in resolved)
+            if (example.demo != null ||
+                example.demoUrl != null ||
+                example.media.isNotEmpty) ...[
+              DemoPane(
+                spec: example.resolvedDemo,
+                title: example.title,
+              ),
+              const SizedBox(height: AppSpacing.sm),
+            ],
         ],
-      ),
+      ],
     );
   }
 }

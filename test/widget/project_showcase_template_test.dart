@@ -96,20 +96,22 @@ void main() {
     );
     await tester.pump();
 
-    expect(find.text('Document Platform'), findsOneWidget);
+    expect(find.text('Projects'), findsOneWidget);
+    expect(find.text('Document Platform'), findsWidgets);
     expect(find.text('Structured documents'), findsOneWidget);
     expect(find.text('Document Platform hero'), findsOneWidget);
-    expect(find.text('Problem Statement'), findsOneWidget);
+    expect(find.text('Overview'), findsOneWidget);
+    expect(find.text('Problem'), findsOneWidget);
     expect(find.text('Docs drift across tools.'), findsOneWidget);
-    expect(find.text('Solution Overview'), findsOneWidget);
-    expect(find.text('Key Features'), findsOneWidget);
+    expect(find.text('Solution'), findsOneWidget);
+    expect(find.text('Features'), findsOneWidget);
     expect(find.text('Structured schemas'), findsOneWidget);
-    expect(find.text('Interactive Demo'), findsOneWidget);
+    expect(find.text('Demo'), findsOneWidget);
     expect(find.text('Demo coming soon'), findsOneWidget);
-    expect(find.text('Screenshots / Gallery'), findsOneWidget);
-    expect(find.text('Architecture Overview'), findsOneWidget);
+    expect(find.text('Gallery'), findsOneWidget);
+    expect(find.text('Architecture'), findsOneWidget);
     expect(find.text('Architecture layers'), findsOneWidget);
-    expect(find.text('Technologies Used'), findsOneWidget);
+    expect(find.text('Stack'), findsOneWidget);
     expect(find.text('Roadmap'), findsOneWidget);
     expect(find.text('Contributors'), findsOneWidget);
     expect(find.text('Roshan Shrestha'), findsOneWidget);
@@ -117,7 +119,6 @@ void main() {
     expect(find.text('Source'), findsOneWidget);
     expect(find.text('Contributing'), findsOneWidget);
 
-    // Benchmarks / changelog omitted when empty.
     expect(find.text('Benchmarks'), findsNothing);
     expect(find.text('Changelog'), findsNothing);
   });
@@ -146,10 +147,10 @@ void main() {
     );
     await tester.pump();
 
-    expect(find.text('Minimal'), findsOneWidget);
-    expect(find.text('Problem Statement'), findsNothing);
-    expect(find.text('Key Features'), findsNothing);
-    expect(find.text('Interactive Demo'), findsOneWidget); // placeholder
-    expect(find.text('Platform Support'), findsOneWidget); // from platforms[]
+    expect(find.text('Minimal'), findsWidgets);
+    expect(find.text('Problem'), findsNothing);
+    expect(find.text('Features'), findsNothing);
+    expect(find.text('Demo'), findsOneWidget);
+    expect(find.text('Platforms'), findsOneWidget);
   });
 }

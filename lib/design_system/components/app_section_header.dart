@@ -4,7 +4,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:rsprojects_showcase/design_system/app_spacing.dart';
 
-/// Consistent section header for home and catalog.
+/// Consistent section header — typography carries hierarchy.
 class AppSectionHeader extends StatelessWidget {
   const AppSectionHeader({
     required this.title,
@@ -35,19 +35,21 @@ class AppSectionHeader extends StatelessWidget {
                 Text(
                   eyebrow!,
                   style: theme.textTheme.labelLarge?.copyWith(
-                    color: scheme.primary,
-                    letterSpacing: 1.1,
+                    color: scheme.onSurfaceVariant,
+                    letterSpacing: 0.4,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xs),
               ],
-              Text(title, style: theme.textTheme.headlineSmall),
+              Text(title, style: theme.textTheme.headlineMedium),
               if (subtitle != null) ...[
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   subtitle!,
                   style: theme.textTheme.bodyLarge?.copyWith(
-                    color: scheme.onSurface.withValues(alpha: 0.72),
+                    color: scheme.onSurfaceVariant,
+                    height: 1.5,
                   ),
                 ),
               ],
@@ -55,7 +57,7 @@ class AppSectionHeader extends StatelessWidget {
           ),
         ),
         if (action != null) ...[
-          const SizedBox(width: AppSpacing.md),
+          const SizedBox(width: AppSpacing.sm),
           action!,
         ],
       ],

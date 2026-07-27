@@ -28,9 +28,15 @@ class AppChip extends StatelessWidget {
         selected: selected,
         onSelected: onSelected ?? (selected ? (_) {} : null),
         avatar: avatar,
-        showCheckmark: selected && onSelected != null,
-        visualDensity: VisualDensity.standard,
+        showCheckmark: false,
+        visualDensity: VisualDensity.compact,
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         shape: RoundedRectangleBorder(borderRadius: AppRadius.borderChip),
+        side: BorderSide(
+          color: selected
+              ? Colors.transparent
+              : Theme.of(context).colorScheme.outlineVariant,
+        ),
       ),
     );
   }

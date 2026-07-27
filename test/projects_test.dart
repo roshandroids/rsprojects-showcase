@@ -111,7 +111,13 @@ void main() {
       MaterialApp(
         theme: AppTheme.light,
         home: const Scaffold(
-          body: ProjectCard(project: _sample),
+          body: Center(
+            child: SizedBox(
+              width: 360,
+              height: 420,
+              child: ProjectCard(project: _sample),
+            ),
+          ),
         ),
       ),
     );

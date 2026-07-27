@@ -9,4 +9,5 @@ export 'package:rsprojects_showcase/design_system/components/app_chip.dart';
 export 'package:rsprojects_showcase/design_system/components/app_footer.dart';
 export 'package:rsprojects_showcase/design_system/components/app_nav_bar.dart';
 export 'package:rsprojects_showcase/design_system/components/app_page.dart';
+export 'package:rsprojects_showcase/design_system/components/app_search_field.dart';
 export 'package:rsprojects_showcase/design_system/components/app_section_header.dart';

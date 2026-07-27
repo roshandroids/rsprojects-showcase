@@ -1,4 +1,4 @@
-/// Projects catalog presentation — search, filters, responsive grid.
+/// Projects catalog presentation — search, filter rows, equal-height grid.
 library;
 
 import 'package:flutter/material.dart';
@@ -50,38 +50,31 @@ class _CatalogBody extends ConsumerWidget {
       for (final project in catalog.all) ...project.platforms,
     }.toList()
       ..sort();
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final hasFilters = query.status != null ||
+        query.category != null ||
+        query.platform != null ||
+        query.search.trim().isNotEmpty;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const SizedBox(height: AppSpacing.xl),
+        const SizedBox(height: AppSpacing.lg),
         AppSectionHeader(
-          eyebrow: 'Catalog',
           title: 'Projects',
           subtitle:
-              'Browse RSProjects products from the generated registry. '
-              'Search and filter stay on this page for Phase 1.',
+              'Browse RSProjects products. Search and filter stay on this page.',
         ),
-        const SizedBox(height: AppSpacing.xl),
-        TextField(
-          decoration: const InputDecoration(
-            labelText: 'Search projects',
-            hintText: 'Name, tagline, tags…',
-            prefixIcon: Icon(Icons.search_rounded),
-            border: OutlineInputBorder(),
-          ),
+        const SizedBox(height: AppSpacing.md),
+        AppSearchField(
+          hintText: 'Search by name, tagline, or tag…',
           onChanged: notifier.setSearch,
         ),
-        const SizedBox(height: AppSpacing.lg),
-        Wrap(
-          spacing: AppSpacing.sm,
-          runSpacing: AppSpacing.sm,
-          crossAxisAlignment: WrapCrossAlignment.center,
+        const SizedBox(height: AppSpacing.md),
+        _FilterRow(
+          label: 'Status',
           children: [
-            Text(
-              'Status',
-              style: Theme.of(context).textTheme.labelLarge,
-            ),
             AppChip(
               label: 'All',
               selected: query.status == null,
@@ -97,16 +90,10 @@ class _CatalogBody extends ConsumerWidget {
             ),
           ],
         ),
-        const SizedBox(height: AppSpacing.md),
-        Wrap(
-          spacing: AppSpacing.sm,
-          runSpacing: AppSpacing.sm,
-          crossAxisAlignment: WrapCrossAlignment.center,
+        const SizedBox(height: AppSpacing.sm),
+        _FilterRow(
+          label: 'Category',
           children: [
-            Text(
-              'Category',
-              style: Theme.of(context).textTheme.labelLarge,
-            ),
             AppChip(
               label: 'All',
               selected: query.category == null,
@@ -123,16 +110,10 @@ class _CatalogBody extends ConsumerWidget {
           ],
         ),
         if (platforms.isNotEmpty) ...[
-          const SizedBox(height: AppSpacing.md),
-          Wrap(
-            spacing: AppSpacing.sm,
-            runSpacing: AppSpacing.sm,
-            crossAxisAlignment: WrapCrossAlignment.center,
+          const SizedBox(height: AppSpacing.sm),
+          _FilterRow(
+            label: 'Platform',
             children: [
-              Text(
-                'Platform',
-                style: Theme.of(context).textTheme.labelLarge,
-              ),
               AppChip(
                 label: 'All',
                 selected: query.platform == null,
@@ -149,45 +130,54 @@ class _CatalogBody extends ConsumerWidget {
             ],
           ),
         ],
-        const SizedBox(height: AppSpacing.lg),
+        const SizedBox(height: AppSpacing.md),
         Row(
           children: [
-            Text('Sort', style: Theme.of(context).textTheme.labelLarge),
-            const SizedBox(width: AppSpacing.md),
-            DropdownButton<ProjectSort>(
-              value: query.sort,
-              onChanged: (value) {
-                if (value != null) notifier.setSort(value);
-              },
-              items: const [
-                DropdownMenuItem(
-                  value: ProjectSort.featuredFirst,
-                  child: Text('Featured first'),
-                ),
-                DropdownMenuItem(
-                  value: ProjectSort.nameAsc,
-                  child: Text('Name A–Z'),
-                ),
-                DropdownMenuItem(
-                  value: ProjectSort.nameDesc,
-                  child: Text('Name Z–A'),
-                ),
-                DropdownMenuItem(
-                  value: ProjectSort.status,
-                  child: Text('Status'),
-                ),
-              ],
+            Text(
+              'Sort',
+              style: theme.textTheme.labelLarge?.copyWith(
+                color: scheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(width: AppSpacing.xs),
+            DropdownButtonHideUnderline(
+              child: DropdownButton<ProjectSort>(
+                value: query.sort,
+                borderRadius: AppRadius.borderMd,
+                onChanged: (value) {
+                  if (value != null) notifier.setSort(value);
+                },
+                items: const [
+                  DropdownMenuItem(
+                    value: ProjectSort.featuredFirst,
+                    child: Text('Featured first'),
+                  ),
+                  DropdownMenuItem(
+                    value: ProjectSort.nameAsc,
+                    child: Text('Name A–Z'),
+                  ),
+                  DropdownMenuItem(
+                    value: ProjectSort.nameDesc,
+                    child: Text('Name Z–A'),
+                  ),
+                  DropdownMenuItem(
+                    value: ProjectSort.status,
+                    child: Text('Status'),
+                  ),
+                ],
+              ),
             ),
             const Spacer(),
-            AppButton(
-              label: 'Clear filters',
-              variant: AppButtonVariant.text,
-              size: AppButtonSize.small,
-              onPressed: notifier.clearFilters,
-            ),
+            if (hasFilters)
+              AppButton(
+                label: 'Clear filters',
+                variant: AppButtonVariant.text,
+                size: AppButtonSize.small,
+                onPressed: notifier.clearFilters,
+              ),
           ],
         ),
-        const SizedBox(height: AppSpacing.xl),
+        const SizedBox(height: AppSpacing.lg),
         if (catalog.all.isEmpty)
           const AppEmptyState(
             title: 'No projects yet',
@@ -210,7 +200,37 @@ class _CatalogBody extends ConsumerWidget {
               for (final project in filtered) ProjectCard(project: project),
             ],
           ),
-        const SizedBox(height: AppSpacing.xxl),
+        const SizedBox(height: AppSpacing.xl),
+      ],
+    );
+  }
+}
+
+class _FilterRow extends StatelessWidget {
+  const _FilterRow({required this.label, required this.children});
+
+  final String label;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: theme.textTheme.labelLarge?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.xs),
+        Wrap(
+          spacing: AppSpacing.xs,
+          runSpacing: AppSpacing.xs,
+          children: children,
+        ),
       ],
     );
   }

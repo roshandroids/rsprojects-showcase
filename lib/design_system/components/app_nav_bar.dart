@@ -6,8 +6,11 @@ import 'package:go_router/go_router.dart';
 import 'package:rsprojects_showcase/app/router.dart';
 import 'package:rsprojects_showcase/core/constants/app_constants.dart';
 import 'package:rsprojects_showcase/design_system/app_breakpoints.dart';
+import 'package:rsprojects_showcase/design_system/app_elevation.dart';
+import 'package:rsprojects_showcase/design_system/app_motion.dart';
 import 'package:rsprojects_showcase/design_system/app_radius.dart';
 import 'package:rsprojects_showcase/design_system/app_spacing.dart';
+import 'package:rsprojects_showcase/shared/layouts/responsive_content.dart';
 
 /// A single top-navigation destination.
 class AppNavItem {
@@ -35,50 +38,67 @@ abstract final class AppNavItems {
   ];
 }
 
-/// Responsive top navigation with brand mark and active route highlight.
+/// Lightweight sticky top navigation — transparent at rest, solid when scrolled.
 class AppNavBar extends StatelessWidget {
   const AppNavBar({
     required this.location,
     super.key,
+    this.scrolled = false,
     this.items = AppNavItems.primary,
   });
 
   final String location;
+  final bool scrolled;
   final List<AppNavItem> items;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final compact = AppBreakpoints.isCompact(MediaQuery.sizeOf(context).width);
+    final scheme = theme.colorScheme;
+    final width = MediaQuery.sizeOf(context).width;
+    final compact = AppBreakpoints.isCompact(width);
 
-    return Material(
-      color: theme.colorScheme.surface.withValues(alpha: 0.92),
-      surfaceTintColor: theme.colorScheme.surfaceTint,
-      elevation: 0,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: theme.colorScheme.outlineVariant.withValues(alpha: 0.8),
-            ),
+    return AnimatedContainer(
+      duration: AppMotion.fast,
+      curve: AppMotion.standard,
+      decoration: BoxDecoration(
+        color: scrolled
+            ? scheme.surface.withValues(alpha: AppElevation.chromeOpacity)
+            : scheme.surface.withValues(alpha: 0),
+        border: Border(
+          bottom: BorderSide(
+            color: scrolled
+                ? scheme.outlineVariant.withValues(alpha: 0.7)
+                : Colors.transparent,
           ),
         ),
-        child: SafeArea(
-          bottom: false,
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: compact ? AppSpacing.md : AppSpacing.xl,
-              vertical: AppSpacing.sm,
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: Align(
+          alignment: Alignment.center,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: AppBreakpoints.contentMaxWidth,
             ),
-            child: Row(
-              children: [
-                _BrandMark(compact: compact),
-                const Spacer(),
-                if (compact)
-                  _OverflowNav(location: location, items: items)
-                else
-                  _DesktopNav(location: location, items: items),
-              ],
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: ResponsiveContent.horizontalPadding(width),
+                vertical: AppSpacing.xs,
+              ),
+              child: SizedBox(
+                height: 48,
+                child: Row(
+                  children: [
+                    _BrandMark(compact: compact),
+                    const Spacer(),
+                    if (compact)
+                      _OverflowNav(location: location, items: items)
+                    else
+                      _DesktopNav(location: location, items: items),
+                  ],
+                ),
+              ),
             ),
           ),
         ),
@@ -95,13 +115,14 @@ class _BrandMark extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
 
     return InkWell(
       onTap: () => context.go(AppRoutes.home),
       borderRadius: AppRadius.borderSm,
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.xs,
+          horizontal: AppSpacing.xxs,
           vertical: AppSpacing.xxs,
         ),
         child: Row(
@@ -112,43 +133,35 @@ class _BrandMark extends StatelessWidget {
               height: 28,
               decoration: BoxDecoration(
                 borderRadius: AppRadius.borderSm,
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    theme.colorScheme.primary,
-                    theme.colorScheme.secondary,
-                  ],
-                ),
+                color: scheme.primary,
               ),
               alignment: Alignment.center,
               child: Text(
                 'RS',
                 style: theme.textTheme.labelLarge?.copyWith(
-                  color: theme.colorScheme.onPrimary,
+                  color: scheme.onPrimary,
                   fontSize: 11,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),
-            const SizedBox(width: AppSpacing.sm),
-            Text.rich(
-              TextSpan(
-                children: [
-                  TextSpan(
-                    text: AppConstants.appName,
-                    style: theme.textTheme.titleMedium,
-                  ),
-                  if (!compact)
-                    TextSpan(
-                      text: ' ${AppConstants.appTagline}',
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        color: theme.colorScheme.primary,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                ],
+            const SizedBox(width: AppSpacing.xs),
+            Text(
+              AppConstants.appName,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
               ),
             ),
+            if (!compact) ...[
+              const SizedBox(width: AppSpacing.xs),
+              Text(
+                AppConstants.appTagline,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: scheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
           ],
         ),
       ),
@@ -197,8 +210,9 @@ class _OverflowNav extends StatelessWidget {
               child: Text(
                 item.label,
                 style: TextStyle(
-                  fontWeight:
-                      item.isSelected(location) ? FontWeight.w700 : FontWeight.w500,
+                  fontWeight: item.isSelected(location)
+                      ? FontWeight.w600
+                      : FontWeight.w500,
                   color: item.isSelected(location)
                       ? Theme.of(context).colorScheme.primary
                       : null,
@@ -232,26 +246,45 @@ class _NavLink extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final color =
-        selected ? theme.colorScheme.primary : theme.colorScheme.onSurface;
+    final scheme = theme.colorScheme;
 
     return Padding(
-      padding: const EdgeInsets.only(left: AppSpacing.xs),
+      padding: const EdgeInsets.only(left: AppSpacing.xxs),
       child: TextButton(
         onPressed: () => context.go(path),
         style: TextButton.styleFrom(
-          foregroundColor: color,
-          backgroundColor: selected
-              ? theme.colorScheme.primary.withValues(alpha: 0.12)
-              : Colors.transparent,
-          shape: RoundedRectangleBorder(borderRadius: AppRadius.borderButton),
-        ),
-        child: Text(
-          label,
-          style: theme.textTheme.labelLarge?.copyWith(
-            color: color,
-            fontWeight: selected ? FontWeight.w700 : FontWeight.w600,
+          foregroundColor:
+              selected ? scheme.onSurface : scheme.onSurfaceVariant,
+          backgroundColor: Colors.transparent,
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.xs + 4,
+            vertical: AppSpacing.xs,
           ),
+          minimumSize: Size.zero,
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          visualDensity: VisualDensity.compact,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              label,
+              style: theme.textTheme.labelLarge?.copyWith(
+                color: selected ? scheme.onSurface : scheme.onSurfaceVariant,
+                fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 4),
+            AnimatedContainer(
+              duration: AppMotion.fast,
+              height: 2,
+              width: selected ? 16 : 0,
+              decoration: BoxDecoration(
+                color: scheme.primary,
+                borderRadius: BorderRadius.circular(1),
+              ),
+            ),
+          ],
         ),
       ),
     );

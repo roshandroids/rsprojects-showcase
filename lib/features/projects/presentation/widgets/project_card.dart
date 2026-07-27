@@ -26,7 +26,7 @@ IconData _categoryIcon(ProjectCategory category) {
   };
 }
 
-/// Catalog / featured project surface — premium, clearly clickable.
+/// Equal-height project card — cover, title, description, meta, badges, footer.
 class ProjectCard extends StatelessWidget {
   const ProjectCard({required this.project, super.key});
 
@@ -45,109 +45,97 @@ class ProjectCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _CardMedia(project: project),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(
-              AppSpacing.lg,
-              AppSpacing.md,
-              AppSpacing.lg,
-              AppSpacing.lg,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: scheme.primaryContainer.withValues(alpha: 0.7),
-                        borderRadius: AppRadius.borderMd,
-                      ),
-                      alignment: Alignment.center,
-                      child: Icon(
-                        _categoryIcon(project.category),
-                        color: scheme.onPrimaryContainer,
-                        size: 22,
-                      ),
-                    ),
-                    const SizedBox(width: AppSpacing.md),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            project.name,
-                            style: theme.textTheme.titleLarge,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          if (project.tagline != null) ...[
-                            const SizedBox(height: AppSpacing.xxs),
-                            Text(
-                              project.tagline!,
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: scheme.onSurfaceVariant,
-                              ),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.md),
-                Wrap(
-                  spacing: AppSpacing.xs,
-                  runSpacing: AppSpacing.xs,
-                  children: [
-                    if (project.featured)
-                      const AppBadge(
-                        label: 'Featured',
-                        tone: AppBadgeTone.featured,
-                        icon: Icons.star_rounded,
-                      ),
-                    AppBadge(
-                      label: project.status.name,
-                      tone: _statusTone(project.status),
-                    ),
-                    AppBadge(
-                      label: project.category.name,
-                      tone: AppBadgeTone.primary,
-                    ),
-                    ...project.platforms.take(2).map(
-                          (platform) => AppBadge(label: platform),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.sm),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          color: scheme.surfaceContainerHighest,
+                          borderRadius: AppRadius.borderMd,
                         ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.lg),
-                Row(
-                  children: [
-                    Text(
-                      'v${project.version}',
-                      style: theme.textTheme.labelMedium?.copyWith(
-                        color: scheme.onSurfaceVariant,
+                        alignment: Alignment.center,
+                        child: Icon(
+                          _categoryIcon(project.category),
+                          color: scheme.primary,
+                          size: 20,
+                        ),
                       ),
+                      const SizedBox(width: AppSpacing.xs),
+                      Expanded(
+                        child: Text(
+                          project.name,
+                          style: theme.textTheme.titleLarge,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    project.tagline ?? project.description,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: scheme.onSurfaceVariant,
                     ),
-                    const Spacer(),
-                    Text(
-                      'View project',
-                      style: theme.textTheme.labelLarge?.copyWith(
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    'v${project.version} · ${project.category.name}',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: scheme.onSurfaceVariant,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  Wrap(
+                    spacing: AppSpacing.xs,
+                    runSpacing: AppSpacing.xs,
+                    children: [
+                      if (project.featured)
+                        const AppBadge(
+                          label: 'Featured',
+                          tone: AppBadgeTone.featured,
+                        ),
+                      AppBadge(
+                        label: project.status.name,
+                        tone: _statusTone(project.status),
+                      ),
+                      ...project.platforms.take(2).map(
+                            (platform) => AppBadge(label: platform),
+                          ),
+                    ],
+                  ),
+                  const Spacer(),
+                  const SizedBox(height: AppSpacing.xs),
+                  Row(
+                    children: [
+                      Text(
+                        'View project',
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: scheme.primary,
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.xxs),
+                      Icon(
+                        Icons.arrow_forward_rounded,
+                        size: 16,
                         color: scheme.primary,
                       ),
-                    ),
-                    const SizedBox(width: AppSpacing.xxs),
-                    Icon(
-                      Icons.arrow_forward_rounded,
-                      size: 16,
-                      color: scheme.primary,
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -165,32 +153,17 @@ class _CardMedia extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
 
-    return AspectRatio(
-      aspectRatio: 16 / 7,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              scheme.primary.withValues(alpha: 0.22),
-              scheme.surfaceContainerHighest,
-              scheme.tertiary.withValues(alpha: 0.14),
-            ],
+    return ColoredBox(
+      color: scheme.surfaceContainerHighest,
+      child: SizedBox(
+        height: 128,
+        width: double.infinity,
+        child: Center(
+          child: Icon(
+            _categoryIcon(project.category),
+            size: 36,
+            color: scheme.onSurfaceVariant.withValues(alpha: 0.4),
           ),
-        ),
-        child: Stack(
-          children: [
-            Positioned(
-              right: -12,
-              bottom: -18,
-              child: Icon(
-                _categoryIcon(project.category),
-                size: 96,
-                color: scheme.primary.withValues(alpha: 0.12),
-              ),
-            ),
-          ],
         ),
       ),
     );

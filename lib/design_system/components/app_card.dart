@@ -1,4 +1,4 @@
-/// Surface card used across catalog and home — Material 3, hover-aware.
+/// Surface card used across catalog and home — Material 3 tonal, hover-aware.
 library;
 
 import 'package:flutter/material.dart';
@@ -7,7 +7,7 @@ import 'package:rsprojects_showcase/design_system/app_motion.dart';
 import 'package:rsprojects_showcase/design_system/app_radius.dart';
 import 'package:rsprojects_showcase/design_system/app_spacing.dart';
 
-/// Themed card with optional tap handler and web hover elevation.
+/// Themed card with optional tap handler and subtle web hover lift.
 class AppCard extends StatefulWidget {
   const AppCard({
     required this.child,
@@ -39,14 +39,11 @@ class _AppCardState extends State<AppCard> {
     final scheme = Theme.of(context).colorScheme;
     final interactive = widget.onTap != null;
     final raised = widget.elevated || (_hovered && interactive) || _focused;
-    final borderColor = (_hovered || _focused) && interactive
-        ? scheme.outline.withValues(alpha: 0.55)
-        : scheme.outlineVariant.withValues(alpha: 0.7);
 
     final content = widget.clipChild
         ? widget.child
         : Padding(
-            padding: widget.padding ?? const EdgeInsets.all(AppSpacing.lg),
+            padding: widget.padding ?? const EdgeInsets.all(AppSpacing.sm),
             child: widget.child,
           );
 
@@ -63,18 +60,24 @@ class _AppCardState extends State<AppCard> {
           curve: AppMotion.standard,
           decoration: BoxDecoration(
             borderRadius: AppRadius.borderCard,
-            boxShadow: raised ? AppElevation.softShadow(scheme) : null,
+            boxShadow: raised ? AppElevation.hoverShadow(scheme) : null,
           ),
+          transform: raised
+              ? Matrix4.translationValues(0, -2, 0)
+              : Matrix4.identity(),
           child: Material(
             color: raised
                 ? scheme.surfaceContainerHigh
                 : scheme.surfaceContainerLow,
-            surfaceTintColor: scheme.surfaceTint,
-            elevation: raised ? AppElevation.level2 : AppElevation.level0,
-            shadowColor: scheme.shadow.withValues(alpha: 0.18),
+            surfaceTintColor: Colors.transparent,
+            elevation: 0,
             shape: RoundedRectangleBorder(
               borderRadius: AppRadius.borderCard,
-              side: BorderSide(color: borderColor),
+              side: BorderSide(
+                color: raised
+                    ? scheme.outlineVariant.withValues(alpha: 0.9)
+                    : scheme.outlineVariant.withValues(alpha: 0.55),
+              ),
             ),
             clipBehavior: Clip.antiAlias,
             child: interactive

@@ -1,7 +1,8 @@
 /// FlexColorScheme-powered Material 3 theme builders for RSProjects.
 ///
 /// **Why:** Generates polished light/dark [ThemeData] from FlexScheme.tealM3
-/// with Material 3 component theming, surface blends, and semantic extensions.
+/// with Material 3 component theming and semantic extensions — clean surfaces,
+/// no glossy chrome.
 /// **Owner:** Design system (extractable to `rsprojects_design_system`).
 library;
 
@@ -13,9 +14,6 @@ import 'package:rsprojects_showcase/design_system/app_spacing.dart';
 import 'package:rsprojects_showcase/design_system/app_typography.dart';
 
 /// Builds light and dark themes from [FlexScheme.tealM3] (Blue stone teal).
-///
-/// Chosen among FlexColorScheme built-ins for a premium, developer-centric
-/// look: deep teal primary, cool slate surfaces, restrained blue tertiary.
 abstract final class AppTheme {
   AppTheme._();
 
@@ -52,8 +50,8 @@ abstract final class AppTheme {
             scheme: scheme,
             useMaterial3: true,
             swapLegacyOnMaterial3: true,
-            surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
-            blendLevel: 14,
+            surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
+            blendLevel: 4,
             appBarStyle: FlexAppBarStyle.surface,
             tooltipsMatchBackground: true,
             visualDensity: VisualDensity.standard,
@@ -65,8 +63,8 @@ abstract final class AppTheme {
             scheme: scheme,
             useMaterial3: true,
             swapLegacyOnMaterial3: true,
-            surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
-            blendLevel: 16,
+            surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
+            blendLevel: 6,
             appBarStyle: FlexAppBarStyle.surface,
             tooltipsMatchBackground: true,
             visualDensity: VisualDensity.standard,
@@ -78,6 +76,7 @@ abstract final class AppTheme {
 
     return base.copyWith(
       extensions: <ThemeExtension<dynamic>>[semantic],
+      scaffoldBackgroundColor: base.colorScheme.surface,
       appBarTheme: base.appBarTheme.copyWith(
         elevation: 0,
         scrolledUnderElevation: 0,
@@ -86,9 +85,39 @@ abstract final class AppTheme {
       ),
       cardTheme: base.cardTheme.copyWith(
         elevation: 0,
-        surfaceTintColor: base.colorScheme.surfaceTint.withValues(alpha: 0.08),
-        shape: AppRadius.shapeLg,
+        color: base.colorScheme.surfaceContainerLow,
+        surfaceTintColor: Colors.transparent,
+        shape: AppRadius.shapeCard,
         clipBehavior: Clip.antiAlias,
+      ),
+      dividerTheme: DividerThemeData(
+        color: base.colorScheme.outlineVariant.withValues(alpha: 0.6),
+        thickness: 1,
+        space: 1,
+      ),
+      inputDecorationTheme: base.inputDecorationTheme.copyWith(
+        filled: true,
+        fillColor: base.colorScheme.surfaceContainerHighest
+            .withValues(alpha: 0.55),
+        border: OutlineInputBorder(
+          borderRadius: AppRadius.borderSearch,
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: AppRadius.borderSearch,
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: AppRadius.borderSearch,
+          borderSide: BorderSide(
+            color: base.colorScheme.primary.withValues(alpha: 0.45),
+            width: 1.5,
+          ),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.sm,
+          vertical: AppSpacing.xs + 4,
+        ),
       ),
     );
   }
@@ -100,7 +129,8 @@ abstract final class AppTheme {
     useMaterial3Typography: true,
     useM2StyleDividerInM3: false,
     inputDecoratorBorderType: FlexInputBorderType.outline,
-    inputDecoratorRadius: AppRadius.button,
+    inputDecoratorIsFilled: true,
+    inputDecoratorRadius: AppRadius.search,
     filledButtonRadius: AppRadius.button,
     elevatedButtonRadius: AppRadius.button,
     outlinedButtonRadius: AppRadius.button,
@@ -111,13 +141,13 @@ abstract final class AppTheme {
     bottomSheetRadius: AppRadius.dialog,
     navigationBarLabelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
     alignedDropdown: true,
-    defaultRadius: AppRadius.lg,
+    defaultRadius: AppRadius.md,
     thinBorderWidth: 1,
-    thickBorderWidth: 1.5,
-    elevatedButtonElevation: 1,
+    thickBorderWidth: 1,
+    elevatedButtonElevation: 0,
     inputDecoratorContentPadding: EdgeInsets.symmetric(
-      horizontal: AppSpacing.md,
-      vertical: AppSpacing.sm,
+      horizontal: AppSpacing.sm,
+      vertical: AppSpacing.xs + 4,
     ),
   );
 }

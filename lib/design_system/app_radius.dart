@@ -1,4 +1,4 @@
-/// Corner radius / shape tokens (Material 3 expressive).
+/// Corner radius / shape tokens (Material 3, product-web).
 ///
 /// **Why:** Shared shape language for buttons, cards, inputs, and chrome.
 /// **Owner:** Design system (extractable to `rsprojects_design_system`).
@@ -14,23 +14,27 @@ abstract final class AppRadius {
   static const double sm = 8;
   static const double md = 12;
 
-  /// Chips / compact controls (~10–12dp).
-  static const double chip = 11;
+  /// Chips / compact controls.
+  static const double chip = 10;
 
-  /// Buttons / inputs (~12–16dp).
-  static const double button = 14;
+  /// Buttons (~12dp).
+  static const double button = 12;
 
-  /// Cards / large surfaces (~16–20dp).
-  static const double card = 18;
+  /// Search fields and large inputs (16–20).
+  static const double search = 16;
+
+  /// Cards / large surfaces.
+  static const double card = 16;
   static const double lg = 16;
   static const double dialog = 20;
-  static const double xl = 24;
+  static const double xl = 20;
   static const double full = 999;
 
   static final BorderRadius borderSm = BorderRadius.circular(sm);
   static final BorderRadius borderMd = BorderRadius.circular(md);
   static final BorderRadius borderChip = BorderRadius.circular(chip);
   static final BorderRadius borderButton = BorderRadius.circular(button);
+  static final BorderRadius borderSearch = BorderRadius.circular(search);
   static final BorderRadius borderLg = BorderRadius.circular(lg);
   static final BorderRadius borderCard = BorderRadius.circular(card);
   static final BorderRadius borderDialog = BorderRadius.circular(dialog);
@@ -44,4 +48,6 @@ abstract final class AppRadius {
       RoundedRectangleBorder(borderRadius: borderLg);
   static final RoundedRectangleBorder shapeCard =
       RoundedRectangleBorder(borderRadius: borderCard);
+  static final RoundedRectangleBorder shapeSearch =
+      RoundedRectangleBorder(borderRadius: borderSearch);
 }

@@ -1,4 +1,4 @@
-/// Generic project showcase page template — same layout for every RSProjects product.
+/// Generic project showcase — product landing layout for every RSProjects entry.
 ///
 /// Sections render only when content is available. No project-specific UI.
 library;
@@ -33,8 +33,6 @@ class ProjectShowcaseTemplate extends StatelessWidget {
 
   final Project project;
   final List<Project> relatedProjects;
-
-  /// Supporting examples from the registry (filtered by [project.id] in gallery).
   final List<ProjectExample>? examples;
   final VoidCallback? onBack;
 
@@ -45,33 +43,52 @@ class ProjectShowcaseTemplate extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const SizedBox(height: AppSpacing.xl),
-        AppButton(
-          label: 'Back to Projects',
-          variant: AppButtonVariant.text,
-          icon: Icons.arrow_back_rounded,
-          onPressed: onBack ?? () => context.go(AppRoutes.projects),
+        const SizedBox(height: AppSpacing.sm),
+        _Breadcrumb(
+          projectName: project.name,
+          onBack: onBack ?? () => context.go(AppRoutes.projects),
         ),
         const SizedBox(height: AppSpacing.lg),
         _HeroSection(project: project),
-        if (showcase?.problem != null)
-          _TextSection(title: 'Problem Statement', body: showcase!.problem!),
-        if (showcase?.solution != null)
-          _TextSection(title: 'Solution Overview', body: showcase!.solution!),
-        if (showcase != null && showcase.features.isNotEmpty)
+        if (_hasPrimaryActions(project)) ...[
+          const SizedBox(height: AppSpacing.md),
+          _QuickActions(project: project),
+        ],
+        if (showcase?.problem != null || showcase?.solution != null) ...[
+          const SizedBox(height: AppSpacing.section),
+          _OverviewSection(
+            problem: showcase?.problem,
+            solution: showcase?.solution,
+            description: project.description,
+          ),
+        ] else ...[
+          const SizedBox(height: AppSpacing.section),
+          _OverviewSection(description: project.description),
+        ],
+        if (showcase != null && showcase.features.isNotEmpty) ...[
+          const SizedBox(height: AppSpacing.section),
           _FeaturesSection(features: showcase.features),
+        ],
+        const SizedBox(height: AppSpacing.section),
         _DemoSection(project: project, demo: showcase?.demo),
-        if (showcase != null && showcase.galleryItems.isNotEmpty)
+        if (showcase != null && showcase.galleryItems.isNotEmpty) ...[
+          const SizedBox(height: AppSpacing.section),
           _GallerySection(items: showcase.galleryItems),
+        ],
         if (showcase != null &&
             (showcase.architecture != null ||
-                showcase.architectureDiagram != null))
+                showcase.architectureDiagram != null)) ...[
+          const SizedBox(height: AppSpacing.section),
           _ArchitectureSection(
             body: showcase.architecture,
             diagram: showcase.architectureDiagram,
           ),
-        if (showcase != null && showcase.technologies.isNotEmpty)
+        ],
+        if (showcase != null && showcase.technologies.isNotEmpty) ...[
+          const SizedBox(height: AppSpacing.section),
           _TechnologiesSection(technologies: showcase.technologies),
+        ],
+        const SizedBox(height: AppSpacing.section),
         if (showcase != null && showcase.platformSupport.isNotEmpty)
           _PlatformSupportSection(items: showcase.platformSupport)
         else
@@ -81,26 +98,46 @@ class ProjectShowcaseTemplate extends StatelessWidget {
                 ShowcasePlatformSupport(platform: platform),
             ],
           ),
-        if (showcase?.installation != null)
-          _TextSection(title: 'Installation', body: showcase!.installation!),
-        if (showcase != null && showcase.documentationLinks.isNotEmpty)
+        if (showcase?.installation != null) ...[
+          const SizedBox(height: AppSpacing.section),
+          _TextBlock(title: 'Get started', body: showcase!.installation!),
+        ],
+        if (showcase != null && showcase.documentationLinks.isNotEmpty) ...[
+          const SizedBox(height: AppSpacing.section),
           _DocumentationSection(links: showcase.documentationLinks),
-        if (examples != null)
+        ],
+        if (examples != null) ...[
+          const SizedBox(height: AppSpacing.section),
           ExampleGallery(projectId: project.id, examples: examples!),
-        if (showcase != null && showcase.benchmarks.isNotEmpty)
+        ],
+        if (showcase != null && showcase.benchmarks.isNotEmpty) ...[
+          const SizedBox(height: AppSpacing.section),
           _BenchmarksSection(benchmarks: showcase.benchmarks),
-        if (showcase != null && showcase.roadmap.isNotEmpty)
+        ],
+        if (showcase != null && showcase.roadmap.isNotEmpty) ...[
+          const SizedBox(height: AppSpacing.section),
           _RoadmapSection(items: showcase.roadmap),
-        if (showcase != null && showcase.changelog.isNotEmpty)
+        ],
+        if (showcase != null && showcase.changelog.isNotEmpty) ...[
+          const SizedBox(height: AppSpacing.section),
           _ChangelogSection(entries: showcase.changelog),
-        if (showcase != null && showcase.contributors.isNotEmpty)
+        ],
+        if (showcase != null && showcase.contributors.isNotEmpty) ...[
+          const SizedBox(height: AppSpacing.section),
           _ContributorsSection(contributors: showcase.contributors),
-        if (showcase != null && showcase.downloads.isNotEmpty)
+        ],
+        if (showcase != null && showcase.downloads.isNotEmpty) ...[
+          const SizedBox(height: AppSpacing.section),
           _DownloadsSection(downloads: showcase.downloads),
-        if (relatedProjects.isNotEmpty)
+        ],
+        if (relatedProjects.isNotEmpty) ...[
+          const SizedBox(height: AppSpacing.section),
           _RelatedSection(projects: relatedProjects),
-        if (showcase?.contributing != null)
-          _TextSection(title: 'Contributing', body: showcase!.contributing!),
+        ],
+        if (showcase?.contributing != null) ...[
+          const SizedBox(height: AppSpacing.section),
+          _TextBlock(title: 'Contributing', body: showcase!.contributing!),
+        ],
         if (project.tags.isNotEmpty) ...[
           const SizedBox(height: AppSpacing.section),
           AppSectionHeader(
@@ -108,8 +145,62 @@ class ProjectShowcaseTemplate extends StatelessWidget {
             subtitle: project.tags.join(' · '),
           ),
         ],
-        const SizedBox(height: AppSpacing.xxl),
+        const SizedBox(height: AppSpacing.xl),
       ],
+    );
+  }
+
+  bool _hasPrimaryActions(Project project) {
+    return project.demoUrl != null ||
+        project.repositoryUrl != null ||
+        project.docsUrl != null;
+  }
+}
+
+class _Breadcrumb extends StatelessWidget {
+  const _Breadcrumb({required this.projectName, required this.onBack});
+
+  final String projectName;
+  final VoidCallback onBack;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: AppSpacing.xxs,
+        children: [
+          TextButton(
+            onPressed: onBack,
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.xs,
+                vertical: AppSpacing.xxs,
+              ),
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              foregroundColor: scheme.onSurfaceVariant,
+            ),
+            child: const Text('Projects'),
+          ),
+          Icon(
+            Icons.chevron_right_rounded,
+            size: 18,
+            color: scheme.onSurfaceVariant,
+          ),
+          Text(
+            projectName,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: scheme.onSurface,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -126,120 +217,108 @@ class _HeroSection extends StatelessWidget {
     final heroMedia = project.showcase?.heroMedia;
     final compact = AppBreakpoints.isCompact(MediaQuery.sizeOf(context).width);
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        borderRadius: AppRadius.borderCard,
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            scheme.primary.withValues(alpha: 0.1),
-            scheme.surfaceContainerLow,
-            scheme.tertiary.withValues(alpha: 0.06),
-          ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (heroMedia != null) ...[
+          _HeroMediaBanner(media: heroMedia),
+          const SizedBox(height: AppSpacing.lg),
+        ] else ...[
+          AspectRatio(
+            aspectRatio: 21 / 9,
+            child: Material(
+              color: scheme.surfaceContainerHighest,
+              borderRadius: AppRadius.borderCard,
+              child: Center(
+                child: Icon(
+                  Icons.layers_outlined,
+                  size: 48,
+                  color: scheme.onSurfaceVariant.withValues(alpha: 0.4),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.lg),
+        ],
+        if (project.featured) ...[
+          const Align(
+            alignment: Alignment.centerLeft,
+            child: AppBadge(
+              label: 'Featured',
+              tone: AppBadgeTone.featured,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+        ],
+        Text(
+          project.name,
+          style: compact
+              ? theme.textTheme.displaySmall
+              : theme.textTheme.displayMedium,
         ),
-        border: Border.all(color: scheme.outlineVariant.withValues(alpha: 0.7)),
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(compact ? AppSpacing.lg : AppSpacing.xl),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        if (project.tagline != null) ...[
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            project.tagline!,
+            style: theme.textTheme.headlineSmall?.copyWith(
+              color: scheme.onSurfaceVariant,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+        const SizedBox(height: AppSpacing.sm),
+        Wrap(
+          spacing: AppSpacing.xs,
+          runSpacing: AppSpacing.xs,
           children: [
-            if (heroMedia != null) ...[
-              _HeroMediaBanner(media: heroMedia),
-              const SizedBox(height: AppSpacing.xl),
-            ],
-            if (project.featured) ...[
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: AppBadge(
-                  label: 'Featured',
-                  tone: AppBadgeTone.featured,
-                  icon: Icons.star_rounded,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.sm),
-            ],
-            Text(
-              project.name,
-              style: compact
-                  ? theme.textTheme.headlineMedium
-                  : theme.textTheme.displaySmall,
+            AppBadge(
+              label: project.status.name,
+              tone: statusTone(project.status),
             ),
-            if (project.tagline != null) ...[
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                project.tagline!,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  color: scheme.onSurfaceVariant,
-                ),
-              ),
-            ],
-            const SizedBox(height: AppSpacing.lg),
-            Wrap(
-              spacing: AppSpacing.sm,
-              runSpacing: AppSpacing.sm,
-              children: [
-                AppBadge(
-                  label: project.status.name,
-                  tone: statusTone(project.status),
-                ),
-                AppBadge(
-                  label: project.category.name,
-                  tone: AppBadgeTone.primary,
-                ),
-                AppBadge(label: 'v${project.version}'),
-                ...project.platforms.map((platform) => AppBadge(label: platform)),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.xl),
-            Text(
-              project.description,
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: scheme.onSurface.withValues(alpha: 0.88),
-                height: 1.55,
-              ),
-            ),
-            if (_hasPrimaryActions(project)) ...[
-              const SizedBox(height: AppSpacing.xl),
-              Wrap(
-                spacing: AppSpacing.md,
-                runSpacing: AppSpacing.sm,
-                children: [
-                  if (project.demoUrl != null)
-                    _UrlAction(
-                      label: 'Demo',
-                      url: project.demoUrl!,
-                      variant: AppButtonVariant.primary,
-                      icon: Icons.play_circle_outline_rounded,
-                    ),
-                  if (project.repositoryUrl != null)
-                    _UrlAction(
-                      label: 'GitHub',
-                      url: project.repositoryUrl!,
-                      variant: AppButtonVariant.secondary,
-                      icon: Icons.code_rounded,
-                    ),
-                  if (project.docsUrl != null)
-                    _UrlAction(
-                      label: 'Documentation',
-                      url: project.docsUrl!,
-                      variant: AppButtonVariant.text,
-                      icon: Icons.menu_book_rounded,
-                    ),
-                ],
-              ),
-            ],
+            AppBadge(label: project.category.name),
+            AppBadge(label: 'v${project.version}'),
+            ...project.platforms.map((platform) => AppBadge(label: platform)),
           ],
         ),
-      ),
+      ],
     );
   }
+}
 
-  bool _hasPrimaryActions(Project project) {
-    return project.demoUrl != null ||
-        project.repositoryUrl != null ||
-        project.docsUrl != null;
+class _QuickActions extends StatelessWidget {
+  const _QuickActions({required this.project});
+
+  final Project project;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: AppSpacing.xs,
+      runSpacing: AppSpacing.xs,
+      children: [
+        if (project.demoUrl != null)
+          _UrlAction(
+            label: 'Try demo',
+            url: project.demoUrl!,
+            variant: AppButtonVariant.primary,
+            icon: Icons.play_arrow_rounded,
+          ),
+        if (project.repositoryUrl != null)
+          _UrlAction(
+            label: 'GitHub',
+            url: project.repositoryUrl!,
+            variant: AppButtonVariant.secondary,
+            icon: Icons.code_rounded,
+          ),
+        if (project.docsUrl != null)
+          _UrlAction(
+            label: 'Docs',
+            url: project.docsUrl!,
+            variant: AppButtonVariant.tonal,
+            icon: Icons.menu_book_rounded,
+          ),
+      ],
+    );
   }
 }
 
@@ -251,14 +330,15 @@ class _HeroMediaBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final label = media.alt ?? switch (media.kind) {
+    final label = media.alt ??
+        switch (media.kind) {
           ShowcaseHeroMediaKind.video => 'Hero video',
           ShowcaseHeroMediaKind.lottie => 'Hero animation',
           ShowcaseHeroMediaKind.image => 'Hero image',
         };
 
     return ClipRRect(
-      borderRadius: AppRadius.borderLg,
+      borderRadius: AppRadius.borderCard,
       child: AspectRatio(
         aspectRatio: 21 / 9,
         child: ColoredBox(
@@ -335,7 +415,6 @@ class _UrlAction extends StatelessWidget {
         variant: variant,
         icon: icon,
         onPressed: () {
-          // Phase 1.5: expose URL via snackbar until url_launcher is added.
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(url)),
           );
@@ -345,18 +424,130 @@ class _UrlAction extends StatelessWidget {
   }
 }
 
-class _TextSection extends StatelessWidget {
-  const _TextSection({required this.title, required this.body});
+class _OverviewSection extends StatelessWidget {
+  const _OverviewSection({
+    this.problem,
+    this.solution,
+    this.description,
+  });
+
+  final String? problem;
+  final String? solution;
+  final String? description;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const AppSectionHeader(
+          title: 'Overview',
+          subtitle: 'What this product is and why it exists.',
+        ),
+        const SizedBox(height: AppSpacing.md),
+        if (description != null) ...[
+          Text(
+            description!,
+            style: theme.textTheme.bodyLarge?.copyWith(height: 1.6),
+          ),
+          if (problem != null || solution != null)
+            const SizedBox(height: AppSpacing.md),
+        ],
+        if (problem != null || solution != null)
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final stacked = constraints.maxWidth < AppBreakpoints.compact;
+              final problemCard = problem == null
+                  ? null
+                  : _OverviewCard(
+                      title: 'Problem',
+                      body: problem!,
+                      scheme: scheme,
+                      theme: theme,
+                    );
+              final solutionCard = solution == null
+                  ? null
+                  : _OverviewCard(
+                      title: 'Solution',
+                      body: solution!,
+                      scheme: scheme,
+                      theme: theme,
+                    );
+
+              if (stacked) {
+                return Column(
+                  children: [
+                    ?problemCard,
+                    if (problemCard != null && solutionCard != null)
+                      const SizedBox(height: AppSpacing.sm),
+                    ?solutionCard,
+                  ],
+                );
+              }
+
+              return IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (problemCard != null) Expanded(child: problemCard),
+                    if (problemCard != null && solutionCard != null)
+                      const SizedBox(width: AppSpacing.sm),
+                    if (solutionCard != null) Expanded(child: solutionCard),
+                  ],
+                ),
+              );
+            },
+          ),
+      ],
+    );
+  }
+}
+
+class _OverviewCard extends StatelessWidget {
+  const _OverviewCard({
+    required this.title,
+    required this.body,
+    required this.scheme,
+    required this.theme,
+  });
+
+  final String title;
+  final String body;
+  final ColorScheme scheme;
+  final ThemeData theme;
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: scheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Text(body, style: theme.textTheme.bodyLarge),
+        ],
+      ),
+    );
+  }
+}
+
+class _TextBlock extends StatelessWidget {
+  const _TextBlock({required this.title, required this.body});
 
   final String title;
   final String body;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: AppSpacing.section),
-      child: AppSectionHeader(title: title, subtitle: body),
-    );
+    return AppSectionHeader(title: title, subtitle: body);
   }
 }
 
@@ -370,49 +561,44 @@ class _FeaturesSection extends StatelessWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
 
-    return Padding(
-      padding: const EdgeInsets.only(top: AppSpacing.section),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const AppSectionHeader(title: 'Key Features'),
-          const SizedBox(height: AppSpacing.xl),
-          AppGrid(
-            minTileWidth: 240,
-            children: [
-              for (final feature in features)
-                AppCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            _featureIcon(feature.icon),
-                            color: scheme.primary,
-                          ),
-                          const SizedBox(width: AppSpacing.sm),
-                          Expanded(
-                            child: Text(
-                              feature.title,
-                              style: theme.textTheme.titleMedium,
-                            ),
-                          ),
-                        ],
-                      ),
-                      if (feature.description != null) ...[
-                        const SizedBox(height: AppSpacing.sm),
-                        Text(
-                          feature.description!,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: scheme.onSurface.withValues(alpha: 0.72),
-                          ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const AppSectionHeader(
+          title: 'Features',
+          subtitle: 'Capabilities that define this product.',
+        ),
+        const SizedBox(height: AppSpacing.md),
+        AppGrid(
+          minTileWidth: 240,
+          children: [
+            for (final feature in features)
+              AppCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      _featureIcon(feature.icon),
+                      color: scheme.primary,
+                      size: 24,
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    Text(feature.title, style: theme.textTheme.titleLarge),
+                    if (feature.description != null) ...[
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(
+                        feature.description!,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: scheme.onSurfaceVariant,
                         ),
-                      ],
-                      if (feature.media != null) ...[
-                        const SizedBox(height: AppSpacing.md),
-                        AspectRatio(
-                          aspectRatio: 16 / 10,
+                      ),
+                    ],
+                    if (feature.media != null) ...[
+                      const SizedBox(height: AppSpacing.sm),
+                      AspectRatio(
+                        aspectRatio: 16 / 10,
+                        child: ClipRRect(
+                          borderRadius: AppRadius.borderMd,
                           child: ColoredBox(
                             color: scheme.surfaceContainerHighest,
                             child: feature.media!.src != null &&
@@ -432,14 +618,14 @@ class _FeaturesSection extends StatelessWidget {
                                   ),
                           ),
                         ),
-                      ],
+                      ),
                     ],
-                  ),
+                  ],
                 ),
-            ],
-          ),
-        ],
-      ),
+              ),
+          ],
+        ),
+      ],
     );
   }
 }
@@ -463,55 +649,41 @@ class _DemoSection extends StatelessWidget {
             ? null
             : 'Interactive demo is not available yet for this project.');
 
-    return Padding(
-      padding: const EdgeInsets.only(top: AppSpacing.section),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const AppSectionHeader(title: 'Interactive Demo'),
-          const SizedBox(height: AppSpacing.lg),
-          AppCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(
-                      available
-                          ? Icons.play_circle_outline_rounded
-                          : Icons.hourglass_empty_rounded,
-                      color: scheme.primary,
-                    ),
-                    const SizedBox(width: AppSpacing.sm),
-                    Text(
-                      available ? 'Demo available' : 'Demo placeholder',
-                      style: theme.textTheme.titleMedium,
-                    ),
-                  ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const AppSectionHeader(title: 'Demo'),
+        const SizedBox(height: AppSpacing.sm),
+        AppCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                available ? 'Demo available' : 'Coming soon',
+                style: theme.textTheme.titleLarge,
+              ),
+              if (note != null) ...[
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  note,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                  ),
                 ),
-                if (note != null) ...[
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    note,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: scheme.onSurface.withValues(alpha: 0.72),
-                    ),
-                  ),
-                ],
-                if (url != null) ...[
-                  const SizedBox(height: AppSpacing.md),
-                  SelectableText(
-                    url,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: scheme.primary,
-                    ),
-                  ),
-                ],
               ],
-            ),
+              if (url != null) ...[
+                const SizedBox(height: AppSpacing.sm),
+                SelectableText(
+                  url,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: scheme.primary,
+                  ),
+                ),
+              ],
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -526,67 +698,56 @@ class _GallerySection extends StatelessWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
 
-    return Padding(
-      padding: const EdgeInsets.only(top: AppSpacing.section),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const AppSectionHeader(title: 'Screenshots / Gallery'),
-          const SizedBox(height: AppSpacing.xl),
-          AppGrid(
-            minTileWidth: 220,
-            children: [
-              for (final item in items)
-                AppCard(
-                  padding: EdgeInsets.zero,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      AspectRatio(
-                        aspectRatio: 16 / 10,
-                        child: ColoredBox(
-                          color: scheme.surfaceContainerHighest,
-                          child: item.src != null && item.src!.isNotEmpty
-                              ? Image.asset(
-                                  item.src!,
-                                  fit: BoxFit.cover,
-                                  semanticLabel: item.alt,
-                                  errorBuilder: (_, _, _) =>
-                                      _GalleryPlaceholder(
-                                    label: item.alt,
-                                    icon: _mediaKindIcon(item.kind),
-                                  ),
-                                )
-                              : _GalleryPlaceholder(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const AppSectionHeader(
+          title: 'Gallery',
+          subtitle: 'Screenshots and visuals from the product.',
+        ),
+        const SizedBox(height: AppSpacing.md),
+        AppGrid(
+          minTileWidth: 220,
+          children: [
+            for (final item in items)
+              AppCard(
+                clipChild: true,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    AspectRatio(
+                      aspectRatio: 16 / 10,
+                      child: ColoredBox(
+                        color: scheme.surfaceContainerHighest,
+                        child: item.src != null && item.src!.isNotEmpty
+                            ? Image.asset(
+                                item.src!,
+                                fit: BoxFit.cover,
+                                semanticLabel: item.alt,
+                                errorBuilder: (_, _, _) => _GalleryPlaceholder(
                                   label: item.alt,
                                   icon: _mediaKindIcon(item.kind),
                                 ),
-                        ),
+                              )
+                            : _GalleryPlaceholder(
+                                label: item.alt,
+                                icon: _mediaKindIcon(item.kind),
+                              ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(AppSpacing.md),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            AppBadge(
-                              label: item.kind.name,
-                              tone: AppBadgeTone.neutral,
-                            ),
-                            const SizedBox(height: AppSpacing.xs),
-                            Text(
-                              item.caption ?? item.alt,
-                              style: theme.textTheme.bodyMedium,
-                            ),
-                          ],
-                        ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(AppSpacing.sm),
+                      child: Text(
+                        item.caption ?? item.alt,
+                        style: theme.textTheme.bodyMedium,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-            ],
-          ),
-        ],
-      ),
+              ),
+          ],
+        ),
+      ],
     );
   }
 }
@@ -605,16 +766,18 @@ class _GalleryPlaceholder extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.sm),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, color: scheme.primary, size: 32),
-            const SizedBox(height: AppSpacing.sm),
+            Icon(icon, color: scheme.onSurfaceVariant, size: 28),
+            const SizedBox(height: AppSpacing.xs),
             Text(
               label,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.labelLarge,
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                  ),
             ),
           ],
         ),
@@ -634,56 +797,53 @@ class _ArchitectureSection extends StatelessWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
 
-    return Padding(
-      padding: const EdgeInsets.only(top: AppSpacing.section),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          AppSectionHeader(
-            title: 'Architecture Overview',
-            subtitle: body,
-          ),
-          if (diagram != null) ...[
-            const SizedBox(height: AppSpacing.xl),
-            AppCard(
-              padding: EdgeInsets.zero,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  AspectRatio(
-                    aspectRatio: 16 / 9,
-                    child: ColoredBox(
-                      color: scheme.surfaceContainerHighest,
-                      child: diagram!.src != null && diagram!.src!.isNotEmpty
-                          ? Image.asset(
-                              diagram!.src!,
-                              fit: BoxFit.contain,
-                              semanticLabel: diagram!.alt,
-                              errorBuilder: (_, _, _) => _GalleryPlaceholder(
-                                label: diagram!.alt,
-                                icon: Icons.schema_outlined,
-                              ),
-                            )
-                          : _GalleryPlaceholder(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        AppSectionHeader(
+          title: 'Architecture',
+          subtitle: body,
+        ),
+        if (diagram != null) ...[
+          const SizedBox(height: AppSpacing.md),
+          AppCard(
+            clipChild: true,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: ColoredBox(
+                    color: scheme.surfaceContainerHighest,
+                    child: diagram!.src != null && diagram!.src!.isNotEmpty
+                        ? Image.asset(
+                            diagram!.src!,
+                            fit: BoxFit.contain,
+                            semanticLabel: diagram!.alt,
+                            errorBuilder: (_, _, _) => _GalleryPlaceholder(
                               label: diagram!.alt,
                               icon: Icons.schema_outlined,
                             ),
+                          )
+                        : _GalleryPlaceholder(
+                            label: diagram!.alt,
+                            icon: Icons.schema_outlined,
+                          ),
+                  ),
+                ),
+                if (diagram!.caption != null)
+                  Padding(
+                    padding: const EdgeInsets.all(AppSpacing.sm),
+                    child: Text(
+                      diagram!.caption!,
+                      style: theme.textTheme.bodyMedium,
                     ),
                   ),
-                  if (diagram!.caption != null)
-                    Padding(
-                      padding: const EdgeInsets.all(AppSpacing.md),
-                      child: Text(
-                        diagram!.caption!,
-                        style: theme.textTheme.bodyMedium,
-                      ),
-                    ),
-                ],
-              ),
+              ],
             ),
-          ],
+          ),
         ],
-      ),
+      ],
     );
   }
 }
@@ -695,23 +855,19 @@ class _TechnologiesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: AppSpacing.section),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const AppSectionHeader(title: 'Technologies Used'),
-          const SizedBox(height: AppSpacing.lg),
-          Wrap(
-            spacing: AppSpacing.sm,
-            runSpacing: AppSpacing.sm,
-            children: [
-              for (final tech in technologies)
-                AppBadge(label: tech, tone: AppBadgeTone.primary),
-            ],
-          ),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const AppSectionHeader(title: 'Stack'),
+        const SizedBox(height: AppSpacing.sm),
+        Wrap(
+          spacing: AppSpacing.xs,
+          runSpacing: AppSpacing.xs,
+          children: [
+            for (final tech in technologies) AppBadge(label: tech),
+          ],
+        ),
+      ],
     );
   }
 }
@@ -725,33 +881,35 @@ class _PlatformSupportSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Padding(
-      padding: const EdgeInsets.only(top: AppSpacing.section),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const AppSectionHeader(title: 'Platform Support'),
-          const SizedBox(height: AppSpacing.lg),
-          AppGrid(
-            minTileWidth: 200,
-            children: [
-              for (final item in items)
-                AppCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      AppBadge(label: item.platform),
-                      if (item.notes != null) ...[
-                        const SizedBox(height: AppSpacing.sm),
-                        Text(item.notes!, style: theme.textTheme.bodyMedium),
-                      ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const AppSectionHeader(title: 'Platforms'),
+        const SizedBox(height: AppSpacing.sm),
+        AppGrid(
+          minTileWidth: 200,
+          children: [
+            for (final item in items)
+              AppCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(item.platform, style: theme.textTheme.titleMedium),
+                    if (item.notes != null) ...[
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(
+                        item.notes!,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
                     ],
-                  ),
+                  ],
                 ),
-            ],
-          ),
-        ],
-      ),
+              ),
+          ],
+        ),
+      ],
     );
   }
 }
@@ -765,41 +923,35 @@ class _DocumentationSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Padding(
-      padding: const EdgeInsets.only(top: AppSpacing.section),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const AppSectionHeader(title: 'Documentation Links'),
-          const SizedBox(height: AppSpacing.lg),
-          Wrap(
-            spacing: AppSpacing.md,
-            runSpacing: AppSpacing.sm,
-            children: [
-              for (final link in links)
-                AppCard(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.md,
-                    vertical: AppSpacing.sm,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(link.label, style: theme.textTheme.labelLarge),
-                      const SizedBox(height: AppSpacing.xxs),
-                      SelectableText(
-                        link.url,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.primary,
-                        ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const AppSectionHeader(title: 'Documentation'),
+        const SizedBox(height: AppSpacing.sm),
+        Wrap(
+          spacing: AppSpacing.sm,
+          runSpacing: AppSpacing.sm,
+          children: [
+            for (final link in links)
+              AppCard(
+                padding: const EdgeInsets.all(AppSpacing.sm),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(link.label, style: theme.textTheme.titleSmall),
+                    const SizedBox(height: AppSpacing.xxs),
+                    SelectableText(
+                      link.url,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.primary,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-            ],
-          ),
-        ],
-      ),
+              ),
+          ],
+        ),
+      ],
     );
   }
 }
@@ -812,50 +964,47 @@ class _BenchmarksSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
 
-    return Padding(
-      padding: const EdgeInsets.only(top: AppSpacing.section),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const AppSectionHeader(
-            title: 'Benchmarks',
-            subtitle: 'Performance and quality targets for this product.',
-          ),
-          const SizedBox(height: AppSpacing.xl),
-          AppGrid(
-            minTileWidth: 180,
-            children: [
-              for (final bench in benchmarks)
-                AppCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(bench.label, style: theme.textTheme.labelLarge),
-                      const SizedBox(height: AppSpacing.sm),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const AppSectionHeader(
+          title: 'Benchmarks',
+          subtitle: 'Performance and quality targets.',
+        ),
+        const SizedBox(height: AppSpacing.md),
+        AppGrid(
+          minTileWidth: 180,
+          children: [
+            for (final bench in benchmarks)
+              AppCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      bench.label,
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        color: scheme.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(bench.value, style: theme.textTheme.headlineMedium),
+                    if (bench.note != null) ...[
+                      const SizedBox(height: AppSpacing.xs),
                       Text(
-                        bench.value,
-                        style: theme.textTheme.headlineSmall?.copyWith(
-                          color: theme.colorScheme.primary,
+                        bench.note!,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: scheme.onSurfaceVariant,
                         ),
                       ),
-                      if (bench.note != null) ...[
-                        const SizedBox(height: AppSpacing.sm),
-                        Text(
-                          bench.note!,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.colorScheme.onSurface
-                                .withValues(alpha: 0.64),
-                          ),
-                        ),
-                      ],
                     ],
-                  ),
+                  ],
                 ),
-            ],
-          ),
-        ],
-      ),
+              ),
+          ],
+        ),
+      ],
     );
   }
 }
@@ -868,16 +1017,26 @@ class _RoadmapSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
 
-    return Padding(
-      padding: const EdgeInsets.only(top: AppSpacing.section),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const AppSectionHeader(title: 'Roadmap'),
-          const SizedBox(height: AppSpacing.lg),
-          for (final item in items) ...[
-            Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const AppSectionHeader(title: 'Roadmap'),
+        const SizedBox(height: AppSpacing.sm),
+        for (final item in items) ...[
+          Container(
+            padding: const EdgeInsets.symmetric(
+              vertical: AppSpacing.sm,
+            ),
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: scheme.outlineVariant.withValues(alpha: 0.55),
+                ),
+              ),
+            ),
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (item.status != null) ...[
@@ -889,17 +1048,16 @@ class _RoadmapSection extends StatelessWidget {
                       ShowcaseRoadmapStatus.planned => AppBadgeTone.neutral,
                     },
                   ),
-                  const SizedBox(width: AppSpacing.md),
+                  const SizedBox(width: AppSpacing.sm),
                 ],
                 Expanded(
                   child: Text(item.item, style: theme.textTheme.bodyLarge),
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacing.md),
-          ],
+          ),
         ],
-      ),
+      ],
     );
   }
 }
@@ -914,47 +1072,41 @@ class _ChangelogSection extends StatelessWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
 
-    return Padding(
-      padding: const EdgeInsets.only(top: AppSpacing.section),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const AppSectionHeader(
-            title: 'Changelog',
-            subtitle: 'Release history for this product.',
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          for (final entry in entries) ...[
-            AppCard(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      AppBadge(
-                        label: 'v${entry.version}',
-                        tone: AppBadgeTone.primary,
-                      ),
-                      if (entry.date != null) ...[
-                        const SizedBox(width: AppSpacing.sm),
-                        Text(
-                          entry.date!,
-                          style: theme.textTheme.labelMedium?.copyWith(
-                            color: scheme.onSurface.withValues(alpha: 0.56),
-                          ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const AppSectionHeader(title: 'Changelog'),
+        const SizedBox(height: AppSpacing.sm),
+        for (final entry in entries) ...[
+          AppCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    AppBadge(
+                      label: 'v${entry.version}',
+                      tone: AppBadgeTone.primary,
+                    ),
+                    if (entry.date != null) ...[
+                      const SizedBox(width: AppSpacing.xs),
+                      Text(
+                        entry.date!,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: scheme.onSurfaceVariant,
                         ),
-                      ],
+                      ),
                     ],
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(entry.notes, style: theme.textTheme.bodyMedium),
-                ],
-              ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                Text(entry.notes, style: theme.textTheme.bodyMedium),
+              ],
             ),
-            const SizedBox(height: AppSpacing.md),
-          ],
+          ),
+          const SizedBox(height: AppSpacing.sm),
         ],
-      ),
+      ],
     );
   }
 }
@@ -969,69 +1121,66 @@ class _ContributorsSection extends StatelessWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
 
-    return Padding(
-      padding: const EdgeInsets.only(top: AppSpacing.section),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const AppSectionHeader(title: 'Contributors'),
-          const SizedBox(height: AppSpacing.xl),
-          AppGrid(
-            minTileWidth: 200,
-            children: [
-              for (final person in contributors)
-                AppCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 18,
-                            backgroundColor: scheme.primaryContainer,
-                            child: Text(
-                              person.name.isNotEmpty
-                                  ? person.name[0].toUpperCase()
-                                  : '?',
-                              style: theme.textTheme.titleSmall?.copyWith(
-                                color: scheme.onPrimaryContainer,
-                              ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const AppSectionHeader(title: 'Contributors'),
+        const SizedBox(height: AppSpacing.md),
+        AppGrid(
+          minTileWidth: 200,
+          children: [
+            for (final person in contributors)
+              AppCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 18,
+                          backgroundColor: scheme.surfaceContainerHighest,
+                          child: Text(
+                            person.name.isNotEmpty
+                                ? person.name[0].toUpperCase()
+                                : '?',
+                            style: theme.textTheme.titleSmall?.copyWith(
+                              color: scheme.onSurface,
                             ),
                           ),
-                          const SizedBox(width: AppSpacing.md),
-                          Expanded(
-                            child: Text(
-                              person.name,
-                              style: theme.textTheme.titleMedium,
-                            ),
+                        ),
+                        const SizedBox(width: AppSpacing.xs),
+                        Expanded(
+                          child: Text(
+                            person.name,
+                            style: theme.textTheme.titleMedium,
                           ),
-                        ],
+                        ),
+                      ],
+                    ),
+                    if (person.role != null) ...[
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(
+                        person.role!,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: scheme.onSurfaceVariant,
+                        ),
                       ),
-                      if (person.role != null) ...[
-                        const SizedBox(height: AppSpacing.sm),
-                        Text(
-                          person.role!,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: scheme.onSurface.withValues(alpha: 0.72),
-                          ),
-                        ),
-                      ],
-                      if (person.url != null) ...[
-                        const SizedBox(height: AppSpacing.sm),
-                        SelectableText(
-                          person.url!,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: scheme.primary,
-                          ),
-                        ),
-                      ],
                     ],
-                  ),
+                    if (person.url != null) ...[
+                      const SizedBox(height: AppSpacing.xs),
+                      SelectableText(
+                        person.url!,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: scheme.primary,
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
-            ],
-          ),
-        ],
-      ),
+              ),
+          ],
+        ),
+      ],
     );
   }
 }
@@ -1046,63 +1195,46 @@ class _DownloadsSection extends StatelessWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
 
-    return Padding(
-      padding: const EdgeInsets.only(top: AppSpacing.section),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const AppSectionHeader(title: 'Downloads'),
-          const SizedBox(height: AppSpacing.xl),
-          AppGrid(
-            minTileWidth: 220,
-            children: [
-              for (final item in downloads)
-                AppCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.download_outlined,
-                            color: scheme.primary,
-                          ),
-                          const SizedBox(width: AppSpacing.sm),
-                          Expanded(
-                            child: Text(
-                              item.label,
-                              style: theme.textTheme.titleMedium,
-                            ),
-                          ),
-                        ],
-                      ),
-                      if (item.platform != null) ...[
-                        const SizedBox(height: AppSpacing.sm),
-                        AppBadge(label: item.platform!),
-                      ],
-                      const SizedBox(height: AppSpacing.sm),
-                      SelectableText(
-                        item.url,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: scheme.primary,
-                        ),
-                      ),
-                      if (item.checksum != null) ...[
-                        const SizedBox(height: AppSpacing.xs),
-                        Text(
-                          item.checksum!,
-                          style: theme.textTheme.labelSmall?.copyWith(
-                            color: scheme.onSurface.withValues(alpha: 0.56),
-                          ),
-                        ),
-                      ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const AppSectionHeader(title: 'Downloads'),
+        const SizedBox(height: AppSpacing.md),
+        AppGrid(
+          minTileWidth: 220,
+          children: [
+            for (final item in downloads)
+              AppCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(item.label, style: theme.textTheme.titleLarge),
+                    if (item.platform != null) ...[
+                      const SizedBox(height: AppSpacing.xs),
+                      AppBadge(label: item.platform!),
                     ],
-                  ),
+                    const SizedBox(height: AppSpacing.xs),
+                    SelectableText(
+                      item.url,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: scheme.primary,
+                      ),
+                    ),
+                    if (item.checksum != null) ...[
+                      const SizedBox(height: AppSpacing.xxs),
+                      Text(
+                        item.checksum!,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: scheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
-            ],
-          ),
-        ],
-      ),
+              ),
+          ],
+        ),
+      ],
     );
   }
 }
@@ -1114,23 +1246,20 @@ class _RelatedSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: AppSpacing.section),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const AppSectionHeader(
-            title: 'Related RSProjects',
-            subtitle: 'Other products from the same registry.',
-          ),
-          const SizedBox(height: AppSpacing.xl),
-          AppGrid(
-            children: [
-              for (final project in projects) ProjectCard(project: project),
-            ],
-          ),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const AppSectionHeader(
+          title: 'Related projects',
+          subtitle: 'Other products from the same registry.',
+        ),
+        const SizedBox(height: AppSpacing.md),
+        AppGrid(
+          children: [
+            for (final project in projects) ProjectCard(project: project),
+          ],
+        ),
+      ],
     );
   }
 }

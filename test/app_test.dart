@@ -98,6 +98,6 @@ void main() {
     router.go(AppRoutes.projectDetailPath('document_platform'));
     await pumpFrames(tester);
 
-    expect(find.text('Document Platform'), findsOneWidget);
+    expect(find.text('Document Platform'), findsWidgets);
   });
 }

@@ -1,4 +1,4 @@
-/// Application chrome: top navigation, content area, footer.
+/// Application chrome: sticky navigation, scrollable content, page footer.
 library;
 
 import 'package:flutter/material.dart';
@@ -7,7 +7,10 @@ import 'package:rsprojects_showcase/app/router.dart';
 import 'package:rsprojects_showcase/design_system/design_system.dart';
 
 /// Top-level layout wrapping routed page content.
-class AppShell extends StatelessWidget {
+///
+/// Navigation stays fixed; page body scrolls and owns the footer so the
+/// footer relates to content rather than floating on the viewport.
+class AppShell extends StatefulWidget {
   const AppShell({
     required this.child,
     super.key,
@@ -18,37 +21,38 @@ class AppShell extends StatelessWidget {
   final String? locationOverride;
 
   @override
+  State<AppShell> createState() => _AppShellState();
+}
+
+class _AppShellState extends State<AppShell> {
+  bool _scrolled = false;
+
+  @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
-    final location = locationOverride ?? _matchedLocation(context);
+    final scheme = Theme.of(context).colorScheme;
+    final location = widget.locationOverride ?? _matchedLocation(context);
 
     return Scaffold(
-      body: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              scheme.surface,
-              Color.lerp(
-                    scheme.surface,
-                    scheme.primary,
-                    theme.brightness == Brightness.light ? 0.06 : 0.12,
-                  ) ??
-                  scheme.surface,
-              scheme.surface,
-            ],
-            stops: const [0.0, 0.45, 1.0],
+      backgroundColor: scheme.surface,
+      body: Column(
+        children: [
+          AppNavBar(location: location, scrolled: _scrolled),
+          Expanded(
+            child: NotificationListener<ScrollNotification>(
+              onNotification: (notification) {
+                if (notification.metrics.axis != Axis.vertical) {
+                  return false;
+                }
+                final next = notification.metrics.pixels > 8;
+                if (next != _scrolled) {
+                  setState(() => _scrolled = next);
+                }
+                return false;
+              },
+              child: widget.child,
+            ),
           ),
-        ),
-        child: Column(
-          children: [
-            AppNavBar(location: location),
-            Expanded(child: child),
-            const AppFooter(),
-          ],
-        ),
+        ],
       ),
     );
   }

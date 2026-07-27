@@ -1,4 +1,4 @@
-/// Status / platform / featured badges — Material 3 tonal chips.
+/// Status / platform badges — restrained Material 3 tonal chips.
 library;
 
 import 'package:flutter/material.dart';
@@ -6,9 +6,10 @@ import 'package:rsprojects_showcase/design_system/app_colors.dart';
 import 'package:rsprojects_showcase/design_system/app_radius.dart';
 import 'package:rsprojects_showcase/design_system/app_spacing.dart';
 
+/// Hierarchy: neutral (default) → primary (emphasis) → success/warning (status).
 enum AppBadgeTone { neutral, primary, success, warning, info, featured }
 
-/// Compact label badge with outline + tonal fill.
+/// Compact label badge with soft tonal fill — no heavy borders.
 class AppBadge extends StatelessWidget {
   const AppBadge({
     required this.label,
@@ -27,36 +28,31 @@ class AppBadge extends StatelessWidget {
     final scheme = theme.colorScheme;
     final semantic = context.semanticColors;
 
-    final (Color bg, Color fg, Color border) = switch (tone) {
+    // Prefer surface tones; reserve semantic colors for status only.
+    final (Color bg, Color fg) = switch (tone) {
       AppBadgeTone.neutral => (
           scheme.surfaceContainerHighest,
           scheme.onSurfaceVariant,
-          scheme.outlineVariant,
         ),
       AppBadgeTone.primary => (
-          scheme.primaryContainer.withValues(alpha: 0.72),
+          scheme.primaryContainer.withValues(alpha: 0.55),
           scheme.onPrimaryContainer,
-          scheme.primary.withValues(alpha: 0.28),
         ),
       AppBadgeTone.success => (
-          semantic.successContainer,
+          semantic.successContainer.withValues(alpha: 0.7),
           semantic.onSuccessContainer,
-          semantic.success.withValues(alpha: 0.28),
         ),
       AppBadgeTone.warning => (
-          semantic.warningContainer,
+          semantic.warningContainer.withValues(alpha: 0.7),
           semantic.onWarningContainer,
-          semantic.warning.withValues(alpha: 0.28),
         ),
       AppBadgeTone.info => (
-          semantic.infoContainer,
-          semantic.onInfoContainer,
-          semantic.info.withValues(alpha: 0.28),
+          scheme.secondaryContainer.withValues(alpha: 0.55),
+          scheme.onSecondaryContainer,
         ),
       AppBadgeTone.featured => (
-          scheme.tertiaryContainer.withValues(alpha: 0.8),
-          scheme.onTertiaryContainer,
-          scheme.tertiary.withValues(alpha: 0.32),
+          scheme.primaryContainer.withValues(alpha: 0.55),
+          scheme.onPrimaryContainer,
         ),
     };
 
@@ -65,13 +61,12 @@ class AppBadge extends StatelessWidget {
       excludeSemantics: true,
       child: Container(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.sm,
-          vertical: AppSpacing.xxs + 1,
+          horizontal: AppSpacing.xs,
+          vertical: AppSpacing.xxs,
         ),
         decoration: BoxDecoration(
           color: bg,
           borderRadius: AppRadius.borderChip,
-          border: Border.all(color: border),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -84,8 +79,7 @@ class AppBadge extends StatelessWidget {
               label,
               style: theme.textTheme.labelMedium?.copyWith(
                 color: fg,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0.15,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ],

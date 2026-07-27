@@ -4,11 +4,11 @@ library;
 import 'package:flutter/material.dart';
 import 'package:rsprojects_showcase/design_system/app_spacing.dart';
 
-enum AppButtonVariant { primary, secondary, text }
+enum AppButtonVariant { primary, secondary, text, tonal }
 
 enum AppButtonSize { small, medium, large }
 
-/// RSProjects button wrapper — Filled / Outlined / Text with consistent padding.
+/// RSProjects button wrapper — consistent sizing and emphasis.
 class AppButton extends StatelessWidget {
   const AppButton({
     required this.label,
@@ -29,16 +29,16 @@ class AppButton extends StatelessWidget {
 
   EdgeInsetsGeometry get _padding => switch (size) {
         AppButtonSize.small => const EdgeInsets.symmetric(
-            horizontal: AppSpacing.md,
+            horizontal: AppSpacing.sm,
             vertical: AppSpacing.xs,
           ),
         AppButtonSize.medium => const EdgeInsets.symmetric(
-            horizontal: AppSpacing.lg,
-            vertical: AppSpacing.sm + 2,
+            horizontal: AppSpacing.sm + 4,
+            vertical: AppSpacing.xs + 4,
           ),
         AppButtonSize.large => const EdgeInsets.symmetric(
-            horizontal: AppSpacing.xl,
-            vertical: AppSpacing.md,
+            horizontal: AppSpacing.md,
+            vertical: AppSpacing.sm - 4,
           ),
       };
 
@@ -63,6 +63,14 @@ class AppButton extends StatelessWidget {
 
     final button = switch (variant) {
       AppButtonVariant.primary => FilledButton(
+          onPressed: onPressed,
+          style: FilledButton.styleFrom(
+            padding: _padding,
+            visualDensity: VisualDensity.standard,
+          ),
+          child: child,
+        ),
+      AppButtonVariant.tonal => FilledButton.tonal(
           onPressed: onPressed,
           style: FilledButton.styleFrom(
             padding: _padding,
