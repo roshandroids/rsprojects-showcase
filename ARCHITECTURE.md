@@ -14,7 +14,7 @@ lib/
   design_system/   # FlexColorScheme tokens + reusable components
   core/            # constants, content schema, quality, errors, utilities
   features/        # home, projects, search, settings, about
-  shared/          # layouts, animations, (planned) markdown
+  shared/          # layouts, animations, demos (DemoSpec), examples (gallery), (planned) markdown
   generated/       # Dart codegen only — not the JSON registry
 ```
 
@@ -32,18 +32,19 @@ lib/
 
 ```
 content/projects/<id>/metadata.json
+content/examples/<id>/metadata.json
   → scripts/validate_content.dart
   → scripts/generate_registry.dart
-  → assets/generated/registry.json
+  → assets/generated/registry.json   # projects[] + examples[]
   → AssetRegistryProjectRepository
-  → domain Project / ProjectShowcase
+  → domain Project / ProjectShowcase + shared ProjectExample
   → Riverpod catalog / detail
-  → ProjectShowcaseTemplate
+  → ProjectShowcaseTemplate + ExampleGallery(projectId)
 ```
 
-**Phase 2 (remaining):** docs hub, DemoSpec, search/collections, relations — see [`docs/PHASE_2_SHOWCASE_EXCELLENCE.md`](docs/PHASE_2_SHOWCASE_EXCELLENCE.md). Local `docs/` / `media/` under projects and `content/collections/` remain planned.
+**Phase 2 (remaining):** docs hub, project demo section via DemoSpec, search/collections, relations — see [`docs/PHASE_2_SHOWCASE_EXCELLENCE.md`](docs/PHASE_2_SHOWCASE_EXCELLENCE.md). Local `docs/` / `media/` under projects and `content/collections/` remain planned.
 
-**D-027 (direction):** **Examples** are first-class content entities (alongside projects), not merely nested showcase fields. Today `showcase.examples[]` remains valid as a transitional project-page list; a dedicated examples content/registry shape lands when that capability is implemented—without a new roadmap phase.
+**D-027:** Examples are authored independently under `content/examples/` (with `projectId`) and presented on project pages via shared `ExampleGallery`. Supporting content — not a standalone application feature.
 
 **Phases 3–5 (planned):** automation/publishing, ecosystem intelligence, community & developer portal — [`docs/roadmap/`](docs/roadmap/).
 
@@ -64,7 +65,7 @@ Phase 2 planned: `/search`, `/projects/:id/docs` (+ optional path).
 
 ## Showcase template rule
 
-All product pages share **one** generic template. UI must **never** branch on `project.id`. Demo embedding goes through a sealed `DemoSpec` (planned), not product-specific iframes.
+All product pages share **one** generic template. UI must **never** branch on `project.id`. Demo embedding goes through a sealed `DemoSpec`, not product-specific iframes.
 
 ## Non-goals
 

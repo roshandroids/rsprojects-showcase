@@ -1,0 +1,20 @@
+{
+  "id": "api-changelog-note",
+  "title": "API changelog note",
+  "description": "Structured release notes that export to eng and support channels.",
+  "projectId": "document_platform",
+  "category": "sample",
+  "tags": ["changelog", "api"],
+  "demo": {
+    "kind": "media",
+    "available": true
+  },
+  "media": [
+    {
+      "kind": "diagram",
+      "alt": "Changelog export flow",
+      "caption": "Author note → structured export → eng and support channels"
+    }
+  ],
+  "sourceUrl": "https://github.com/roshandroids/rsprojects-showcase"
+}

@@ -4,21 +4,26 @@ library;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rsprojects_showcase/features/projects/domain/projects_domain.dart';
 import 'package:rsprojects_showcase/features/projects/infrastructure/projects_infrastructure.dart';
+import 'package:rsprojects_showcase/shared/examples/project_example.dart';
 
 /// Injectable [ProjectRepository] (override in tests).
 final projectRepositoryProvider = Provider<ProjectRepository>((ref) {
   return AssetRegistryProjectRepository();
 });
 
-/// Immutable catalog snapshot: all projects + active query.
+/// Immutable catalog snapshot: projects + supporting examples + active query.
 class ProjectsCatalogState {
   const ProjectsCatalogState({
     required this.all,
     required this.query,
+    this.examples = const [],
   });
 
   final List<Project> all;
   final ProjectQuery query;
+
+  /// Supporting examples from the same registry (not a separate feature).
+  final List<ProjectExample> examples;
 
   List<Project> get filtered => applyProjectQuery(all, query);
 
@@ -28,12 +33,21 @@ class ProjectsCatalogState {
   ProjectsCatalogState copyWith({
     List<Project>? all,
     ProjectQuery? query,
+    List<ProjectExample>? examples,
   }) {
     return ProjectsCatalogState(
       all: all ?? this.all,
       query: query ?? this.query,
+      examples: examples ?? this.examples,
     );
   }
+}
+
+Future<List<ProjectExample>> _loadExamples(ProjectRepository repository) async {
+  if (repository is AssetRegistryProjectRepository) {
+    return repository.fetchExamples();
+  }
+  return const [];
 }
 
 /// Loads registry projects and holds catalog filter/sort state.
@@ -42,9 +56,11 @@ class ProjectsCatalogNotifier extends AsyncNotifier<ProjectsCatalogState> {
   Future<ProjectsCatalogState> build() async {
     final repository = ref.watch(projectRepositoryProvider);
     final projects = await repository.fetchProjects();
+    final examples = await _loadExamples(repository);
     return ProjectsCatalogState(
       all: projects,
       query: const ProjectQuery(),
+      examples: examples,
     );
   }
 
@@ -54,9 +70,11 @@ class ProjectsCatalogNotifier extends AsyncNotifier<ProjectsCatalogState> {
     state = await AsyncValue.guard(() async {
       final repository = ref.read(projectRepositoryProvider);
       final projects = await repository.fetchProjects();
+      final examples = await _loadExamples(repository);
       return ProjectsCatalogState(
         all: projects,
         query: previous?.query ?? const ProjectQuery(),
+        examples: examples,
       );
     });
   }

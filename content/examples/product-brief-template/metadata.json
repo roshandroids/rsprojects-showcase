@@ -1,0 +1,20 @@
+{
+  "id": "product-brief-template",
+  "title": "Product brief template",
+  "description": "Starter schema for problem, solution, and success metrics.",
+  "projectId": "document_platform",
+  "category": "template",
+  "tags": ["schema", "product"],
+  "featured": true,
+  "demo": {
+    "available": false,
+    "note": "Interactive authoring demo ships with Document Platform playgrounds."
+  },
+  "documentationLinks": [
+    {
+      "label": "Content model",
+      "url": "https://github.com/roshandroids/rsprojects-showcase/blob/main/docs/CONTENT_MODEL.md"
+    }
+  ],
+  "sourceUrl": "https://github.com/roshandroids/rsprojects-showcase"
+}

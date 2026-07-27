@@ -56,4 +56,16 @@ void main() {
     );
     expect(errors.any((e) => e.contains('does not match folder')), isTrue);
   });
+
+  test('accepts soft-deprecated showcase.examples shape', () {
+    final errors = validateProjectMetadata({
+      ...valid(),
+      'showcase': {
+        'examples': [
+          {'title': 'Legacy list item'},
+        ],
+      },
+    });
+    expect(errors, isEmpty);
+  });
 }

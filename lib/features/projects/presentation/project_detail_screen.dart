@@ -9,6 +9,7 @@ import 'package:rsprojects_showcase/design_system/design_system.dart';
 import 'package:rsprojects_showcase/features/projects/application/projects_application.dart';
 import 'package:rsprojects_showcase/features/projects/domain/projects_domain.dart';
 import 'package:rsprojects_showcase/features/projects/presentation/widgets/project_showcase_template.dart';
+import 'package:rsprojects_showcase/shared/examples/project_example.dart';
 
 /// Detail screen for a single project id from the registry.
 class ProjectDetailScreen extends ConsumerWidget {
@@ -59,10 +60,15 @@ class ProjectDetailScreen extends ConsumerWidget {
             ),
             orElse: () => const <Project>[],
           );
+          final examples = asyncCatalog.maybeWhen(
+            data: (catalog) => catalog.examples,
+            orElse: () => const <ProjectExample>[],
+          );
 
           return ProjectShowcaseTemplate(
             project: project,
             relatedProjects: related,
+            examples: examples,
           );
         },
       ),

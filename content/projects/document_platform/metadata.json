@@ -113,16 +113,6 @@
         "url": "https://github.com/roshandroids/rsprojects-showcase/blob/main/docs/CONTENT_MODEL.md"
       }
     ],
-    "examples": [
-      {
-        "title": "Product brief template",
-        "description": "Starter schema for problem, solution, and success metrics."
-      },
-      {
-        "title": "API changelog note",
-        "description": "Structured release notes that export to eng and support channels."
-      }
-    ],
     "benchmarks": [
       {
         "label": "Cold open (web)",

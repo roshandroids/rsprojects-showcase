@@ -9,6 +9,8 @@ import 'package:rsprojects_showcase/app/router.dart';
 import 'package:rsprojects_showcase/design_system/design_system.dart';
 import 'package:rsprojects_showcase/features/projects/domain/projects_domain.dart';
 import 'package:rsprojects_showcase/features/projects/presentation/widgets/project_card.dart';
+import 'package:rsprojects_showcase/shared/examples/example_gallery.dart';
+import 'package:rsprojects_showcase/shared/examples/project_example.dart';
 
 AppBadgeTone statusTone(ProjectStatus status) {
   return switch (status) {
@@ -25,11 +27,15 @@ class ProjectShowcaseTemplate extends StatelessWidget {
     required this.project,
     super.key,
     this.relatedProjects = const [],
+    this.examples,
     this.onBack,
   });
 
   final Project project;
   final List<Project> relatedProjects;
+
+  /// Supporting examples from the registry (filtered by [project.id] in gallery).
+  final List<ProjectExample>? examples;
   final VoidCallback? onBack;
 
   @override
@@ -79,8 +85,8 @@ class ProjectShowcaseTemplate extends StatelessWidget {
           _TextSection(title: 'Installation', body: showcase!.installation!),
         if (showcase != null && showcase.documentationLinks.isNotEmpty)
           _DocumentationSection(links: showcase.documentationLinks),
-        if (showcase != null && showcase.examples.isNotEmpty)
-          _ExamplesSection(examples: showcase.examples),
+        if (examples != null)
+          ExampleGallery(projectId: project.id, examples: examples!),
         if (showcase != null && showcase.benchmarks.isNotEmpty)
           _BenchmarksSection(benchmarks: showcase.benchmarks),
         if (showcase != null && showcase.roadmap.isNotEmpty)
@@ -787,61 +793,6 @@ class _DocumentationSection extends StatelessWidget {
                           color: theme.colorScheme.primary,
                         ),
                       ),
-                    ],
-                  ),
-                ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ExamplesSection extends StatelessWidget {
-  const _ExamplesSection({required this.examples});
-
-  final List<ShowcaseExample> examples;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
-
-    return Padding(
-      padding: const EdgeInsets.only(top: AppSpacing.section),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const AppSectionHeader(title: 'Examples / Playground'),
-          const SizedBox(height: AppSpacing.xl),
-          AppGrid(
-            minTileWidth: 240,
-            children: [
-              for (final example in examples)
-                AppCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(example.title, style: theme.textTheme.titleMedium),
-                      if (example.description != null) ...[
-                        const SizedBox(height: AppSpacing.sm),
-                        Text(
-                          example.description!,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: scheme.onSurface.withValues(alpha: 0.72),
-                          ),
-                        ),
-                      ],
-                      if (example.url != null) ...[
-                        const SizedBox(height: AppSpacing.sm),
-                        SelectableText(
-                          example.url!,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: scheme.primary,
-                          ),
-                        ),
-                      ],
                     ],
                   ),
                 ),

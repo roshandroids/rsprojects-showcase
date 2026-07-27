@@ -1,0 +1,13 @@
+{
+  "id": "arb-diff-sample",
+  "title": "ARB diff sample",
+  "description": "Sample ARB pair highlighting missing and unused localization keys across locales.",
+  "projectId": "localization_analyzer",
+  "category": "sample",
+  "tags": ["arb", "i18n", "diff"],
+  "demo": {
+    "available": false,
+    "note": "CLI sample output will ship with the desktop analyzer package."
+  },
+  "sourceUrl": "https://github.com/roshandroids/rsprojects-showcase"
+}

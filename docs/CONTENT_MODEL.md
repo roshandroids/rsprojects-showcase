@@ -46,7 +46,7 @@ Optional nested object. Every RSProjects product page uses the same template; se
 | Platform Support | `platformSupport` | `{platform, notes?}[]` | Prefer allowed platform ids |
 | Installation | `installation` | string | |
 | Documentation Links | `documentationLinks` | `{label, url}[]` | Complements `docsUrl` |
-| Examples / Playground | `examples` | `{title, description?, url?}[]` | Transitional project-page list. **D-027:** long-term examples are first-class content alongside projects (not project-owned assets only). |
+| Examples / Playground | — | — | **Moved:** see [Project examples](#project-examples-implemented) (`content/examples/`). Soft-deprecated nested `showcase.examples[]` is still validated if present but not rendered. |
 | Benchmarks | `benchmarks` | `{label, value, note?}[]` | Optional |
 | Roadmap | `roadmap` | `{item, status?}[]` | `status`: `planned` \| `in_progress` \| `done` |
 | Changelog | `changelog` | `{version, date?, notes}[]` | |
@@ -71,6 +71,51 @@ These showcase fields are validated, mapped, and rendered by `ProjectShowcaseTem
 
 Legacy `screenshots[]` remains supported as a gallery fallback when `media` is empty.
 
+## Project examples (**implemented**)
+
+Examples are **supporting content** for projects — authored independently for automation, discovered on project pages (not a standalone app feature).
+
+```
+content/examples/<example-id>/
+  metadata.json
+  assets/                 # optional media referenced from metadata
+```
+
+### Required fields
+
+| Field | Type | Rules |
+|-------|------|--------|
+| `id` | string | Non-empty; must match folder name |
+| `title` | string | Non-empty display title |
+| `description` | string | Non-empty |
+| `projectId` | string | Must resolve to a known project id |
+| `category` | string | One of: `demo`, `tutorial`, `template`, `sample`, `other` |
+
+### Optional fields
+
+| Field | Type | Notes |
+|-------|------|--------|
+| `tags` | string[] | Free-form tags |
+| `featured` | bool | Prefer ordering in galleries |
+| `demo` | object | DemoSpec metadata (`kind`, `url` / `embedUrl`, `available`, `note`) |
+| `media` | media[] | Same shape as showcase `media` (image/video/diagram) |
+| `documentationLinks` | `{label, url}[]` | Example-specific docs |
+| `sourceUrl` | string | Source / sample repo URL |
+| `demoUrl` | string | Shorthand external demo URL |
+
+Each example belongs to **exactly one** project via `projectId`.
+
+### DemoSpec (`demo`)
+
+| `kind` | Fields | Domain |
+|--------|--------|--------|
+| `embedded_web` | `embedUrl` | `DemoEmbeddedWeb` |
+| `external` | `url` | `DemoExternalLink` |
+| `media` | uses `media[]` | `DemoMediaFallback` |
+| omit / `available: false` | `note?` | `DemoUnavailable` |
+
+Shared UI: `DemoPane` / `ExampleGallery` under `lib/shared/demos/` and `lib/shared/examples/`.
+
 ## Phase 2.2–2.5 (planned) — not implemented yet
 
 Planning brief: [`PHASE_2_SHOWCASE_EXCELLENCE.md`](PHASE_2_SHOWCASE_EXCELLENCE.md).
@@ -81,7 +126,7 @@ These fields and folders are **documented for future work**. Do not treat them a
 
 | Field | Type | Notes |
 |-------|------|--------|
-| `demo.kind` | string | `embedded_web` \| `external` \| `media` \| omit → unavailable |
+| `demo.kind` | string | Prefer shared `DemoSpec` (also used by examples). Project showcase demo section may still use legacy `{url, note, available}` until full 2.2 wiring. |
 | `demo.embedUrl` | string | Used when `kind: embedded_web` |
 | `demo.url` | string | Used when `kind: external` (complements top-level `demoUrl`) |
 | `relations` | `{targetId, type}[]` | Ecosystem edges; see below |
@@ -122,6 +167,7 @@ Example shape (planned):
 {
   "generatedAt": "ISO-8601",
   "projects": [ /* metadata + showcase */ ],
+  "examples": [ /* project-associated examples — implemented */ ],
   "collections": [ /* optional */ ],
   "docsIndex": { "<projectId>": [ /* { title, path, type } */ ] }
 }
@@ -150,7 +196,8 @@ Docs/markdown **bodies** stay on disk (or remote URLs); the registry holds index
 ```json
 {
   "generatedAt": "ISO-8601",
-  "projects": [ /* full metadata objects including showcase */ ]
+  "projects": [ /* full metadata objects including showcase */ ],
+  "examples": [ /* full example metadata objects */ ]
 }
 ```
 
@@ -158,8 +205,8 @@ Docs/markdown **bodies** stay on disk (or remote URLs); the registry holds index
 
 Run `dart run scripts/validate_content.dart` before generating the registry.
 
-Required catalog fields are always validated. When `showcase` is present, structural types are checked; individual showcase sections remain optional.
+Required catalog fields are always validated. When `showcase` is present, structural types are checked; individual showcase sections remain optional. Example folders under `content/examples/` are validated when present (`projectId` must resolve).
 
 ## Ownership
 
-Project owners maintain their `content/projects/<id>/` folder. CI regenerates the registry; do not hand-edit `assets/generated/registry.json` for releases.
+Project owners maintain their `content/projects/<id>/` folder. Example authors maintain `content/examples/<id>/`. CI regenerates the registry; do not hand-edit `assets/generated/registry.json` for releases.

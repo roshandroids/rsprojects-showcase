@@ -6,6 +6,8 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:rsprojects_showcase/core/constants/app_constants.dart';
 import 'package:rsprojects_showcase/features/projects/domain/projects_domain.dart';
+import 'package:rsprojects_showcase/shared/demos/demo_spec.dart';
+import 'package:rsprojects_showcase/shared/examples/project_example.dart';
 
 /// JSON DTO for registry entries (never used in UI).
 class ProjectDto {
@@ -449,7 +451,123 @@ class ProjectShowcaseDto {
   }
 }
 
-/// Loads projects from the bundled registry via [rootBundle].
+/// JSON DTO for registry example entries (never used in UI).
+class ProjectExampleDto {
+  const ProjectExampleDto({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.projectId,
+    required this.category,
+    this.tags = const [],
+    this.featured = false,
+    this.demo,
+    this.media = const [],
+    this.documentationLinks = const [],
+    this.sourceUrl,
+    this.demoUrl,
+  });
+
+  factory ProjectExampleDto.fromJson(Map<String, Object?> json) {
+    List<Map<String, Object?>> maps(String key) {
+      final raw = json[key];
+      if (raw is! List) return const [];
+      return [
+        for (final item in raw)
+          if (item is Map) Map<String, Object?>.from(item),
+      ];
+    }
+
+    final demoRaw = json['demo'];
+    return ProjectExampleDto(
+      id: json['id'] as String? ?? '',
+      title: json['title'] as String? ?? '',
+      description: json['description'] as String? ?? '',
+      projectId: json['projectId'] as String? ?? '',
+      category: json['category'] as String? ?? 'other',
+      tags: (json['tags'] as List<dynamic>? ?? const [])
+          .map((e) => e.toString())
+          .toList(),
+      featured: json['featured'] as bool? ?? false,
+      demo: demoRaw is Map ? Map<String, Object?>.from(demoRaw) : null,
+      media: [
+        for (final m in maps('media'))
+          (
+            kind: m['kind'] as String? ?? 'image',
+            src: m['src'] as String?,
+            alt: m['alt'] as String? ?? '',
+            caption: m['caption'] as String?,
+            poster: m['poster'] as String?,
+          ),
+      ].where((e) => e.alt.isNotEmpty).toList(),
+      documentationLinks: [
+        for (final m in maps('documentationLinks'))
+          (
+            label: m['label'] as String? ?? '',
+            url: m['url'] as String? ?? '',
+          ),
+      ].where((e) => e.label.isNotEmpty && e.url.isNotEmpty).toList(),
+      sourceUrl: json['sourceUrl'] as String?,
+      demoUrl: json['demoUrl'] as String?,
+    );
+  }
+
+  final String id;
+  final String title;
+  final String description;
+  final String projectId;
+  final String category;
+  final List<String> tags;
+  final bool featured;
+  final Map<String, Object?>? demo;
+  final List<
+      ({
+        String kind,
+        String? src,
+        String alt,
+        String? caption,
+        String? poster,
+      })> media;
+  final List<({String label, String url})> documentationLinks;
+  final String? sourceUrl;
+  final String? demoUrl;
+
+  ProjectExample toDomain() {
+    final mediaRefs = [
+      for (final m in media)
+        DemoMediaRef(
+          kind: m.kind,
+          src: m.src,
+          alt: m.alt,
+          caption: m.caption,
+          poster: m.poster,
+        ),
+    ];
+    return ProjectExample(
+      id: id,
+      title: title,
+      description: description,
+      projectId: projectId,
+      category: ExampleCategory.fromString(category),
+      tags: tags,
+      featured: featured,
+      demo: DemoSpec.fromMetadata(
+        demo: demo,
+        media: mediaRefs,
+        demoUrl: demoUrl,
+      ),
+      media: mediaRefs,
+      documentationLinks: [
+        for (final l in documentationLinks)
+          ExampleLink(label: l.label, url: l.url),
+      ],
+      sourceUrl: sourceUrl,
+      demoUrl: demoUrl,
+    );
+  }
+}
+
+/// Loads projects (and supporting examples) from the bundled registry.
 class AssetRegistryProjectRepository implements ProjectRepository {
   AssetRegistryProjectRepository({
     this.assetPath = AppConstants.registryAssetPath,
@@ -459,32 +577,59 @@ class AssetRegistryProjectRepository implements ProjectRepository {
   final String assetPath;
   final AssetBundle _bundle;
 
-  List<Project>? _cache;
+  List<Project>? _projectCache;
+  List<ProjectExample>? _exampleCache;
 
-  @override
-  Future<List<Project>> fetchProjects() async {
-    if (_cache != null) return _cache!;
+  Future<void> _ensureLoaded() async {
+    if (_projectCache != null && _exampleCache != null) return;
 
     final raw = await _bundle.loadString(assetPath);
     final decoded = jsonDecode(raw);
     if (decoded is! Map<String, dynamic>) {
       throw const FormatException('Registry root must be a JSON object');
     }
-    final list = decoded['projects'];
-    if (list is! List) {
+
+    final projectList = decoded['projects'];
+    if (projectList is! List) {
       throw const FormatException('Registry "projects" must be a list');
     }
 
     final projects = <Project>[];
-    for (final item in list) {
+    for (final item in projectList) {
       if (item is Map) {
         projects.add(
           ProjectDto.fromJson(Map<String, Object?>.from(item)).toDomain(),
         );
       }
     }
-    _cache = projects;
-    return projects;
+
+    final examples = <ProjectExample>[];
+    final exampleList = decoded['examples'];
+    if (exampleList is List) {
+      for (final item in exampleList) {
+        if (item is Map) {
+          examples.add(
+            ProjectExampleDto.fromJson(Map<String, Object?>.from(item))
+                .toDomain(),
+          );
+        }
+      }
+    }
+
+    _projectCache = projects;
+    _exampleCache = examples;
+  }
+
+  @override
+  Future<List<Project>> fetchProjects() async {
+    await _ensureLoaded();
+    return _projectCache!;
+  }
+
+  /// Supporting examples slice from the same registry asset.
+  Future<List<ProjectExample>> fetchExamples() async {
+    await _ensureLoaded();
+    return _exampleCache!;
   }
 
   @override

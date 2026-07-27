@@ -21,7 +21,7 @@ RSProjects Showcase is the public portal for discovering and presenting all RSPr
 
 ## Current objective
 
-Phase 2.1 Rich Project Pages is **Complete**. Next: Phase 2.2 Interactive Demos (`DemoSpec`) under the execution-first policy ([`docs/GOVERNANCE.md`](docs/GOVERNANCE.md) §2a). Long-term Phases 3–5 remain planning-only under [`docs/roadmap/`](docs/roadmap/). **D-027:** examples are first-class content (direction only—no new phase).
+Phase 2.1 Rich Project Pages is **Complete**. Project example infrastructure (`content/examples/` + `DemoSpec` + `ExampleGallery`) is **Complete**. Next: Phase 2.2 Interactive Demos — wire project showcase demo section through `DemoSpec`/`DemoPane` under the execution-first policy ([`docs/GOVERNANCE.md`](docs/GOVERNANCE.md) §2a). Long-term Phases 3–5 remain planning-only under [`docs/roadmap/`](docs/roadmap/).
 
 ## Repository information
 
@@ -35,7 +35,7 @@ Phase 2.1 Rich Project Pages is **Complete**. Next: Phase 2.2 Interactive Demos 
 | Remote | `git@roshandroids.github.com:roshandroids/rsprojects-showcase.git` |
 | Default branch | `main` |
 | Latest remote commit | See git log / GitHub |
-| Latest local milestone | Phase 2.1 Rich Project Pages + project governance |
+| Latest local milestone | Project example infrastructure + Phase 2.1 |
 | Working tree | See Recent Changes |
 
 ---
@@ -52,7 +52,8 @@ Phase 2.1 Rich Project Pages is **Complete**. Next: Phase 2.2 Interactive Demos 
 | 1.5 | Showcase Content Framework | **Complete** | Canonical project page template; conditional sections from `showcase` metadata; automation-ready schema |
 | 2.0 | Showcase Excellence — planning | **Complete** | Roadmap + Phase 2 brief + planned schema/abstractions (no feature UI yet) |
 | 2.1 | Rich Project Pages | **Complete** | `heroMedia`, `media[]`, architecture diagram, feature icons/media, contributors, downloads; Document Platform reference |
-| 2.2–2.5 | Showcase Excellence — remaining | **Planned** | DemoSpec, docs hub, search/discovery, ecosystem navigation |
+| 2.1b | Project example infrastructure | **Complete** | `content/examples/` → registry `examples[]`; shared `DemoSpec`/`DemoPane`/`ExampleGallery`; Document Platform + Localization Analyzer |
+| 2.2–2.5 | Showcase Excellence — remaining | **Planned** | Project demo section via DemoSpec, docs hub, search/discovery, ecosystem navigation |
 | 3 | Automation & Publishing | **Planned** | Self-maintaining generate/validate/publish; see `docs/roadmap/PHASE_3_AUTOMATION.md` |
 | 4 | Ecosystem Intelligence | **Planned** | Graphs, explorers, timeline; see `docs/roadmap/PHASE_4_ECOSYSTEM.md` |
 | 5 | Community & Developer Portal | **Planned** | Community + develop portal; see `docs/roadmap/PHASE_5_DEVELOPER_PORTAL.md` |
@@ -67,29 +68,30 @@ Phase 2.1 Rich Project Pages is **Complete**. Next: Phase 2.2 Interactive Demos 
 
 | Field | Value |
 |-------|--------|
-| **Sprint name** | Phase 2.1 Rich Project Pages |
-| **Goal** | Ship rich, metadata-driven project pages; validate with Document Platform |
+| **Sprint name** | Project example infrastructure |
+| **Goal** | Metadata-driven examples authored under `content/examples/`, presented on project pages via shared gallery |
 | **Status** | Complete |
 
 ## Active tasks
 
 | Task | Status | Owner |
 |------|--------|-------|
-| Publish `docs/GOVERNANCE.md` + wire core docs | Complete | — |
-| Extend showcase schema/domain/DTO/validation for 2.1 fields | Complete | — |
-| Enrich `ProjectShowcaseTemplate` (hero media, gallery, contributors, downloads) | Complete | — |
-| Fill Document Platform as Phase 2.1 reference | Complete | — |
-| Regenerate registry + tests | Complete | — |
+| Extend schema + registry for `examples[]` | Complete | — |
+| Implement shared `DemoSpec` + `DemoPane` | Complete | — |
+| Build `ExampleGallery` / `ExampleCard` + models | Complete | — |
+| Wire project template + migrate Document Platform / Localization Analyzer | Complete | — |
+| Tests + CONTENT_MODEL / SHOWCASE_FRAMEWORK / PROJECT_STATUS | Complete | — |
 
 ## Exit criteria
 
 Sprint is done when all of the following are true:
 
-- [x] Governance document exists and is linked from ROADMAP / docs README / PROJECT_STATUS
-- [x] Phase 2.1 fields validated, mapped, and rendered conditionally
-- [x] Document Platform metadata exercises rich sections
-- [x] Tests cover mapping + template sections
-- [x] Registry regenerated; status/roadmap reflect 2.1 Complete
+- [x] Examples authored under `content/examples/` with `projectId` association
+- [x] Registry emits `examples[]`; validation enforces known `projectId`
+- [x] `ExampleGallery` works for any project without product-specific UI
+- [x] `DemoSpec` / `DemoPane` reusable shared abstractions
+- [x] No standalone example routes or feature module
+- [x] Docs and tests updated
 
 ---
 
@@ -113,6 +115,7 @@ Sprint is done when all of the following are true:
 - **Long-term roadmap Phases 3–5:** Automation & Publishing, Ecosystem Intelligence, Community & Developer Portal (`docs/roadmap/`)
 - **Project governance:** `docs/GOVERNANCE.md` (core how-we-manage doc)
 - **Phase 2.1 Rich Project Pages:** hero media, unified gallery, architecture diagram, feature icons/media, contributors, downloads; Document Platform reference fill
+- **Project example infrastructure:** `content/examples/`, registry `examples[]`, shared `DemoSpec`/`DemoPane`/`ExampleGallery`; Document Platform + Localization Analyzer samples
 - **UI refresh (D-028):** FlexScheme.tealM3 Material 3 theme, elevated cards/home/detail surfaces, hover motion
 
 ## In Progress
@@ -125,7 +128,7 @@ Sprint is done when all of the following are true:
 
 ## Not Started
 
-- Phase 2.2–2.5 implementation (DemoSpec, docs hub, search, ecosystem)
+- Phase 2.2–2.5 remaining (project demo section via DemoSpec, docs hub, search, ecosystem)
 - Full CI quality gate implementation (real format/analyze/test/build steps)
 - Friendly error UI wiring beyond placeholder presenter
 - Clipboard / URL launcher ports for diagnostics & feedback
@@ -144,25 +147,23 @@ Sprint is done when all of the following are true:
 lib/
   app/           bootstrap, root app, router, theme re-export
   design_system/ FlexColorScheme theme + tokens (colors, typography, spacing, radius, breakpoints, motion)
-  core/          constants, quality (crash/diagnostics/feedback/a11y/perf/devtools), extensions, services, errors, utilities, widgets
+  core/          constants, content schema, quality, extensions, services, errors, utilities
   features/
     home/        presentation
     projects/    presentation, application, domain, infrastructure
     search/      presentation
     settings/    presentation
     about/       presentation
-  shared/        models, widgets, layouts, markdown, animations
+  shared/        demos (DemoSpec/DemoPane), examples (gallery), layouts, widgets, animations
   generated/     reserved for Dart codegen (README only)
 
-assets/          branding, icons, images, screenshots (READMEs only)
+assets/generated/registry.json   # projects[] + examples[]
 content/projects/<id>/metadata.json
-generated/       registry.json (CI/tooling output; not hand-edited for releases)
-scripts/         fetch / generate / validate / publish (unimplemented stubs)
-.github/workflows/  ci.yml, deploy.yml, fetch-projects.yml (placeholders)
-docs/            vision, getting started, structure, deploy, CI/CD, content model
-tool/            reserved for non-CLI developer tooling
-test/            placeholder widget tests
-integration_test/ placeholder
+content/examples/<id>/metadata.json
+scripts/         validate_content, generate_registry (+ fetch/publish stubs)
+.github/workflows/  ci.yml, deploy.yml, fetch-projects.yml
+docs/            CONTENT_MODEL, SHOWCASE_FRAMEWORK, governance, quality, roadmap
+test/            unit + widget tests
 ```
 
 ## Dependencies
@@ -230,11 +231,11 @@ integration_test/ placeholder
 | D-020 | 2026-07-26 | **Regression policy** — no bug fix without a regression test | Prevents defect recurrence | Final |
 | D-021 | 2026-07-26 | **Friendly error experience** — never ship default Flutter release red screen as UX | Restart / diagnostics / report actions; thank-you after feedback | Final |
 | D-022 | 2026-07-26 | Accessibility is a default quality requirement | Build a11y into components; do not retrofit only | Final |
-| D-023 | 2026-07-26 | **DemoSpec** sealed variants: `embedded_web` / `external` / `media` / unavailable | Generic demos; never hardcode product iframes | Final (implement in 2.2) |
+| D-023 | 2026-07-26 | **DemoSpec** sealed variants: `embedded_web` / `external` / `media` / unavailable | Generic demos; never hardcode product iframes | Final (shared impl shipped; project showcase demo section wiring remains 2.2) |
 | D-024 | 2026-07-26 | Docs hub **local-first** under `content/projects/<id>/docs/` (+ media/); registry holds docs index only | Content-driven hub; automation-ready | Final (implement in 2.3) |
 | D-025 | 2026-07-26 | Dedicated `/search` with shared **DiscoveryQuery** (catalog + search) | One query model; scalable discovery | Final (implement in 2.4) |
 | D-026 | 2026-07-26 | Typed ecosystem **relations[]** + soft links from shared tech/tags | Reusable ecosystem navigation | Final (implement in 2.5) |
-| D-027 | 2026-07-26 | **Examples are first-class content** alongside projects—not nested assets owned only by a project | Enables independent automation, search/filter, and future playgrounds; project pages may still *reference* examples | Final (shape when implementing; do not expand planning now) |
+| D-027 | 2026-07-26 | **Examples** authored independently under `content/examples/` with `projectId`; presented on project pages via `ExampleGallery` (supporting content, not a standalone app feature) | Automation-ready authoring; projects stay primary UX | Final |
 | D-028 | 2026-07-26 | **UI theme:** FlexScheme.`tealM3` + Material 3 FlexSubThemes (blend ~14–16, surface app bar, standard density, card/button/chip radii) | Premium developer-centric showcase; stay within Material 3 / FlexColorScheme | Final |
 
 ---
@@ -252,7 +253,8 @@ Status values: `Not Started` · `In Progress` · `Blocked` · `Complete`
 | about | In Progress | presentation | Shell-hosted polished placeholder. Final copy Not Started. |
 | 404 | Complete | shared | Restyled with design-system empty/error patterns via `errorBuilder` |
 | docs hub | Not Started | — | Phase 2.3 — `/projects/:id/docs` |
-| demos | Not Started | — | Phase 2.2 — DemoSpec + DemoPane |
+| demos | In Progress | shared | `DemoSpec` + `DemoPane` shipped; project showcase demo section still legacy until 2.2 |
+| examples | Complete | shared | `content/examples/` + gallery on project pages; not a standalone feature |
 | collections | Not Started | — | Phase 2.4 — `content/collections/` |
 
 ---
@@ -263,12 +265,13 @@ Status values: `Not Started` · `In Progress` · `Blocked` · `Complete`
 
 | Item | Status | Notes |
 |------|--------|-------|
-| Schema finalization (`docs/CONTENT_MODEL.md`) | Complete | Required + showcase shipped; Phase 2 extensions documented as planned |
+| Schema finalization (`docs/CONTENT_MODEL.md`) | Complete | Required + showcase + examples shipped; Phase 2 remaining extensions documented as planned |
 | Placeholder fields present | Complete | All three projects have complete required fields + showcase (full or partial) |
-| `assets/generated/registry.json` | Complete | Generated from content including showcase objects |
-| Validation / generation scripts | Complete | Validates showcase shapes when present |
-| Showcase framework docs | Complete | `docs/SHOWCASE_FRAMEWORK.md` + Phase 2 planned notes |
-| Phase 2 planned schema | Complete (docs only) | See CONTENT_MODEL “Phase 2 (planned)” — not implemented in validators/UI yet |
+| `assets/generated/registry.json` | Complete | Generated from projects + examples |
+| Validation / generation scripts | Complete | Validates projects + examples (`projectId` must resolve) |
+| Showcase framework docs | Complete | `docs/SHOWCASE_FRAMEWORK.md` + example gallery notes |
+| Phase 2 planned schema | Complete (docs only) | Remaining 2.2–2.5 items still planned |
+| `content/examples/` | Complete | Document Platform (2) + Localization Analyzer (1) reference examples |
 
 ## Assets status
 
@@ -290,8 +293,8 @@ Cell values: `Not Started` · `In Progress` · `Blocked` · `Complete`
 
 | Project ID | Metadata | Assets | Demo | Documentation | Integration Status |
 |------------|----------|--------|------|---------------|--------------------|
-| `document_platform` | Complete | Not Started | Not Started | In Progress (links) | In Progress — full showcase template reference |
-| `localization_analyzer` | Complete | Not Started | Not Started | Not Started | In Progress — partial showcase |
+| `document_platform` | Complete | Not Started | Not Started | In Progress (links) | In Progress — showcase + examples reference |
+| `localization_analyzer` | Complete | Not Started | Not Started | Not Started | In Progress — partial showcase + 1 example |
 | `ai_tray` | Complete | Not Started | Not Started | Not Started | In Progress — partial showcase |
 
 **Folder map:**
@@ -486,7 +489,7 @@ Promote answers into the **Decisions** log (new `D-xxx` row) and remove from thi
 
 Ordered implementation sequence (promote into Current Sprint when starting work):
 
-1. Phase 2.2 — DemoSpec + DemoPane
+1. Phase 2.2 — Wire project showcase Interactive Demo through DemoSpec + DemoPane
 2. Phase 2.3 — Docs hub + markdown viewer
 3. Phase 2.4 — `/search` + collections
 4. Phase 2.5 — Ecosystem relations UI
@@ -513,8 +516,9 @@ Ordered implementation sequence (promote into Current Sprint when starting work)
 | 2026-07-26 | **Long-term Phases 3–5 planning:** `docs/roadmap/PHASE_{3,4,5}_*.md`; ROADMAP strategy for Automation, Ecosystem, Community & Developer Portal |
 | 2026-07-26 | **Project governance:** `docs/GOVERNANCE.md` as permanent core management doc; linked from ROADMAP / docs README / PROJECT_STATUS |
 | 2026-07-26 | **Phase 2.1 Rich Project Pages:** schema/domain/DTO/UI for hero media, `media[]`, architecture diagram, feature icons/media, contributors, downloads; Document Platform reference; registry + tests |
-| 2026-07-26 | **Execution-first planning policy** in `docs/GOVERNANCE.md` §2a; **D-027** examples are first-class content (alongside projects), not project-owned assets only |
+| 2026-07-26 | **Execution-first planning policy** in `docs/GOVERNANCE.md` §2a; **D-027** examples direction recorded |
 | 2026-07-26 | **UI refresh (D-028):** FlexScheme.tealM3 Material 3 theme, elevated cards/home/project surfaces, hover motion, brand docs |
+| 2026-07-26 | **Project example infrastructure:** `content/examples/` + registry `examples[]`; shared `DemoSpec`/`DemoPane`/`ExampleGallery`; Document Platform + Localization Analyzer; D-027 shape finalized |
 
 ---
 
@@ -523,7 +527,7 @@ Ordered implementation sequence (promote into Current Sprint when starting work)
 1. **Phase 0 — Architecture bootstrap** — Complete  
 2. **Phase 1 — Experience Foundation** — Complete  
 2b. **Phase 1.5 — Showcase Content Framework** — Complete  
-3. **Phase 2 — Showcase Excellence** — 2.0–2.1 Complete; next 2.2 DemoSpec  
+3. **Phase 2 — Showcase Excellence** — 2.0–2.1 + example infrastructure Complete; next 2.2 project DemoSpec wiring  
 4. **Phase 3 — Automation & Publishing** — Planned  
 5. **Phase 4 — Ecosystem Intelligence** — Planned  
 6. **Phase 5 — Community & Developer Portal** — Planned  

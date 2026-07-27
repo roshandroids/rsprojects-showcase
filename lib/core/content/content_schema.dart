@@ -45,6 +45,20 @@ const Set<String> kAllowedHeroMediaKinds = {
   'lottie',
 };
 
+const Set<String> kAllowedExampleCategories = {
+  'demo',
+  'tutorial',
+  'template',
+  'sample',
+  'other',
+};
+
+const Set<String> kAllowedDemoKinds = {
+  'embedded_web',
+  'external',
+  'media',
+};
+
 /// Validates a decoded metadata map. Returns human-readable error messages.
 List<String> validateProjectMetadata(
   Map<String, Object?> data, {
@@ -226,6 +240,7 @@ List<String> validateShowcaseMetadata(Map<String, Object?> data) {
     }
   }
 
+  // Soft-deprecated: prefer content/examples/ (D-027 supporting content).
   final examples = data['examples'];
   if (examples != null) {
     if (examples is! List) {
@@ -239,6 +254,17 @@ List<String> validateShowcaseMetadata(Map<String, Object?> data) {
           errors.add('showcase.examples[$i] requires non-empty "title"');
         }
       }
+    }
+  }
+
+  final demoKind = data['demo'];
+  if (demoKind is Map) {
+    final kind = demoKind['kind'];
+    if (kind != null &&
+        (kind is! String || !kAllowedDemoKinds.contains(kind))) {
+      errors.add(
+        'showcase.demo.kind invalid. Allowed: $kAllowedDemoKinds',
+      );
     }
   }
 
@@ -382,6 +408,131 @@ List<String> validateShowcaseMetadata(Map<String, Object?> data) {
         }
       }
     }
+  }
+
+  return errors;
+}
+
+/// Validates a decoded example metadata map.
+///
+/// When [knownProjectIds] is provided, [projectId] must resolve to one of them.
+List<String> validateExampleMetadata(
+  Map<String, Object?> data, {
+  String? expectedId,
+  Set<String>? knownProjectIds,
+}) {
+  final errors = <String>[];
+
+  String? requireString(String key) {
+    final value = data[key];
+    if (value is! String || value.trim().isEmpty) {
+      errors.add('Missing or empty required string field "$key"');
+      return null;
+    }
+    return value.trim();
+  }
+
+  final id = requireString('id');
+  requireString('title');
+  requireString('description');
+  final projectId = requireString('projectId');
+
+  final category = requireString('category');
+  if (category != null && !kAllowedExampleCategories.contains(category)) {
+    errors.add(
+      'Invalid category "$category". Allowed: $kAllowedExampleCategories',
+    );
+  }
+
+  if (expectedId != null && id != null && id != expectedId) {
+    errors.add('Metadata id "$id" does not match folder "$expectedId"');
+  }
+
+  if (knownProjectIds != null &&
+      projectId != null &&
+      !knownProjectIds.contains(projectId)) {
+    errors.add(
+      'projectId "$projectId" does not match a known project. '
+      'Known: $knownProjectIds',
+    );
+  }
+
+  if (data.containsKey('featured') && data['featured'] is! bool) {
+    errors.add('Field "featured" must be a boolean when present');
+  }
+
+  final tags = data['tags'];
+  if (tags != null && tags is! List) {
+    errors.add('Field "tags" must be a list when present');
+  }
+
+  final demo = data['demo'];
+  if (demo != null) {
+    if (demo is! Map) {
+      errors.add('Field "demo" must be an object when present');
+    } else {
+      final kind = demo['kind'];
+      if (kind != null &&
+          (kind is! String || !kAllowedDemoKinds.contains(kind))) {
+        errors.add('demo.kind invalid. Allowed: $kAllowedDemoKinds');
+      }
+      if (demo['available'] != null && demo['available'] is! bool) {
+        errors.add('demo.available must be a boolean when present');
+      }
+    }
+  }
+
+  final media = data['media'];
+  if (media != null) {
+    if (media is! List) {
+      errors.add('Field "media" must be a list when present');
+    } else {
+      for (var i = 0; i < media.length; i++) {
+        final item = media[i];
+        if (item is! Map) {
+          errors.add('media[$i] must be an object');
+          continue;
+        }
+        final kind = item['kind'];
+        if (kind != null &&
+            (kind is! String || !kAllowedMediaKinds.contains(kind))) {
+          errors.add('media[$i].kind invalid. Allowed: $kAllowedMediaKinds');
+        }
+        final alt = item['alt'];
+        if (alt is! String || alt.trim().isEmpty) {
+          errors.add('media[$i] requires non-empty "alt"');
+        }
+      }
+    }
+  }
+
+  final documentationLinks = data['documentationLinks'];
+  if (documentationLinks != null) {
+    if (documentationLinks is! List) {
+      errors.add('Field "documentationLinks" must be a list when present');
+    } else {
+      for (var i = 0; i < documentationLinks.length; i++) {
+        final item = documentationLinks[i];
+        if (item is! Map ||
+            item['label'] is! String ||
+            item['url'] is! String) {
+          errors.add(
+            'documentationLinks[$i] requires "label" and "url"',
+          );
+        }
+      }
+    }
+  }
+
+  final sourceUrl = data['sourceUrl'];
+  if (sourceUrl != null &&
+      (sourceUrl is! String || sourceUrl.trim().isEmpty)) {
+    errors.add('Field "sourceUrl" must be a non-empty string when present');
+  }
+
+  final demoUrl = data['demoUrl'];
+  if (demoUrl != null && (demoUrl is! String || demoUrl.trim().isEmpty)) {
+    errors.add('Field "demoUrl" must be a non-empty string when present');
   }
 
   return errors;

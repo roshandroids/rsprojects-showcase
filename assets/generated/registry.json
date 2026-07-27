@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-27T01:02:20.982806Z",
+  "generatedAt": "2026-07-27T01:30:39.449089Z",
   "projects": [
     {
       "id": "ai_tray",
@@ -177,16 +177,6 @@
             "url": "https://github.com/roshandroids/rsprojects-showcase/blob/main/docs/CONTENT_MODEL.md"
           }
         ],
-        "examples": [
-          {
-            "title": "Product brief template",
-            "description": "Starter schema for problem, solution, and success metrics."
-          },
-          {
-            "title": "API changelog note",
-            "description": "Structured release notes that export to eng and support channels."
-          }
-        ],
         "benchmarks": [
           {
             "label": "Cold open (web)",
@@ -304,6 +294,71 @@
         ],
         "contributing": "Report false positives and locale edge cases via GitHub issues."
       }
+    }
+  ],
+  "examples": [
+    {
+      "id": "api-changelog-note",
+      "title": "API changelog note",
+      "description": "Structured release notes that export to eng and support channels.",
+      "projectId": "document_platform",
+      "category": "sample",
+      "tags": [
+        "changelog",
+        "api"
+      ],
+      "demo": {
+        "kind": "media",
+        "available": true
+      },
+      "media": [
+        {
+          "kind": "diagram",
+          "alt": "Changelog export flow",
+          "caption": "Author note → structured export → eng and support channels"
+        }
+      ],
+      "sourceUrl": "https://github.com/roshandroids/rsprojects-showcase"
+    },
+    {
+      "id": "arb-diff-sample",
+      "title": "ARB diff sample",
+      "description": "Sample ARB pair highlighting missing and unused localization keys across locales.",
+      "projectId": "localization_analyzer",
+      "category": "sample",
+      "tags": [
+        "arb",
+        "i18n",
+        "diff"
+      ],
+      "demo": {
+        "available": false,
+        "note": "CLI sample output will ship with the desktop analyzer package."
+      },
+      "sourceUrl": "https://github.com/roshandroids/rsprojects-showcase"
+    },
+    {
+      "id": "product-brief-template",
+      "title": "Product brief template",
+      "description": "Starter schema for problem, solution, and success metrics.",
+      "projectId": "document_platform",
+      "category": "template",
+      "tags": [
+        "schema",
+        "product"
+      ],
+      "featured": true,
+      "demo": {
+        "available": false,
+        "note": "Interactive authoring demo ships with Document Platform playgrounds."
+      },
+      "documentationLinks": [
+        {
+          "label": "Content model",
+          "url": "https://github.com/roshandroids/rsprojects-showcase/blob/main/docs/CONTENT_MODEL.md"
+        }
+      ],
+      "sourceUrl": "https://github.com/roshandroids/rsprojects-showcase"
     }
   ]
 }
