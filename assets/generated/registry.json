@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-27T00:49:34.699676Z",
+  "generatedAt": "2026-07-27T01:02:20.982806Z",
   "projects": [
     {
       "id": "ai_tray",
@@ -76,24 +76,32 @@
         "productivity"
       ],
       "showcase": {
+        "heroMedia": {
+          "kind": "image",
+          "alt": "Document Platform editor hero"
+        },
         "problem": "Product and engineering documentation often lives in disconnected tools—wikis, tickets, and ad-hoc markdown—making it hard to keep structure, ownership, and shipping formats aligned as teams grow.",
         "solution": "Document Platform provides a shared content model, authoring workflows, and export paths so living docs stay consistent from draft to delivery across web and desktop.",
         "features": [
           {
             "title": "Structured content model",
-            "description": "Typed document schemas keep sections, metadata, and ownership explicit."
+            "description": "Typed document schemas keep sections, metadata, and ownership explicit.",
+            "icon": "schema"
           },
           {
             "title": "Multi-format export",
-            "description": "Ship the same source as web, printable, and engineering-friendly formats."
+            "description": "Ship the same source as web, printable, and engineering-friendly formats.",
+            "icon": "export"
           },
           {
             "title": "Cross-team workflows",
-            "description": "Review loops that keep product writing and engineering updates in sync."
+            "description": "Review loops that keep product writing and engineering updates in sync.",
+            "icon": "workflow"
           },
           {
             "title": "Cross-platform clients",
-            "description": "Primary web experience with desktop companions for focused writing."
+            "description": "Primary web experience with desktop companions for focused writing.",
+            "icon": "platform"
           }
         ],
         "demo": {
@@ -110,7 +118,29 @@
             "caption": "Multi-format export from a single content source"
           }
         ],
+        "media": [
+          {
+            "kind": "image",
+            "alt": "Document editor overview",
+            "caption": "Structured editor with section outline and metadata"
+          },
+          {
+            "kind": "diagram",
+            "alt": "Content pipeline diagram",
+            "caption": "Author → validate → export → publish"
+          },
+          {
+            "kind": "video",
+            "alt": "Authoring walkthrough (placeholder)",
+            "caption": "Short walkthrough planned when demo assets land"
+          }
+        ],
         "architecture": "Feature-first Flutter clients consume a content registry and document APIs. Domain models stay free of UI; presentation uses a shared showcase template so every RSProjects product page follows the same structure.",
+        "architectureDiagram": {
+          "kind": "diagram",
+          "alt": "Document Platform architecture layers",
+          "caption": "Content → domain → Riverpod → generic showcase UI"
+        },
         "technologies": [
           "Flutter",
           "Dart",
@@ -162,6 +192,11 @@
             "label": "Cold open (web)",
             "value": "< 2.5s",
             "note": "Target budget on mid-tier laptop; not a published measurement yet"
+          },
+          {
+            "label": "Export draft (typical doc)",
+            "value": "< 1s",
+            "note": "Target for mid-size structured documents"
           }
         ],
         "roadmap": [
@@ -188,6 +223,20 @@
             "version": "0.8.0",
             "date": "2026-06",
             "notes": "Initial structured authoring workflows and export stubs."
+          }
+        ],
+        "contributors": [
+          {
+            "name": "Roshan Shrestha",
+            "role": "Maintainer",
+            "url": "https://github.com/roshandroids"
+          }
+        ],
+        "downloads": [
+          {
+            "label": "Source (GitHub)",
+            "url": "https://github.com/roshandroids/rsprojects-showcase",
+            "platform": "all"
           }
         ],
         "relatedProjectIds": [

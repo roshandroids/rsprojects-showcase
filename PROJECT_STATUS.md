@@ -9,7 +9,7 @@
 | **Last updated** | 2026-07-26 |
 | **Document owner** | Project maintainers |
 | **Status vocabulary** | `Not Started` · `In Progress` · `Blocked` · `Complete` |
-| **Supporting docs** | `ARCHITECTURE.md`, `ROADMAP.md`, `PROJECT_RULES.md`, `docs/*` (incl. Phase 2 brief + `docs/roadmap/`; not status SSOT) |
+| **Supporting docs** | `docs/GOVERNANCE.md` (core), `ARCHITECTURE.md`, `ROADMAP.md`, `PROJECT_RULES.md`, `docs/*` (not status SSOT) |
 
 ---
 
@@ -21,7 +21,7 @@ RSProjects Showcase is the public portal for discovering and presenting all RSPr
 
 ## Current objective
 
-Phase 2 Showcase Excellence planning is locked (2.0). Long-term Phases 3–5 are documented under [`docs/roadmap/`](docs/roadmap/). Next product work: implement Phase 2.1–2.5; automation/publishing follows as Phase 3.
+Phase 2.1 Rich Project Pages is **Complete**. Next: Phase 2.2 Interactive Demos (`DemoSpec`) under the execution-first policy ([`docs/GOVERNANCE.md`](docs/GOVERNANCE.md) §2a). Long-term Phases 3–5 remain planning-only under [`docs/roadmap/`](docs/roadmap/). **D-027:** examples are first-class content (direction only—no new phase).
 
 ## Repository information
 
@@ -35,7 +35,7 @@ Phase 2 Showcase Excellence planning is locked (2.0). Long-term Phases 3–5 are
 | Remote | `git@roshandroids.github.com:roshandroids/rsprojects-showcase.git` |
 | Default branch | `main` |
 | Latest remote commit | See git log / GitHub |
-| Latest local milestone | Long-term roadmap Phases 3–5 planning docs |
+| Latest local milestone | Phase 2.1 Rich Project Pages + project governance |
 | Working tree | See Recent Changes |
 
 ---
@@ -51,7 +51,8 @@ Phase 2 Showcase Excellence planning is locked (2.0). Long-term Phases 3–5 are
 | 1d | Experience Foundation | **Complete** | Design-system components, content pipeline, Riverpod catalog/detail, Home sections, Document Platform featured |
 | 1.5 | Showcase Content Framework | **Complete** | Canonical project page template; conditional sections from `showcase` metadata; automation-ready schema |
 | 2.0 | Showcase Excellence — planning | **Complete** | Roadmap + Phase 2 brief + planned schema/abstractions (no feature UI yet) |
-| 2.1–2.5 | Showcase Excellence — build | **Planned** | Rich pages, DemoSpec, docs hub, search/discovery, ecosystem navigation |
+| 2.1 | Rich Project Pages | **Complete** | `heroMedia`, `media[]`, architecture diagram, feature icons/media, contributors, downloads; Document Platform reference |
+| 2.2–2.5 | Showcase Excellence — remaining | **Planned** | DemoSpec, docs hub, search/discovery, ecosystem navigation |
 | 3 | Automation & Publishing | **Planned** | Self-maintaining generate/validate/publish; see `docs/roadmap/PHASE_3_AUTOMATION.md` |
 | 4 | Ecosystem Intelligence | **Planned** | Graphs, explorers, timeline; see `docs/roadmap/PHASE_4_ECOSYSTEM.md` |
 | 5 | Community & Developer Portal | **Planned** | Community + develop portal; see `docs/roadmap/PHASE_5_DEVELOPER_PORTAL.md` |
@@ -66,28 +67,29 @@ Phase 2 Showcase Excellence planning is locked (2.0). Long-term Phases 3–5 are
 
 | Field | Value |
 |-------|--------|
-| **Sprint name** | Phase 2.0 Showcase Excellence planning (complete) |
-| **Goal** | Lock roadmap, schema extensions, and reusable abstractions for Phase 2 |
+| **Sprint name** | Phase 2.1 Rich Project Pages |
+| **Goal** | Ship rich, metadata-driven project pages; validate with Document Platform |
 | **Status** | Complete |
 
 ## Active tasks
 
 | Task | Status | Owner |
 |------|--------|-------|
-| Rewrite `ROADMAP.md` for Phase 2 milestones | Complete | — |
-| Add `docs/PHASE_2_SHOWCASE_EXCELLENCE.md` | Complete | — |
-| Document planned schema in CONTENT_MODEL + SHOWCASE_FRAMEWORK | Complete | — |
-| Update PROJECT_STATUS + ARCHITECTURE + decisions D-023–D-026 | Complete | — |
+| Publish `docs/GOVERNANCE.md` + wire core docs | Complete | — |
+| Extend showcase schema/domain/DTO/validation for 2.1 fields | Complete | — |
+| Enrich `ProjectShowcaseTemplate` (hero media, gallery, contributors, downloads) | Complete | — |
+| Fill Document Platform as Phase 2.1 reference | Complete | — |
+| Regenerate registry + tests | Complete | — |
 
 ## Exit criteria
 
 Sprint is done when all of the following are true:
 
-- [x] Roadmap lists Phase 2.0–2.5 with clear outcomes
-- [x] Phase 2 brief covers demos, docs hub, search, ecosystem
-- [x] Planned content-model extensions documented (not implemented)
-- [x] Decisions D-023–D-026 recorded
-- [x] No feature implementation shipped in this sprint
+- [x] Governance document exists and is linked from ROADMAP / docs README / PROJECT_STATUS
+- [x] Phase 2.1 fields validated, mapped, and rendered conditionally
+- [x] Document Platform metadata exercises rich sections
+- [x] Tests cover mapping + template sections
+- [x] Registry regenerated; status/roadmap reflect 2.1 Complete
 
 ---
 
@@ -109,6 +111,8 @@ Sprint is done when all of the following are true:
 - Unit + widget tests green (`flutter test`)
 - **Phase 2.0 planning lock:** `ROADMAP.md`, `docs/PHASE_2_SHOWCASE_EXCELLENCE.md`, planned schema notes, decisions D-023–D-026
 - **Long-term roadmap Phases 3–5:** Automation & Publishing, Ecosystem Intelligence, Community & Developer Portal (`docs/roadmap/`)
+- **Project governance:** `docs/GOVERNANCE.md` (core how-we-manage doc)
+- **Phase 2.1 Rich Project Pages:** hero media, unified gallery, architecture diagram, feature icons/media, contributors, downloads; Document Platform reference fill
 
 ## In Progress
 
@@ -120,7 +124,7 @@ Sprint is done when all of the following are true:
 
 ## Not Started
 
-- Phase 2.1–2.5 implementation (rich pages, DemoSpec, docs hub, search, ecosystem)
+- Phase 2.2–2.5 implementation (DemoSpec, docs hub, search, ecosystem)
 - Full CI quality gate implementation (real format/analyze/test/build steps)
 - Friendly error UI wiring beyond placeholder presenter
 - Clipboard / URL launcher ports for diagnostics & feedback
@@ -229,6 +233,7 @@ integration_test/ placeholder
 | D-024 | 2026-07-26 | Docs hub **local-first** under `content/projects/<id>/docs/` (+ media/); registry holds docs index only | Content-driven hub; automation-ready | Final (implement in 2.3) |
 | D-025 | 2026-07-26 | Dedicated `/search` with shared **DiscoveryQuery** (catalog + search) | One query model; scalable discovery | Final (implement in 2.4) |
 | D-026 | 2026-07-26 | Typed ecosystem **relations[]** + soft links from shared tech/tags | Reusable ecosystem navigation | Final (implement in 2.5) |
+| D-027 | 2026-07-26 | **Examples are first-class content** alongside projects—not nested assets owned only by a project | Enables independent automation, search/filter, and future playgrounds; project pages may still *reference* examples | Final (shape when implementing; do not expand planning now) |
 
 ---
 
@@ -479,14 +484,12 @@ Promote answers into the **Decisions** log (new `D-xxx` row) and remove from thi
 
 Ordered implementation sequence (promote into Current Sprint when starting work):
 
-1. Phase 2.1 prep — schema/validation/index for `media`, `heroMedia`, contributors, downloads (no rich UI yet)
-2. Rich project page sections on `ProjectShowcaseTemplate`
-3. DemoSpec + DemoPane (2.2)
-4. Docs hub + markdown viewer (2.3)
-5. `/search` + collections (2.4)
-6. Ecosystem relations UI (2.5)
-7. Phase 3 automation — CI gates, generate drift, publish/release (see `docs/roadmap/PHASE_3_AUTOMATION.md`)
-8. Phase 4–5 when Phase 2–3 primitives are stable
+1. Phase 2.2 — DemoSpec + DemoPane
+2. Phase 2.3 — Docs hub + markdown viewer
+3. Phase 2.4 — `/search` + collections
+4. Phase 2.5 — Ecosystem relations UI
+5. Phase 3 automation — CI gates, generate drift, publish/release (see `docs/roadmap/PHASE_3_AUTOMATION.md`)
+6. Phase 4–5 when Phase 2–3 primitives are stable
 
 ---
 
@@ -506,6 +509,9 @@ Ordered implementation sequence (promote into Current Sprint when starting work)
 | 2026-07-26 | **Phase 1.5 Showcase Content Framework:** `showcase` schema, `ProjectShowcaseTemplate`, conditional sections, Document Platform reference fill, docs + tests |
 | 2026-07-26 | **Phase 2.0 Showcase Excellence planning:** rewritten `ROADMAP.md`, `docs/PHASE_2_SHOWCASE_EXCELLENCE.md`, planned schema notes, D-023–D-026 |
 | 2026-07-26 | **Long-term Phases 3–5 planning:** `docs/roadmap/PHASE_{3,4,5}_*.md`; ROADMAP strategy for Automation, Ecosystem, Community & Developer Portal |
+| 2026-07-26 | **Project governance:** `docs/GOVERNANCE.md` as permanent core management doc; linked from ROADMAP / docs README / PROJECT_STATUS |
+| 2026-07-26 | **Phase 2.1 Rich Project Pages:** schema/domain/DTO/UI for hero media, `media[]`, architecture diagram, feature icons/media, contributors, downloads; Document Platform reference; registry + tests |
+| 2026-07-26 | **Execution-first planning policy** in `docs/GOVERNANCE.md` §2a; **D-027** examples are first-class content (alongside projects), not project-owned assets only |
 
 ---
 
@@ -514,7 +520,7 @@ Ordered implementation sequence (promote into Current Sprint when starting work)
 1. **Phase 0 — Architecture bootstrap** — Complete  
 2. **Phase 1 — Experience Foundation** — Complete  
 2b. **Phase 1.5 — Showcase Content Framework** — Complete  
-3. **Phase 2 — Showcase Excellence** — Planning locked (2.0); build 2.1–2.5  
+3. **Phase 2 — Showcase Excellence** — 2.0–2.1 Complete; next 2.2 DemoSpec  
 4. **Phase 3 — Automation & Publishing** — Planned  
 5. **Phase 4 — Ecosystem Intelligence** — Planned  
 6. **Phase 5 — Community & Developer Portal** — Planned  

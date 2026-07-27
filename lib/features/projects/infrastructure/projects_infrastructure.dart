@@ -94,12 +94,15 @@ class ProjectDto {
 /// Showcase DTO (never used in UI).
 class ProjectShowcaseDto {
   const ProjectShowcaseDto({
+    this.heroMedia,
     this.problem,
     this.solution,
     this.features = const [],
     this.demo,
     this.screenshots = const [],
+    this.media = const [],
     this.architecture,
+    this.architectureDiagram,
     this.technologies = const [],
     this.platformSupport = const [],
     this.installation,
@@ -108,6 +111,8 @@ class ProjectShowcaseDto {
     this.benchmarks = const [],
     this.roadmap = const [],
     this.changelog = const [],
+    this.contributors = const [],
+    this.downloads = const [],
     this.relatedProjectIds = const [],
     this.contributing,
   });
@@ -122,8 +127,37 @@ class ProjectShowcaseDto {
       ];
     }
 
+    Map<String, Object?>? asMap(Object? raw) {
+      if (raw is! Map) return null;
+      return Map<String, Object?>.from(raw);
+    }
+
+    ({String kind, String? src, String? alt, String? caption, String? poster})?
+        parseMedia(Object? raw) {
+      final m = asMap(raw);
+      if (m == null) return null;
+      final alt = m['alt'] as String? ?? '';
+      return (
+        kind: m['kind'] as String? ?? 'image',
+        src: m['src'] as String?,
+        alt: alt.isEmpty ? null : alt,
+        caption: m['caption'] as String?,
+        poster: m['poster'] as String?,
+      );
+    }
+
     final demoRaw = json['demo'];
+    final heroRaw = asMap(json['heroMedia']);
+    final architectureDiagramRaw = parseMedia(json['architectureDiagram']);
+
     return ProjectShowcaseDto(
+      heroMedia: heroRaw == null
+          ? null
+          : (
+              kind: heroRaw['kind'] as String? ?? 'image',
+              src: heroRaw['src'] as String?,
+              alt: heroRaw['alt'] as String?,
+            ),
       problem: json['problem'] as String?,
       solution: json['solution'] as String?,
       features: [
@@ -131,6 +165,8 @@ class ProjectShowcaseDto {
           (
             title: m['title'] as String? ?? '',
             description: m['description'] as String?,
+            icon: m['icon'] as String?,
+            media: parseMedia(m['media']),
           ),
       ].where((e) => e.title.isNotEmpty).toList(),
       demo: demoRaw is Map
@@ -148,7 +184,18 @@ class ProjectShowcaseDto {
             caption: m['caption'] as String?,
           ),
       ].where((e) => e.alt.isNotEmpty).toList(),
+      media: [
+        for (final m in maps('media'))
+          (
+            kind: m['kind'] as String? ?? 'image',
+            src: m['src'] as String?,
+            alt: m['alt'] as String? ?? '',
+            caption: m['caption'] as String?,
+            poster: m['poster'] as String?,
+          ),
+      ].where((e) => e.alt.isNotEmpty).toList(),
       architecture: json['architecture'] as String?,
+      architectureDiagram: architectureDiagramRaw,
       technologies: (json['technologies'] as List<dynamic>? ?? const [])
           .map((e) => e.toString())
           .toList(),
@@ -198,6 +245,24 @@ class ProjectShowcaseDto {
             notes: m['notes'] as String? ?? '',
           ),
       ].where((e) => e.version.isNotEmpty && e.notes.isNotEmpty).toList(),
+      contributors: [
+        for (final m in maps('contributors'))
+          (
+            name: m['name'] as String? ?? '',
+            role: m['role'] as String?,
+            url: m['url'] as String?,
+            avatar: m['avatar'] as String?,
+          ),
+      ].where((e) => e.name.isNotEmpty).toList(),
+      downloads: [
+        for (final m in maps('downloads'))
+          (
+            label: m['label'] as String? ?? '',
+            url: m['url'] as String? ?? '',
+            platform: m['platform'] as String?,
+            checksum: m['checksum'] as String?,
+          ),
+      ].where((e) => e.label.isNotEmpty && e.url.isNotEmpty).toList(),
       relatedProjectIds:
           (json['relatedProjectIds'] as List<dynamic>? ?? const [])
               .map((e) => e.toString())
@@ -206,12 +271,40 @@ class ProjectShowcaseDto {
     );
   }
 
+  final ({String kind, String? src, String? alt})? heroMedia;
   final String? problem;
   final String? solution;
-  final List<({String title, String? description})> features;
+  final List<
+      ({
+        String title,
+        String? description,
+        String? icon,
+        ({
+          String kind,
+          String? src,
+          String? alt,
+          String? caption,
+          String? poster,
+        })? media,
+      })> features;
   final ({String? url, String? note, bool available})? demo;
   final List<({String alt, String? src, String? caption})> screenshots;
+  final List<
+      ({
+        String kind,
+        String? src,
+        String alt,
+        String? caption,
+        String? poster,
+      })> media;
   final String? architecture;
+  final ({
+    String kind,
+    String? src,
+    String? alt,
+    String? caption,
+    String? poster,
+  })? architectureDiagram;
   final List<String> technologies;
   final List<({String platform, String? notes})> platformSupport;
   final String? installation;
@@ -220,16 +313,54 @@ class ProjectShowcaseDto {
   final List<({String label, String value, String? note})> benchmarks;
   final List<({String item, String? status})> roadmap;
   final List<({String version, String? date, String notes})> changelog;
+  final List<({String name, String? role, String? url, String? avatar})>
+      contributors;
+  final List<({String label, String url, String? platform, String? checksum})>
+      downloads;
   final List<String> relatedProjectIds;
   final String? contributing;
 
+  static ShowcaseMediaItem? _mediaToDomain(
+    ({
+      String kind,
+      String? src,
+      String? alt,
+      String? caption,
+      String? poster,
+    })? raw, {
+    String fallbackAlt = '',
+  }) {
+    if (raw == null) return null;
+    final alt = (raw.alt ?? '').trim().isEmpty ? fallbackAlt : raw.alt!;
+    if (alt.isEmpty && raw.src == null) return null;
+    return ShowcaseMediaItem(
+      kind: ShowcaseMediaKind.fromString(raw.kind),
+      alt: alt.isEmpty ? 'Media' : alt,
+      src: raw.src,
+      caption: raw.caption,
+      poster: raw.poster,
+    );
+  }
+
   ProjectShowcase toDomain() {
     return ProjectShowcase(
+      heroMedia: heroMedia == null
+          ? null
+          : ShowcaseHeroMedia(
+              kind: ShowcaseHeroMediaKind.fromString(heroMedia!.kind),
+              src: heroMedia!.src,
+              alt: heroMedia!.alt,
+            ),
       problem: problem,
       solution: solution,
       features: [
         for (final f in features)
-          ShowcaseFeature(title: f.title, description: f.description),
+          ShowcaseFeature(
+            title: f.title,
+            description: f.description,
+            icon: f.icon,
+            media: _mediaToDomain(f.media, fallbackAlt: f.title),
+          ),
       ],
       demo: demo == null
           ? null
@@ -242,7 +373,21 @@ class ProjectShowcaseDto {
         for (final s in screenshots)
           ShowcaseScreenshot(alt: s.alt, src: s.src, caption: s.caption),
       ],
+      media: [
+        for (final m in media)
+          ShowcaseMediaItem(
+            kind: ShowcaseMediaKind.fromString(m.kind),
+            alt: m.alt,
+            src: m.src,
+            caption: m.caption,
+            poster: m.poster,
+          ),
+      ],
       architecture: architecture,
+      architectureDiagram: _mediaToDomain(
+        architectureDiagram,
+        fallbackAlt: 'Architecture diagram',
+      ),
       technologies: technologies,
       platformSupport: [
         for (final p in platformSupport)
@@ -278,6 +423,24 @@ class ProjectShowcaseDto {
             version: c.version,
             date: c.date,
             notes: c.notes,
+          ),
+      ],
+      contributors: [
+        for (final c in contributors)
+          ShowcaseContributor(
+            name: c.name,
+            role: c.role,
+            url: c.url,
+            avatar: c.avatar,
+          ),
+      ],
+      downloads: [
+        for (final d in downloads)
+          ShowcaseDownload(
+            label: d.label,
+            url: d.url,
+            platform: d.platform,
+            checksum: d.checksum,
           ),
       ],
       relatedProjectIds: relatedProjectIds,

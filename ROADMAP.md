@@ -1,6 +1,7 @@
 # Roadmap
 
 > Long-term product strategy for RSProjects Showcase.  
+> **Governance:** [`docs/GOVERNANCE.md`](docs/GOVERNANCE.md)  
 > Operational status: [`PROJECT_STATUS.md`](PROJECT_STATUS.md).  
 > Phase briefs: [`docs/PHASE_2_SHOWCASE_EXCELLENCE.md`](docs/PHASE_2_SHOWCASE_EXCELLENCE.md) · [`docs/roadmap/`](docs/roadmap/).
 
@@ -68,7 +69,7 @@ Priorities may reorder as the product evolves; phase **purpose** stays stable.
 
 ## Phase 2 — Showcase Excellence
 
-**Status:** Planning locked (2.0); build 2.1–2.5  
+**Status:** 2.0 Complete · **2.1 Complete** · 2.2–2.5 Planned  
 **Purpose:** Elevate the portal into a compelling developer showcase—still fully generic.  
 **Brief:** [`docs/PHASE_2_SHOWCASE_EXCELLENCE.md`](docs/PHASE_2_SHOWCASE_EXCELLENCE.md)
 
@@ -76,20 +77,20 @@ Priorities may reorder as the product evolves; phase **purpose** stays stable.
 
 **Major milestones:**
 
-| Milestone | Focus |
-|-----------|--------|
-| 2.0 | Planning lock |
-| 2.1 | Rich project pages (media, contributors, downloads) |
-| 2.2 | Interactive demos (`DemoSpec`) |
-| 2.3 | Documentation hub |
-| 2.4 | Search & discovery (+ collections) |
-| 2.5 | Ecosystem navigation (typed relations foundation) |
+| Milestone | Focus | Status |
+|-----------|--------|--------|
+| 2.0 | Planning lock | Complete |
+| 2.1 | Rich project pages (media, contributors, downloads) | **Complete** |
+| 2.2 | Interactive demos (`DemoSpec`) | Planned |
+| 2.3 | Documentation hub | Planned |
+| 2.4 | Search & discovery (+ collections) | Planned |
+| 2.5 | Ecosystem navigation (typed relations foundation) | Planned |
 
 **Exit criteria:** Showcase template carries rich media/demos/docs entry points; `/search` and relations primitives exist; no `project.id` branching.
 
 **Dependencies:** Phase 1.5 template + content model.
 
-**Suggested build order:** schema/index → rich media → DemoSpec → docs hub → search/collections → ecosystem UI.
+**Suggested build order:** ~~schema/index → rich media~~ → DemoSpec → docs hub → search/collections → ecosystem UI.
 
 ---
 
@@ -186,4 +187,6 @@ flowchart LR
 
 - Milestones inside a phase may reorder when user value or maintainer cost changes.
 - Phase 3 and 4 may overlap once Phase 2 primitives exist.
-- Open product decisions (hosting D-011, license D-012) can gate deploy automation without blocking planning or earlier UX work.
+- Open product decisions (hosting D-011, license D-012) can gate deploy automation without blocking earlier UX work.
+- **Execution-first:** do not expand this roadmap or add large planning docs by default—see [`docs/GOVERNANCE.md`](docs/GOVERNANCE.md) §2a.
+- **D-027:** examples are first-class content (alongside projects). That direction informs later search, automation, and playgrounds; it does not add a new phase.

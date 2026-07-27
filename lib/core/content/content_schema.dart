@@ -33,6 +33,18 @@ const Set<String> kAllowedRoadmapStatuses = {
   'done',
 };
 
+const Set<String> kAllowedMediaKinds = {
+  'image',
+  'video',
+  'diagram',
+};
+
+const Set<String> kAllowedHeroMediaKinds = {
+  'image',
+  'video',
+  'lottie',
+};
+
 /// Validates a decoded metadata map. Returns human-readable error messages.
 List<String> validateProjectMetadata(
   Map<String, Object?> data, {
@@ -128,6 +140,22 @@ List<String> validateShowcaseMetadata(Map<String, Object?> data) {
             item['title'] is! String ||
             (item['title'] as String).trim().isEmpty) {
           errors.add('showcase.features[$i] requires non-empty "title"');
+          continue;
+        }
+        final featureMedia = item['media'];
+        if (featureMedia != null) {
+          if (featureMedia is! Map) {
+            errors.add('showcase.features[$i].media must be an object');
+          } else {
+            final kind = featureMedia['kind'];
+            if (kind != null &&
+                (kind is! String || !kAllowedMediaKinds.contains(kind))) {
+              errors.add(
+                'showcase.features[$i].media.kind invalid. '
+                'Allowed: $kAllowedMediaKinds',
+              );
+            }
+          }
         }
       }
     }
@@ -271,6 +299,89 @@ List<String> validateShowcaseMetadata(Map<String, Object?> data) {
   final related = data['relatedProjectIds'];
   if (related != null && related is! List) {
     errors.add('showcase.relatedProjectIds must be a list');
+  }
+
+  void validateMediaObject(String path, Object? raw, {required bool requireAlt}) {
+    if (raw == null) return;
+    if (raw is! Map) {
+      errors.add('$path must be an object');
+      return;
+    }
+    final kind = raw['kind'];
+    if (kind != null &&
+        (kind is! String || !kAllowedMediaKinds.contains(kind))) {
+      errors.add('$path.kind invalid. Allowed: $kAllowedMediaKinds');
+    }
+    if (requireAlt) {
+      final alt = raw['alt'];
+      if (alt is! String || alt.trim().isEmpty) {
+        errors.add('$path requires non-empty "alt"');
+      }
+    }
+  }
+
+  final heroMedia = data['heroMedia'];
+  if (heroMedia != null) {
+    if (heroMedia is! Map) {
+      errors.add('showcase.heroMedia must be an object');
+    } else {
+      final kind = heroMedia['kind'];
+      if (kind != null &&
+          (kind is! String || !kAllowedHeroMediaKinds.contains(kind))) {
+        errors.add(
+          'showcase.heroMedia.kind invalid. Allowed: $kAllowedHeroMediaKinds',
+        );
+      }
+    }
+  }
+
+  final media = data['media'];
+  if (media != null) {
+    if (media is! List) {
+      errors.add('showcase.media must be a list');
+    } else {
+      for (var i = 0; i < media.length; i++) {
+        validateMediaObject('showcase.media[$i]', media[i], requireAlt: true);
+      }
+    }
+  }
+
+  validateMediaObject(
+    'showcase.architectureDiagram',
+    data['architectureDiagram'],
+    requireAlt: false,
+  );
+
+  final contributors = data['contributors'];
+  if (contributors != null) {
+    if (contributors is! List) {
+      errors.add('showcase.contributors must be a list');
+    } else {
+      for (var i = 0; i < contributors.length; i++) {
+        final item = contributors[i];
+        if (item is! Map ||
+            item['name'] is! String ||
+            (item['name'] as String).trim().isEmpty) {
+          errors.add('showcase.contributors[$i] requires non-empty "name"');
+        }
+      }
+    }
+  }
+
+  final downloads = data['downloads'];
+  if (downloads != null) {
+    if (downloads is! List) {
+      errors.add('showcase.downloads must be a list');
+    } else {
+      for (var i = 0; i < downloads.length; i++) {
+        final item = downloads[i];
+        if (item is! Map ||
+            item['label'] is! String ||
+            item['url'] is! String) {
+          errors.add('showcase.downloads[$i] requires "label" and "url"');
+        }
+      }
+    }
   }
 
   return errors;

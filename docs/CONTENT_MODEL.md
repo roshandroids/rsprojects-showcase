@@ -46,7 +46,7 @@ Optional nested object. Every RSProjects product page uses the same template; se
 | Platform Support | `platformSupport` | `{platform, notes?}[]` | Prefer allowed platform ids |
 | Installation | `installation` | string | |
 | Documentation Links | `documentationLinks` | `{label, url}[]` | Complements `docsUrl` |
-| Examples / Playground | `examples` | `{title, description?, url?}[]` | |
+| Examples / Playground | `examples` | `{title, description?, url?}[]` | Transitional project-page list. **D-027:** long-term examples are first-class content alongside projects (not project-owned assets only). |
 | Benchmarks | `benchmarks` | `{label, value, note?}[]` | Optional |
 | Roadmap | `roadmap` | `{item, status?}[]` | `status`: `planned` \| `in_progress` \| `done` |
 | Changelog | `changelog` | `{version, date?, notes}[]` | |
@@ -55,7 +55,23 @@ Optional nested object. Every RSProjects product page uses the same template; se
 
 See also [`SHOWCASE_FRAMEWORK.md`](SHOWCASE_FRAMEWORK.md).
 
-## Phase 2 (planned) — not implemented yet
+## Phase 2.1 — Rich Project Pages (**implemented**)
+
+These showcase fields are validated, mapped, and rendered by `ProjectShowcaseTemplate` when present.
+
+| Field | Type | Notes |
+|-------|------|--------|
+| `heroMedia` | `{kind, src?, alt?}` | `kind`: `image` \| `video` \| `lottie` — asset path optional (placeholder UI) |
+| `media` | `{kind, src?, alt, caption?, poster?}[]` | Unified gallery; `kind`: `image` \| `video` \| `diagram`. Prefers over `screenshots` |
+| `architectureDiagram` | `{kind?, src?, alt?, caption?}` | Optional diagram beside `architecture` |
+| `features[].icon` | string | Optional icon key (`schema`, `export`, `workflow`, `platform`, …) |
+| `features[].media` | media ref | Optional feature visual |
+| `contributors` | `{name, role?, url?, avatar?}[]` | People section |
+| `downloads` | `{label, url, platform?, checksum?}[]` | Download / release artifacts |
+
+Legacy `screenshots[]` remains supported as a gallery fallback when `media` is empty.
+
+## Phase 2.2–2.5 (planned) — not implemented yet
 
 Planning brief: [`PHASE_2_SHOWCASE_EXCELLENCE.md`](PHASE_2_SHOWCASE_EXCELLENCE.md).
 
@@ -65,16 +81,9 @@ These fields and folders are **documented for future work**. Do not treat them a
 
 | Field | Type | Notes |
 |-------|------|--------|
-| `heroMedia` | `{kind, src, alt?}` | `kind`: `image` \| `video` \| `lottie` — asset path or URL |
-| `media` | `{kind, src?, alt, caption?, poster?}[]` | Unified gallery; `kind`: `image` \| `video` \| `diagram`. Augments/supersedes `screenshots` |
 | `demo.kind` | string | `embedded_web` \| `external` \| `media` \| omit → unavailable |
 | `demo.embedUrl` | string | Used when `kind: embedded_web` |
 | `demo.url` | string | Used when `kind: external` (complements top-level `demoUrl`) |
-| `architectureDiagram` | `{src, alt?}` | Optional diagram asset/URL beside `architecture` |
-| `features[].icon` | string | Optional icon key |
-| `features[].media` | media ref | Optional feature visual |
-| `contributors` | `{name, role?, url?, avatar?}[]` | People section |
-| `downloads` | `{label, url, platform?, checksum?}[]` | Download / release artifacts |
 | `relations` | `{targetId, type}[]` | Ecosystem edges; see below |
 
 **Relation `type` enum (planned):** `related` \| `depends_on` \| `depended_on_by` \| `shares_tech` \| `alternative`.
@@ -122,9 +131,11 @@ Docs/markdown **bodies** stay on disk (or remote URLs); the registry holds index
 
 ### Planned validation additions
 
-- Enum checks for `demo.kind`, `media[].kind`, `relations[].type`, `heroMedia.kind`
+- Enum checks for `demo.kind`, `relations[].type` (2.2 / 2.5)
 - When media/docs assets are referenced, validate path existence under `content/projects/<id>/media` or registered Flutter assets
 - Collection `projectIds` must resolve to known project ids
+
+`heroMedia.kind` and `media[].kind` enum checks are **implemented** (Phase 2.1).
 
 ### Later phases (planning only)
 

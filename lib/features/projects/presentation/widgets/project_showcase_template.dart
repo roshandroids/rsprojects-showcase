@@ -55,12 +55,14 @@ class ProjectShowcaseTemplate extends StatelessWidget {
         if (showcase != null && showcase.features.isNotEmpty)
           _FeaturesSection(features: showcase.features),
         _DemoSection(project: project, demo: showcase?.demo),
-        if (showcase != null && showcase.screenshots.isNotEmpty)
-          _GallerySection(screenshots: showcase.screenshots),
-        if (showcase?.architecture != null)
-          _TextSection(
-            title: 'Architecture Overview',
-            body: showcase!.architecture!,
+        if (showcase != null && showcase.galleryItems.isNotEmpty)
+          _GallerySection(items: showcase.galleryItems),
+        if (showcase != null &&
+            (showcase.architecture != null ||
+                showcase.architectureDiagram != null))
+          _ArchitectureSection(
+            body: showcase.architecture,
+            diagram: showcase.architectureDiagram,
           ),
         if (showcase != null && showcase.technologies.isNotEmpty)
           _TechnologiesSection(technologies: showcase.technologies),
@@ -85,6 +87,10 @@ class ProjectShowcaseTemplate extends StatelessWidget {
           _RoadmapSection(items: showcase.roadmap),
         if (showcase != null && showcase.changelog.isNotEmpty)
           _ChangelogSection(entries: showcase.changelog),
+        if (showcase != null && showcase.contributors.isNotEmpty)
+          _ContributorsSection(contributors: showcase.contributors),
+        if (showcase != null && showcase.downloads.isNotEmpty)
+          _DownloadsSection(downloads: showcase.downloads),
         if (relatedProjects.isNotEmpty)
           _RelatedSection(projects: relatedProjects),
         if (showcase?.contributing != null)
@@ -111,10 +117,15 @@ class _HeroSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
+    final heroMedia = project.showcase?.heroMedia;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        if (heroMedia != null) ...[
+          _HeroMediaBanner(media: heroMedia),
+          const SizedBox(height: AppSpacing.xl),
+        ],
         if (project.featured) ...[
           const Align(
             alignment: Alignment.centerLeft,
@@ -201,6 +212,76 @@ class _HeroSection extends StatelessWidget {
   }
 }
 
+class _HeroMediaBanner extends StatelessWidget {
+  const _HeroMediaBanner({required this.media});
+
+  final ShowcaseHeroMedia media;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final label = media.alt ?? switch (media.kind) {
+          ShowcaseHeroMediaKind.video => 'Hero video',
+          ShowcaseHeroMediaKind.lottie => 'Hero animation',
+          ShowcaseHeroMediaKind.image => 'Hero image',
+        };
+
+    return ClipRRect(
+      borderRadius: AppRadius.borderLg,
+      child: AspectRatio(
+        aspectRatio: 21 / 9,
+        child: ColoredBox(
+          color: scheme.surfaceContainerHighest,
+          child: media.src != null && media.src!.isNotEmpty
+              ? Image.asset(
+                  media.src!,
+                  fit: BoxFit.cover,
+                  semanticLabel: label,
+                  errorBuilder: (_, _, _) => _GalleryPlaceholder(
+                    label: label,
+                    icon: _heroKindIcon(media.kind),
+                  ),
+                )
+              : _GalleryPlaceholder(
+                  label: label,
+                  icon: _heroKindIcon(media.kind),
+                ),
+        ),
+      ),
+    );
+  }
+}
+
+IconData _heroKindIcon(ShowcaseHeroMediaKind kind) {
+  return switch (kind) {
+    ShowcaseHeroMediaKind.video => Icons.videocam_outlined,
+    ShowcaseHeroMediaKind.lottie => Icons.auto_awesome_outlined,
+    ShowcaseHeroMediaKind.image => Icons.image_outlined,
+  };
+}
+
+IconData _featureIcon(String? key) {
+  return switch (key) {
+    'schema' || 'structure' => Icons.account_tree_outlined,
+    'export' => Icons.ios_share_outlined,
+    'workflow' => Icons.sync_alt_rounded,
+    'platform' || 'devices' => Icons.devices_outlined,
+    'search' => Icons.search_rounded,
+    'security' => Icons.shield_outlined,
+    'performance' => Icons.speed_outlined,
+    'docs' => Icons.menu_book_outlined,
+    _ => Icons.auto_awesome_outlined,
+  };
+}
+
+IconData _mediaKindIcon(ShowcaseMediaKind kind) {
+  return switch (kind) {
+    ShowcaseMediaKind.video => Icons.videocam_outlined,
+    ShowcaseMediaKind.diagram => Icons.schema_outlined,
+    ShowcaseMediaKind.image => Icons.image_outlined,
+  };
+}
+
 class _UrlAction extends StatelessWidget {
   const _UrlAction({
     required this.label,
@@ -255,6 +336,9 @@ class _FeaturesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+
     return Padding(
       padding: const EdgeInsets.only(top: AppSpacing.section),
       child: Column(
@@ -270,20 +354,52 @@ class _FeaturesSection extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        feature.title,
-                        style: Theme.of(context).textTheme.titleMedium,
+                      Row(
+                        children: [
+                          Icon(
+                            _featureIcon(feature.icon),
+                            color: scheme.primary,
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          Expanded(
+                            child: Text(
+                              feature.title,
+                              style: theme.textTheme.titleMedium,
+                            ),
+                          ),
+                        ],
                       ),
                       if (feature.description != null) ...[
                         const SizedBox(height: AppSpacing.sm),
                         Text(
                           feature.description!,
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSurface
-                                    .withValues(alpha: 0.72),
-                              ),
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: scheme.onSurface.withValues(alpha: 0.72),
+                          ),
+                        ),
+                      ],
+                      if (feature.media != null) ...[
+                        const SizedBox(height: AppSpacing.md),
+                        AspectRatio(
+                          aspectRatio: 16 / 10,
+                          child: ColoredBox(
+                            color: scheme.surfaceContainerHighest,
+                            child: feature.media!.src != null &&
+                                    feature.media!.src!.isNotEmpty
+                                ? Image.asset(
+                                    feature.media!.src!,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (_, _, _) =>
+                                        _GalleryPlaceholder(
+                                      label: feature.media!.alt,
+                                      icon: _mediaKindIcon(feature.media!.kind),
+                                    ),
+                                  )
+                                : _GalleryPlaceholder(
+                                    label: feature.media!.alt,
+                                    icon: _mediaKindIcon(feature.media!.kind),
+                                  ),
+                          ),
                         ),
                       ],
                     ],
@@ -370,9 +486,9 @@ class _DemoSection extends StatelessWidget {
 }
 
 class _GallerySection extends StatelessWidget {
-  const _GallerySection({required this.screenshots});
+  const _GallerySection({required this.items});
 
-  final List<ShowcaseScreenshot> screenshots;
+  final List<ShowcaseMediaItem> items;
 
   @override
   Widget build(BuildContext context) {
@@ -389,7 +505,7 @@ class _GallerySection extends StatelessWidget {
           AppGrid(
             minTileWidth: 220,
             children: [
-              for (final shot in screenshots)
+              for (final item in items)
                 AppCard(
                   padding: EdgeInsets.zero,
                   child: Column(
@@ -399,22 +515,38 @@ class _GallerySection extends StatelessWidget {
                         aspectRatio: 16 / 10,
                         child: ColoredBox(
                           color: scheme.surfaceContainerHighest,
-                          child: shot.src != null && shot.src!.isNotEmpty
+                          child: item.src != null && item.src!.isNotEmpty
                               ? Image.asset(
-                                  shot.src!,
+                                  item.src!,
                                   fit: BoxFit.cover,
-                                  errorBuilder: (_, _, _) => _GalleryPlaceholder(
-                                    label: shot.alt,
+                                  semanticLabel: item.alt,
+                                  errorBuilder: (_, _, _) =>
+                                      _GalleryPlaceholder(
+                                    label: item.alt,
+                                    icon: _mediaKindIcon(item.kind),
                                   ),
                                 )
-                              : _GalleryPlaceholder(label: shot.alt),
+                              : _GalleryPlaceholder(
+                                  label: item.alt,
+                                  icon: _mediaKindIcon(item.kind),
+                                ),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(AppSpacing.md),
-                        child: Text(
-                          shot.caption ?? shot.alt,
-                          style: theme.textTheme.bodyMedium,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            AppBadge(
+                              label: item.kind.name,
+                              tone: AppBadgeTone.neutral,
+                            ),
+                            const SizedBox(height: AppSpacing.xs),
+                            Text(
+                              item.caption ?? item.alt,
+                              style: theme.textTheme.bodyMedium,
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -429,9 +561,13 @@ class _GallerySection extends StatelessWidget {
 }
 
 class _GalleryPlaceholder extends StatelessWidget {
-  const _GalleryPlaceholder({required this.label});
+  const _GalleryPlaceholder({
+    required this.label,
+    this.icon = Icons.image_outlined,
+  });
 
   final String label;
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
@@ -442,7 +578,7 @@ class _GalleryPlaceholder extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.image_outlined, color: scheme.primary, size: 32),
+            Icon(icon, color: scheme.primary, size: 32),
             const SizedBox(height: AppSpacing.sm),
             Text(
               label,
@@ -451,6 +587,71 @@ class _GalleryPlaceholder extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _ArchitectureSection extends StatelessWidget {
+  const _ArchitectureSection({this.body, this.diagram});
+
+  final String? body;
+  final ShowcaseMediaItem? diagram;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+
+    return Padding(
+      padding: const EdgeInsets.only(top: AppSpacing.section),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          AppSectionHeader(
+            title: 'Architecture Overview',
+            subtitle: body,
+          ),
+          if (diagram != null) ...[
+            const SizedBox(height: AppSpacing.xl),
+            AppCard(
+              padding: EdgeInsets.zero,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: ColoredBox(
+                      color: scheme.surfaceContainerHighest,
+                      child: diagram!.src != null && diagram!.src!.isNotEmpty
+                          ? Image.asset(
+                              diagram!.src!,
+                              fit: BoxFit.contain,
+                              semanticLabel: diagram!.alt,
+                              errorBuilder: (_, _, _) => _GalleryPlaceholder(
+                                label: diagram!.alt,
+                                icon: Icons.schema_outlined,
+                              ),
+                            )
+                          : _GalleryPlaceholder(
+                              label: diagram!.alt,
+                              icon: Icons.schema_outlined,
+                            ),
+                    ),
+                  ),
+                  if (diagram!.caption != null)
+                    Padding(
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      child: Text(
+                        diagram!.caption!,
+                        style: theme.textTheme.bodyMedium,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }
@@ -641,7 +842,10 @@ class _BenchmarksSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const AppSectionHeader(title: 'Benchmarks'),
+          const AppSectionHeader(
+            title: 'Benchmarks',
+            subtitle: 'Performance and quality targets for this product.',
+          ),
           const SizedBox(height: AppSpacing.xl),
           AppGrid(
             minTileWidth: 180,
@@ -652,11 +856,22 @@ class _BenchmarksSection extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(bench.label, style: theme.textTheme.labelLarge),
-                      const SizedBox(height: AppSpacing.xs),
-                      Text(bench.value, style: theme.textTheme.headlineSmall),
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(
+                        bench.value,
+                        style: theme.textTheme.headlineSmall?.copyWith(
+                          color: theme.colorScheme.primary,
+                        ),
+                      ),
                       if (bench.note != null) ...[
-                        const SizedBox(height: AppSpacing.xs),
-                        Text(bench.note!, style: theme.textTheme.bodySmall),
+                        const SizedBox(height: AppSpacing.sm),
+                        Text(
+                          bench.note!,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onSurface
+                                .withValues(alpha: 0.64),
+                          ),
+                        ),
                       ],
                     ],
                   ),
@@ -728,7 +943,10 @@ class _ChangelogSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const AppSectionHeader(title: 'Changelog'),
+          const AppSectionHeader(
+            title: 'Changelog',
+            subtitle: 'Release history for this product.',
+          ),
           const SizedBox(height: AppSpacing.lg),
           for (final entry in entries) ...[
             AppCard(
@@ -759,6 +977,154 @@ class _ChangelogSection extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.md),
           ],
+        ],
+      ),
+    );
+  }
+}
+
+class _ContributorsSection extends StatelessWidget {
+  const _ContributorsSection({required this.contributors});
+
+  final List<ShowcaseContributor> contributors;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+
+    return Padding(
+      padding: const EdgeInsets.only(top: AppSpacing.section),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const AppSectionHeader(title: 'Contributors'),
+          const SizedBox(height: AppSpacing.xl),
+          AppGrid(
+            minTileWidth: 200,
+            children: [
+              for (final person in contributors)
+                AppCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 18,
+                            backgroundColor: scheme.primaryContainer,
+                            child: Text(
+                              person.name.isNotEmpty
+                                  ? person.name[0].toUpperCase()
+                                  : '?',
+                              style: theme.textTheme.titleSmall?.copyWith(
+                                color: scheme.onPrimaryContainer,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.md),
+                          Expanded(
+                            child: Text(
+                              person.name,
+                              style: theme.textTheme.titleMedium,
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (person.role != null) ...[
+                        const SizedBox(height: AppSpacing.sm),
+                        Text(
+                          person.role!,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: scheme.onSurface.withValues(alpha: 0.72),
+                          ),
+                        ),
+                      ],
+                      if (person.url != null) ...[
+                        const SizedBox(height: AppSpacing.sm),
+                        SelectableText(
+                          person.url!,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: scheme.primary,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DownloadsSection extends StatelessWidget {
+  const _DownloadsSection({required this.downloads});
+
+  final List<ShowcaseDownload> downloads;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+
+    return Padding(
+      padding: const EdgeInsets.only(top: AppSpacing.section),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const AppSectionHeader(title: 'Downloads'),
+          const SizedBox(height: AppSpacing.xl),
+          AppGrid(
+            minTileWidth: 220,
+            children: [
+              for (final item in downloads)
+                AppCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.download_outlined,
+                            color: scheme.primary,
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          Expanded(
+                            child: Text(
+                              item.label,
+                              style: theme.textTheme.titleMedium,
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (item.platform != null) ...[
+                        const SizedBox(height: AppSpacing.sm),
+                        AppBadge(label: item.platform!),
+                      ],
+                      const SizedBox(height: AppSpacing.sm),
+                      SelectableText(
+                        item.url,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: scheme.primary,
+                        ),
+                      ),
+                      if (item.checksum != null) ...[
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(
+                          item.checksum!,
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: scheme.onSurface.withValues(alpha: 0.56),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+            ],
+          ),
         ],
       ),
     );

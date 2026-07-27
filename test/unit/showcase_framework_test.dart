@@ -34,6 +34,57 @@ void main() {
       expect(errors.any((e) => e.contains('features')), isTrue);
       expect(errors.any((e) => e.contains('roadmap')), isTrue);
     });
+
+    test('accepts Phase 2.1 rich media fields', () {
+      final errors = validateShowcaseMetadata({
+        'heroMedia': {'kind': 'image', 'alt': 'Hero'},
+        'media': [
+          {'kind': 'diagram', 'alt': 'Pipeline'},
+          {'kind': 'video', 'alt': 'Walkthrough'},
+        ],
+        'features': [
+          {
+            'title': 'Schemas',
+            'icon': 'schema',
+            'media': {'kind': 'image', 'alt': 'Feature visual'},
+          },
+        ],
+        'architectureDiagram': {
+          'kind': 'diagram',
+          'alt': 'Layers',
+        },
+        'contributors': [
+          {'name': 'Roshan', 'role': 'Maintainer'},
+        ],
+        'downloads': [
+          {
+            'label': 'Source',
+            'url': 'https://example.com',
+            'platform': 'all',
+          },
+        ],
+      });
+      expect(errors, isEmpty);
+    });
+
+    test('rejects invalid media and hero kinds', () {
+      final errors = validateShowcaseMetadata({
+        'heroMedia': {'kind': 'gif'},
+        'media': [
+          {'kind': 'pdf', 'alt': 'Bad'},
+        ],
+        'contributors': [
+          {'role': 'missing name'},
+        ],
+        'downloads': [
+          {'label': 'No URL'},
+        ],
+      });
+      expect(errors.any((e) => e.contains('heroMedia')), isTrue);
+      expect(errors.any((e) => e.contains('media')), isTrue);
+      expect(errors.any((e) => e.contains('contributors')), isTrue);
+      expect(errors.any((e) => e.contains('downloads')), isTrue);
+    });
   });
 
   group('ProjectShowcaseDto', () {
@@ -72,6 +123,74 @@ void main() {
         project.showcase!.roadmap.first.status,
         ShowcaseRoadmapStatus.planned,
       );
+    });
+
+    test('maps Phase 2.1 rich fields and gallery fallback', () {
+      final rich = ProjectDto.fromJson({
+        'id': 'document_platform',
+        'name': 'Document Platform',
+        'description': 'Docs',
+        'version': '0.9.0',
+        'status': 'beta',
+        'category': 'platform',
+        'platforms': ['web'],
+        'featured': true,
+        'showcase': {
+          'heroMedia': {'kind': 'image', 'alt': 'Hero'},
+          'features': [
+            {
+              'title': 'Schemas',
+              'icon': 'schema',
+              'media': {'kind': 'image', 'alt': 'Schema visual'},
+            },
+          ],
+          'media': [
+            {'kind': 'video', 'alt': 'Walkthrough'},
+          ],
+          'architectureDiagram': {
+            'kind': 'diagram',
+            'alt': 'Layers',
+          },
+          'contributors': [
+            {'name': 'Roshan', 'role': 'Maintainer'},
+          ],
+          'downloads': [
+            {
+              'label': 'Source',
+              'url': 'https://example.com',
+            },
+          ],
+        },
+      }).toDomain().showcase!;
+
+      expect(rich.heroMedia?.kind, ShowcaseHeroMediaKind.image);
+      expect(rich.features.first.icon, 'schema');
+      expect(rich.features.first.media?.kind, ShowcaseMediaKind.image);
+      expect(rich.galleryItems, hasLength(1));
+      expect(rich.galleryItems.first.kind, ShowcaseMediaKind.video);
+      expect(rich.architectureDiagram?.kind, ShowcaseMediaKind.diagram);
+      expect(rich.contributors.first.name, 'Roshan');
+      expect(rich.downloads.first.label, 'Source');
+
+      final legacy = ProjectDto.fromJson({
+        'id': 'legacy',
+        'name': 'Legacy',
+        'description': 'Docs',
+        'version': '0.1.0',
+        'status': 'beta',
+        'category': 'tool',
+        'platforms': ['web'],
+        'featured': false,
+        'showcase': {
+          'screenshots': [
+            {'alt': 'Shot A', 'caption': 'Legacy gallery'},
+          ],
+        },
+      }).toDomain().showcase!;
+
+      expect(legacy.galleryItems, hasLength(1));
+      expect(legacy.galleryItems.first.alt, 'Shot A');
+      expect(legacy.galleryItems.first.kind, ShowcaseMediaKind.image);
     });
   });
 

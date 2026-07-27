@@ -41,7 +41,9 @@ content/projects/<id>/metadata.json
   → ProjectShowcaseTemplate
 ```
 
-**Phase 2 (planned):** also `content/projects/<id>/docs/`, `media/`, and `content/collections/` → registry indexes. See [`docs/PHASE_2_SHOWCASE_EXCELLENCE.md`](docs/PHASE_2_SHOWCASE_EXCELLENCE.md).
+**Phase 2 (remaining):** docs hub, DemoSpec, search/collections, relations — see [`docs/PHASE_2_SHOWCASE_EXCELLENCE.md`](docs/PHASE_2_SHOWCASE_EXCELLENCE.md). Local `docs/` / `media/` under projects and `content/collections/` remain planned.
+
+**D-027 (direction):** **Examples** are first-class content entities (alongside projects), not merely nested showcase fields. Today `showcase.examples[]` remains valid as a transitional project-page list; a dedicated examples content/registry shape lands when that capability is implemented—without a new roadmap phase.
 
 **Phases 3–5 (planned):** automation/publishing, ecosystem intelligence, community & developer portal — [`docs/roadmap/`](docs/roadmap/).
 

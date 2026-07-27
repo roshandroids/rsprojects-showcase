@@ -22,20 +22,46 @@ const _project = Project(
   repositoryUrl: 'https://github.com/example/docs',
   docsUrl: 'https://example.com/docs',
   showcase: ProjectShowcase(
+    heroMedia: ShowcaseHeroMedia(
+      kind: ShowcaseHeroMediaKind.image,
+      alt: 'Document Platform hero',
+    ),
     problem: 'Docs drift across tools.',
     solution: 'A shared content model and export pipeline.',
     features: [
-      ShowcaseFeature(title: 'Structured schemas'),
+      ShowcaseFeature(title: 'Structured schemas', icon: 'schema'),
     ],
     demo: ShowcaseDemo(
       available: false,
       note: 'Demo coming soon',
+    ),
+    media: [
+      ShowcaseMediaItem(
+        kind: ShowcaseMediaKind.diagram,
+        alt: 'Pipeline diagram',
+        caption: 'Author → publish',
+      ),
+    ],
+    architecture: 'Content registry drives a generic template.',
+    architectureDiagram: ShowcaseMediaItem(
+      kind: ShowcaseMediaKind.diagram,
+      alt: 'Architecture layers',
     ),
     technologies: ['Flutter', 'Dart'],
     roadmap: [
       ShowcaseRoadmapItem(
         item: 'Interactive demo',
         status: ShowcaseRoadmapStatus.planned,
+      ),
+    ],
+    contributors: [
+      ShowcaseContributor(name: 'Roshan Shrestha', role: 'Maintainer'),
+    ],
+    downloads: [
+      ShowcaseDownload(
+        label: 'Source',
+        url: 'https://example.com/source',
+        platform: 'all',
       ),
     ],
     contributing: 'PRs welcome.',
@@ -72,6 +98,7 @@ void main() {
 
     expect(find.text('Document Platform'), findsOneWidget);
     expect(find.text('Structured documents'), findsOneWidget);
+    expect(find.text('Document Platform hero'), findsOneWidget);
     expect(find.text('Problem Statement'), findsOneWidget);
     expect(find.text('Docs drift across tools.'), findsOneWidget);
     expect(find.text('Solution Overview'), findsOneWidget);
@@ -79,8 +106,15 @@ void main() {
     expect(find.text('Structured schemas'), findsOneWidget);
     expect(find.text('Interactive Demo'), findsOneWidget);
     expect(find.text('Demo coming soon'), findsOneWidget);
+    expect(find.text('Screenshots / Gallery'), findsOneWidget);
+    expect(find.text('Architecture Overview'), findsOneWidget);
+    expect(find.text('Architecture layers'), findsOneWidget);
     expect(find.text('Technologies Used'), findsOneWidget);
     expect(find.text('Roadmap'), findsOneWidget);
+    expect(find.text('Contributors'), findsOneWidget);
+    expect(find.text('Roshan Shrestha'), findsOneWidget);
+    expect(find.text('Downloads'), findsOneWidget);
+    expect(find.text('Source'), findsOneWidget);
     expect(find.text('Contributing'), findsOneWidget);
 
     // Benchmarks / changelog omitted when empty.

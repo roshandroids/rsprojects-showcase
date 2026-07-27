@@ -69,18 +69,20 @@ flowchart TB
 
 ## Milestone 2.1 — Rich Project Pages
 
+**Status:** Complete
+
 Elevate the existing page; still **one** generic detail experience.
 
-| Capability | Planned content | UI approach |
+| Capability | Content | UI approach |
 |------------|-----------------|-------------|
-| Hero media | `showcase.heroMedia` | Full-bleed / edge media behind hero copy |
+| Hero media | `showcase.heroMedia` | Banner media above hero copy (placeholder when `src` missing) |
 | Feature highlights | `features[]` + optional `icon` / `media` | Existing feature grid, richer cells |
 | Architecture | `architecture` + optional `architectureDiagram` | Text + diagram media |
-| Gallery | Unified `showcase.media[]` (`kind`: image \| video \| diagram) | Gallery section (augments/supersedes `screenshots`) |
-| Videos | `media` entries with `kind: video` | Same gallery / lightbox pattern |
-| Benchmarks | Existing `benchmarks[]` | Keep; improve layout only |
-| Release history | Existing `changelog[]` | Keep; optional richer fields later |
-| Related | `relatedProjectIds` + typed relations (2.5) | Related rail |
+| Gallery | Unified `showcase.media[]` (`kind`: image \| video \| diagram) | Gallery section (prefers `media`; falls back to `screenshots`) |
+| Videos | `media` entries with `kind: video` | Same gallery pattern |
+| Benchmarks | Existing `benchmarks[]` | Keep; layout polish |
+| Release history | Existing `changelog[]` | Keep; section subtitle |
+| Related | `relatedProjectIds` (+ typed relations in 2.5) | Related rail |
 | Contributors | `contributors[]` | Conditionally rendered list |
 | Downloads | `downloads[]` | Conditionally rendered link list |
 
@@ -197,4 +199,4 @@ Allowed `type`: `related` | `depends_on` | `depended_on_by` | `shares_tech` | `a
 | D-023 | `DemoSpec` sealed variants: embedded_web / external / media / unavailable |
 | D-024 | Docs hub local-first under `content/projects/<id>/docs/` |
 | D-025 | Dedicated `/search` with shared `DiscoveryQuery` |
-| D-026 | Typed ecosystem `relations[]` + tech/tag soft links |
+| D-027 | Examples are first-class content alongside projects (not project-owned assets only) |

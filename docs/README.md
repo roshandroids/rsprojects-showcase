@@ -10,6 +10,7 @@
 
 | Doc | Purpose |
 |-----|---------|
+| [`GOVERNANCE.md`](GOVERNANCE.md) | How the project is managed (core); includes execution-first planning policy |
 | `VISION.md` | Product vision and goals |
 | `GETTING_STARTED.md` | Local setup |
 | `PROJECT_STRUCTURE.md` | Folder map |
