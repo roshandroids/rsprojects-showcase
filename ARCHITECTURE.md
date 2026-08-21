@@ -49,10 +49,9 @@ Hosted playgrounds (separate from the registry JSON):
 
 ```
 Private product (platform-ci)
-  → flutter build web --release --base-href /<repo>/generated/<id>/
-  → receive-playground.yml
+  → flutter build web --release --base-href /rsprojects-showcase/generated/<id>/
   → generated/<kebab-id>/  (+ showcase.json)
-  → Pages deploy copies into the showcase web site
+  → Pages deploy copies generated/ into the showcase web site
 ```
 
 See [`docs/PLAYGROUNDS.md`](docs/PLAYGROUNDS.md).

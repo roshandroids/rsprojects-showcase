@@ -25,7 +25,7 @@ flutter run -d chrome
 |-----|-------------|
 | [PROJECT_STATUS.md](PROJECT_STATUS.md) | **Canonical status** — share for planning / reviews |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | High-level architecture |
-| [docs/PLAYGROUNDS.md](docs/PLAYGROUNDS.md) | Generated playground hosting + platform-ci contract |
+| [docs/PLAYGROUNDS.md](docs/PLAYGROUNDS.md) | Generated playground hosting; platform-ci is the sole publisher |
 | [PROJECT_RULES.md](PROJECT_RULES.md) | Contribution / engineering rules |
 | [ROADMAP.md](ROADMAP.md) | Planned milestones |
 | [docs/](docs/README.md) | Detailed docs |

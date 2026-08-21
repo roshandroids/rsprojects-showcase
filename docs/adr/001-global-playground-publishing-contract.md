@@ -7,9 +7,9 @@ This records a lock, not a menu of alternatives.
 
 ## Decisions
 
-1. **platform-ci builds private playgrounds.** Quality, Flutter Web `--release`, and publish belong there.
-2. **project_showcase never accesses private source.** No checkout of private repos, no private CI logic.
-3. **project_showcase is the public catalog and GitHub Pages host.**
+1. **platform-ci is the sole publisher** of private playground builds (quality, Flutter Web `--release`, artifact validation, `showcase.json`, push to `generated/<id>/`).
+2. **rsprojects-showcase never accesses private source** and **does not implement a playground receiver workflow**.
+3. **rsprojects-showcase is the public catalog and GitHub Pages host.**
 4. **`generated/<id>/` is the canonical hosted artifact location** in `rsprojects-showcase`.
 5. **`deploy.showcase.id` is the stable cross-repository identifier.**
 6. **Consumers do not configure repository, path, or base href.** Only `deploy.showcase.enabled` and `deploy.showcase.id`.
@@ -29,5 +29,5 @@ deploy:
 
 ## Consequences
 
-- Changing destination, path layout, metadata shape, or consumer fields requires a new ADR.
+- `rsprojects-showcase` has no `receive-playground` workflow. Callers use platform-ci `deploy-showcase.yml`.
 - `deploy.demos` / `pages` / `firebase` remain separate sinks.

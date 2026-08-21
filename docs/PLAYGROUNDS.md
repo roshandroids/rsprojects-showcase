@@ -6,7 +6,9 @@ Related: [`PROJECT_INTEGRATION.md`](PROJECT_INTEGRATION.md), [`DEPLOYMENT.md`](D
 
 ## Locked Showcase Contract
 
-**Do not add alternative configuration forms without a new architecture decision.**
+**platform-ci is the sole publisher** of private playground builds.
+
+`rsprojects-showcase` does **not** receive private-project source, does **not** authenticate private projects, and does **not** implement a second playground receiver. It hosts `generated/<id>/` and deploys those trees with the public showcase app through GitHub Pages.
 
 Consumer configuration (only):
 
@@ -21,55 +23,68 @@ deploy:
 |-------|--------|--------|
 | `deploy.showcase.enabled` | consumer | `true` / `false` |
 | `deploy.showcase.id` | consumer | kebab-case playground id |
-| Public destination | platform | `rsprojects-showcase/generated/<id>/` |
+| Public destination | platform | `roshandroids/rsprojects-showcase/generated/<id>/` |
 | Base href | platform | `/rsprojects-showcase/generated/<id>/` |
 | Metadata | platform | `generated/<id>/showcase.json` |
 | Registry | this repo | `assets/generated/registry.json` |
-| Secret | private caller | `SHOWCASE_PUSH_TOKEN` (fine-grained, this repo only, Contents: Read and write) |
+| Secret | private caller | `SHOWCASE_PUSH_TOKEN` |
 
 `deploy.showcase.id` is the **stable identifier** shared between a private project and `rsprojects-showcase`. Consumers do **not** set `repository`, `path`, or `base_href`.
 
-## Purpose
-
-`project_showcase` / GitHub `rsprojects-showcase` is the **public catalog and static host**.
-
-| Piece | Lives here? | Built here? |
-|-------|-------------|-------------|
-| Showcase Flutter app | yes | yes |
-| Playground web artifacts | `generated/<id>/` | **no** — platform-ci |
-| Private product source | **never** | n/a |
+Do not add alternative configuration forms without a new architecture decision.
 
 ## Flow
 
 ```
-PRIVATE PROJECT
-       │  deploy.showcase.enabled + id
-       ↓
+Private Flutter project
+        │  deploy.showcase.enabled + id
+        ↓
 platform-ci
-       ├── validate id
-       ├── quality
-       ├── flutter build web --release --base-href /rsprojects-showcase/generated/<id>/
-       └── publish only generated/<id>/
+        ├── validate id
+        ├── quality
+        ├── flutter build web --release
+        ├── --base-href /rsprojects-showcase/generated/<id>/
+        ├── validate artifact (web build, no source/secrets)
+        ├── write showcase.json
+        └── git add generated/<id> only
                 ↓
-rsprojects-showcase/generated/<id>/
+roshandroids/rsprojects-showcase/generated/<id>/
                 ↓
-           GitHub Pages
+GitHub Pages (showcase app + generated/)
 ```
 
-## `generated/<id>/`
+## This repo owns
 
-Canonical destination. One product writes only its own directory. `showcase.json`:
+1. Showcase application (`content/`, `lib/`, `assets/generated/registry.json`)
+2. Generated playground hosting (`generated/<id>/`)
+3. GitHub Pages deployment (`.github/workflows/deploy.yml`)
 
-```json
-{
-  "id": "document-platform",
-  "version": "1.2.0",
-  "commit": "abc123",
-  "deployedAt": "2026-08-21T..."
-}
+## This repo does not
+
+- Check out private product repositories
+- Build those products
+- Receive playground artifacts from private CI
+- Duplicate platform-ci publish validation
+- Replace `platform-ci`
+
+## Pages artifact
+
+`deploy.yml` builds this app, then `scripts/publish.dart` copies `generated/` into `build/web/generated/`:
+
 ```
-
-Catalog registry remains `assets/generated/registry.json` (never in root `generated/`).
+build/web/
+├── index.html
+├── flutter.js
+├── assets/
+└── generated/
+    ├── document-platform/
+    │   ├── index.html
+    │   ├── flutter.js
+    │   ├── assets/
+    │   └── showcase.json
+    └── hcm-requisitions/
+        └── ...
+```
 
 ## Catalog
 
@@ -82,18 +97,8 @@ Catalog registry remains `assets/generated/registry.json` (never in root `genera
 }
 ```
 
-`enabled` + no artifact → `pending`. Artifact present → `deployed` (no manual catalog edit required). `unavailable` remains an authored override.
+`enabled` + no artifact → `pending`. Artifact present → `deployed`. No manual catalog edit after publish.
 
 ## ID rules
 
 Required when `enabled: true`. Lowercase kebab-case `[a-z0-9]+(-[a-z0-9]+)*`. Reject empty, underscores, slashes, dots, `..`, leading/trailing `-`, `.git`, `.github`.
-
-## Concurrency
-
-`showcase-generated-publish`, `cancel-in-progress: false`. `git add generated/<id>` only. Rebase retry on push.
-
-## Security
-
-Reject `lib/`, `test/`, `.git/`, `.github/`, `pubspec.yaml`, `*.env`, `*.pem`, `*.key`. Require a Flutter Web tree (`index.html`, `flutter.js` or `flutter_bootstrap.js`, `assets/`).
-
-Canonical publisher is platform-ci `deploy-showcase.yml`. Optional same-path receiver in this repo: [`.github/workflows/receive-playground.yml`](../.github/workflows/receive-playground.yml).

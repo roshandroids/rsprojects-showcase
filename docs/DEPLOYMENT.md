@@ -23,15 +23,10 @@ dart run scripts/publish.dart --web-build build/web --generated generated
 Playgrounds must be built **by platform-ci** with:
 
 ```text
---base-href /<repo>/generated/<project-id>/
+--base-href /rsprojects-showcase/generated/<id>/
 ```
 
-## Publish playgrounds
-
-This repo does not build private products. See [`PLAYGROUNDS.md`](PLAYGROUNDS.md).
-
-- Receive: [`.github/workflows/receive-playground.yml`](../.github/workflows/receive-playground.yml)
-- Local: `dart run scripts/publish_playground.dart --id <id> --source <web-dir>`
+This repo does not receive or re-publish those artifacts. platform-ci pushes `generated/<id>/` directly.
 
 ## Environments
 
@@ -43,4 +38,4 @@ Revert the playground commit under `generated/<id>/` (does not revert other prod
 
 ## Concurrency
 
-Playground publishes share `showcase-generated-publish` (queue, no cancel). Pages deploys share `pages-deploy`.
+Pages deploys share `pages-deploy`. Playground publishes are serialized in **platform-ci** (`showcase-generated-publish`).

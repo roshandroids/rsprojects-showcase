@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Added
 
-- Locked playground contract (`deploy.showcase.enabled` + `id` only; `generated/<id>/`; ADR 001)
+- Locked playground contract (`deploy.showcase.enabled` + `id` only). platform-ci is the sole publisher; this repo hosts `generated/<id>/` and Pages.
 
 ## [0.0.0] - TBD
 

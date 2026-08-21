@@ -408,5 +408,62 @@ void main() {
         throwsStateError,
       );
     });
+
+    test(
+      'Pages staging copies generated trees under build/web/generated',
+      () async {
+        publishPlaygroundArtifact(
+          showcaseRoot: root,
+          playgroundId: 'document-platform',
+          sourceDir: sourceA,
+          version: '1.2.0',
+          commit: 'abc123',
+        );
+        publishPlaygroundArtifact(
+          showcaseRoot: root,
+          playgroundId: 'hcm-requisitions',
+          sourceDir: sourceB,
+          version: '9.9.9',
+          commit: 'def456',
+        );
+
+        final web = Directory('${root.path}/site')..createSync();
+        File(
+          '${web.path}/index.html',
+        ).writeAsStringSync('<html>showcase</html>');
+        File('${web.path}/flutter.js').writeAsStringSync('js');
+        Directory('${web.path}/assets').createSync();
+
+        final result = await Process.run('dart', [
+          'run',
+          'scripts/publish.dart',
+          '--web-build',
+          web.path,
+          '--generated',
+          '${root.path}/generated',
+        ]);
+        expect(
+          result.exitCode,
+          0,
+          reason: '${result.stdout}\n${result.stderr}',
+        );
+        expect(
+          File(
+            '${web.path}/generated/document-platform/showcase.json',
+          ).existsSync(),
+          isTrue,
+        );
+        expect(
+          File(
+            '${web.path}/generated/hcm-requisitions/index.html',
+          ).existsSync(),
+          isTrue,
+        );
+        expect(
+          File('${web.path}/index.html').readAsStringSync(),
+          contains('showcase'),
+        );
+      },
+    );
   });
 }

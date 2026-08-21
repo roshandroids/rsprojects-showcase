@@ -6,7 +6,6 @@
 |----------|------|
 | `ci.yml` | Quality gates (stubs today; see QUALITY_GATES.md) |
 | `deploy.yml` | Build showcase web + copy `generated/` → GitHub Pages |
-| `receive-playground.yml` | Callable: publish one `generated/<id>/` from a web artifact |
 | `fetch-projects.yml` | Content sync / registry generation (placeholder) |
 
 Playground hosting: [`PLAYGROUNDS.md`](PLAYGROUNDS.md).
@@ -27,14 +26,12 @@ Real commands in `ci.yml` are still TODO; `deploy.yml` already validates content
 
 | Secret | Where | Why |
 |--------|-------|-----|
-| `SHOWCASE_PUSH_TOKEN` | **Private** product repo (or platform-ci caller) | Fine-grained PAT, Contents: Read and write on this public repo only |
 | GitHub Pages `id-token` | this repo | OIDC for `actions/deploy-pages` |
 
-This public repo never stores private-source tokens.
+Private projects store `SHOWCASE_PUSH_TOKEN` on **their** repos (fine-grained PAT: `roshandroids/rsprojects-showcase` only, Contents: Read and write). This public repo does not receive that secret and does not authenticate private publishers.
 
 ## Concurrency
 
-- `showcase-generated-publish`: serialize playground commits (`cancel-in-progress: false`) + rebase retry.
 - `pages-deploy`: latest showcase site deploy wins.
 
 ## Branching

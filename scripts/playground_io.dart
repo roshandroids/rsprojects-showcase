@@ -1,4 +1,6 @@
 /// IO helpers for copying a Flutter Web playground into `generated/<id>/`.
+///
+/// Used by tests. Production publish is platform-ci, not this script.
 library;
 
 import 'dart:convert';

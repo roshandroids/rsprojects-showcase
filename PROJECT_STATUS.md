@@ -430,7 +430,6 @@ Engineering improvements (platform, quality, delivery).
 |----------|------|--------|-------|
 | CI | `.github/workflows/ci.yml` | Not Started | Placeholder job (`echo` only) |
 | Deploy | `.github/workflows/deploy.yml` | Complete | GitHub Pages: showcase web + `generated/` |
-| Receive playground | `.github/workflows/receive-playground.yml` | Complete | Callable; one `generated/<id>/` per run |
 | Fetch projects | `.github/workflows/fetch-projects.yml` | Not Started | Placeholder; `workflow_dispatch` only |
 
 ## Deployment status
@@ -449,7 +448,6 @@ Engineering improvements (platform, quality, delivery).
 | `scripts/generate_registry.dart` | Build `assets/generated/registry.json` | Complete |
 | `scripts/validate_content.dart` | Validate metadata/assets | Complete |
 | `scripts/publish.dart` | Stage playgrounds into web build | Complete |
-| `scripts/publish_playground.dart` | Copy one web build into `generated/<id>/` | Complete |
 
 ---
 
@@ -530,7 +528,7 @@ Ordered implementation sequence (promote into Current Sprint when starting work)
 | 2026-07-26 | **Project example infrastructure:** `content/examples/` + registry `examples[]`; shared `DemoSpec`/`DemoPane`/`ExampleGallery`; Document Platform + Localization Analyzer; D-027 shape finalized |
 | 2026-07-26 | **Project Integration Framework:** provider-driven Integration Definitions (`content/integrations/`), Document Platform `showcase/` contract, portal provenance; D-029; Localization Analyzer + AI Tray registered |
 | 2026-07-26 | **Refactor:** Repository Integration → Project Integration (docs rename, `content/integrations/`, provider model); no runtime/automation changes |
-| 2026-08-21 | **Playground hosting (D-011, D-030):** `generated/<id>/`, catalog `playgrounds[]`, Pages deploy, receive-playground concurrency, platform-ci contract |
+| 2026-08-21 | **Playground hosting (D-011, D-030):** `generated/<id>/`, catalog `playgrounds[]`, Pages deploy; platform-ci is the sole publisher |
 
 ---
 
