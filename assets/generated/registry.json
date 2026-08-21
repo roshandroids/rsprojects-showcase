@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-27T02:00:29.173075Z",
+  "generatedAt": "2026-08-21T20:13:59.717122Z",
   "projects": [
     {
       "id": "ai_tray",
@@ -150,6 +150,15 @@
         "linux"
       ],
       "featured": true,
+      "playground": {
+        "enabled": true,
+        "id": "document-platform",
+        "demoPath": "/generated/document-platform/",
+        "status": "pending",
+        "version": null,
+        "commit": null,
+        "deployedAt": null
+      },
       "repositoryUrl": "https://github.com/roshandroids/Document_Platform",
       "docsUrl": "https://github.com/roshandroids/Document_Platform/blob/main/docs/INDEX.md",
       "tags": [

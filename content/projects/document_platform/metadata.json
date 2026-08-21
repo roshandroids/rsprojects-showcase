@@ -13,6 +13,11 @@
     "linux"
   ],
   "featured": true,
+  "playground": {
+    "enabled": true,
+    "id": "document-platform",
+    "demoPath": "/generated/document-platform/"
+  },
   "repositoryUrl": "https://github.com/roshandroids/Document_Platform",
   "docsUrl": "https://github.com/roshandroids/Document_Platform/blob/main/docs/INDEX.md",
   "tags": [

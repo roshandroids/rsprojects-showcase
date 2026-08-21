@@ -10,4 +10,5 @@
 
 - Do not commit hand-written business logic here.
 - Prefer regenerating via scripts / CI over manual edits.
-- Runtime project registry JSON lives at repository root `generated/` (not here).
+- Runtime project registry JSON lives at `assets/generated/registry.json` (Flutter-bundled asset, loaded via `rootBundle`) — unrelated to this directory.
+- Repository-root `generated/` is a different thing entirely: hosted static playground build artifacts published by `platform-ci`, served by GitHub Pages. See [`generated/README.md`](../../generated/README.md) and [`docs/DEPLOYMENT.md`](../../docs/DEPLOYMENT.md).

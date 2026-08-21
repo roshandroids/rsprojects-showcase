@@ -11,6 +11,7 @@ import 'package:rsprojects_showcase/features/projects/domain/projects_domain.dar
 import 'package:rsprojects_showcase/features/projects/presentation/widgets/project_card.dart';
 import 'package:rsprojects_showcase/shared/examples/example_gallery.dart';
 import 'package:rsprojects_showcase/shared/examples/project_example.dart';
+import 'package:rsprojects_showcase/shared/playground/playground_path.dart';
 
 AppBadgeTone statusTone(ProjectStatus status) {
   return switch (status) {
@@ -140,10 +141,7 @@ class ProjectShowcaseTemplate extends StatelessWidget {
         ],
         if (project.tags.isNotEmpty) ...[
           const SizedBox(height: AppSpacing.section),
-          AppSectionHeader(
-            title: 'Tags',
-            subtitle: project.tags.join(' · '),
-          ),
+          AppSectionHeader(title: 'Tags', subtitle: project.tags.join(' · ')),
         ],
         const SizedBox(height: AppSpacing.xl),
       ],
@@ -153,7 +151,8 @@ class ProjectShowcaseTemplate extends StatelessWidget {
   bool _hasPrimaryActions(Project project) {
     return project.demoUrl != null ||
         project.repositoryUrl != null ||
-        project.docsUrl != null;
+        project.docsUrl != null ||
+        (project.playground?.enabled ?? false);
   }
 }
 
@@ -243,10 +242,7 @@ class _HeroSection extends StatelessWidget {
         if (project.featured) ...[
           const Align(
             alignment: Alignment.centerLeft,
-            child: AppBadge(
-              label: 'Featured',
-              tone: AppBadgeTone.featured,
-            ),
+            child: AppBadge(label: 'Featured', tone: AppBadgeTone.featured),
           ),
           const SizedBox(height: AppSpacing.xs),
         ],
@@ -296,6 +292,8 @@ class _QuickActions extends StatelessWidget {
       spacing: AppSpacing.xs,
       runSpacing: AppSpacing.xs,
       children: [
+        if (project.playground?.enabled ?? false)
+          _OpenPlaygroundAction(playground: project.playground!),
         if (project.demoUrl != null)
           _UrlAction(
             label: 'Try demo',
@@ -330,7 +328,8 @@ class _HeroMediaBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final label = media.alt ??
+    final label =
+        media.alt ??
         switch (media.kind) {
           ShowcaseHeroMediaKind.video => 'Hero video',
           ShowcaseHeroMediaKind.lottie => 'Hero animation',
@@ -393,6 +392,44 @@ IconData _mediaKindIcon(ShowcaseMediaKind kind) {
   };
 }
 
+/// Opens a hosted `generated/<id>/` playground. Driven entirely by
+/// [Playground] state — never branches on a project id.
+class _OpenPlaygroundAction extends StatelessWidget {
+  const _OpenPlaygroundAction({required this.playground});
+
+  final Playground playground;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!playground.isDeployed) {
+      return Tooltip(
+        message: 'Playground publish pending — not deployed yet',
+        child: AppButton(
+          label: 'Playground pending',
+          variant: AppButtonVariant.tonal,
+          icon: Icons.hourglass_top_rounded,
+          onPressed: null,
+        ),
+      );
+    }
+
+    final href = resolvePlaygroundUri(Uri.base, playground.demoPath).toString();
+    return Tooltip(
+      message: href,
+      child: AppButton(
+        label: 'Open playground',
+        variant: AppButtonVariant.primary,
+        icon: Icons.play_arrow_rounded,
+        onPressed: () {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(href)));
+        },
+      ),
+    );
+  }
+}
+
 class _UrlAction extends StatelessWidget {
   const _UrlAction({
     required this.label,
@@ -415,9 +452,9 @@ class _UrlAction extends StatelessWidget {
         variant: variant,
         icon: icon,
         onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(url)),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(url)));
         },
       ),
     );
@@ -425,11 +462,7 @@ class _UrlAction extends StatelessWidget {
 }
 
 class _OverviewSection extends StatelessWidget {
-  const _OverviewSection({
-    this.problem,
-    this.solution,
-    this.description,
-  });
+  const _OverviewSection({this.problem, this.solution, this.description});
 
   final String? problem;
   final String? solution;
@@ -601,16 +634,19 @@ class _FeaturesSection extends StatelessWidget {
                           borderRadius: AppRadius.borderMd,
                           child: ColoredBox(
                             color: scheme.surfaceContainerHighest,
-                            child: feature.media!.src != null &&
+                            child:
+                                feature.media!.src != null &&
                                     feature.media!.src!.isNotEmpty
                                 ? Image.asset(
                                     feature.media!.src!,
                                     fit: BoxFit.cover,
                                     errorBuilder: (_, _, _) =>
                                         _GalleryPlaceholder(
-                                      label: feature.media!.alt,
-                                      icon: _mediaKindIcon(feature.media!.kind),
-                                    ),
+                                          label: feature.media!.alt,
+                                          icon: _mediaKindIcon(
+                                            feature.media!.kind,
+                                          ),
+                                        ),
                                   )
                                 : _GalleryPlaceholder(
                                     label: feature.media!.alt,
@@ -640,11 +676,13 @@ class _DemoSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
-    final available = demo?.available == true ||
+    final available =
+        demo?.available == true ||
         (demo?.url != null && demo!.url!.isNotEmpty) ||
         project.demoUrl != null;
     final url = demo?.url ?? project.demoUrl;
-    final note = demo?.note ??
+    final note =
+        demo?.note ??
         (available
             ? null
             : 'Interactive demo is not available yet for this project.');
@@ -775,9 +813,9 @@ class _GalleryPlaceholder extends StatelessWidget {
             Text(
               label,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: scheme.onSurfaceVariant,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.labelLarge?.copyWith(color: scheme.onSurfaceVariant),
             ),
           ],
         ),
@@ -800,10 +838,7 @@ class _ArchitectureSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        AppSectionHeader(
-          title: 'Architecture',
-          subtitle: body,
-        ),
+        AppSectionHeader(title: 'Architecture', subtitle: body),
         if (diagram != null) ...[
           const SizedBox(height: AppSpacing.md),
           AppCard(
@@ -863,9 +898,7 @@ class _TechnologiesSection extends StatelessWidget {
         Wrap(
           spacing: AppSpacing.xs,
           runSpacing: AppSpacing.xs,
-          children: [
-            for (final tech in technologies) AppBadge(label: tech),
-          ],
+          children: [for (final tech in technologies) AppBadge(label: tech)],
         ),
       ],
     );
@@ -1026,9 +1059,7 @@ class _RoadmapSection extends StatelessWidget {
         const SizedBox(height: AppSpacing.sm),
         for (final item in items) ...[
           Container(
-            padding: const EdgeInsets.symmetric(
-              vertical: AppSpacing.sm,
-            ),
+            padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
             decoration: BoxDecoration(
               border: Border(
                 bottom: BorderSide(

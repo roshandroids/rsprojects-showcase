@@ -36,6 +36,34 @@ enum ProjectCategory {
 
 enum ProjectSort { nameAsc, nameDesc, status, featuredFirst }
 
+/// A hosted, static Flutter Web build published under `generated/<id>/` by
+/// platform-ci and served by GitHub Pages — distinct from the catalog
+/// entry itself. `status` is generator-computed, never authored (see
+/// `lib/core/content/playground_status.dart`).
+class Playground {
+  const Playground({
+    required this.enabled,
+    required this.id,
+    required this.demoPath,
+    required this.status,
+    this.version,
+    this.commit,
+    this.deployedAt,
+  });
+
+  final bool enabled;
+  final String id;
+  final String demoPath;
+
+  /// `pending` | `deployed`.
+  final String status;
+  final String? version;
+  final String? commit;
+  final String? deployedAt;
+
+  bool get isDeployed => status == 'deployed';
+}
+
 /// Immutable project entity (UI-safe).
 class Project {
   const Project({
@@ -54,6 +82,7 @@ class Project {
     this.tags = const [],
     this.icon,
     this.showcase,
+    this.playground,
   });
 
   final String id;
@@ -71,6 +100,7 @@ class Project {
   final List<String> tags;
   final String? icon;
   final ProjectShowcase? showcase;
+  final Playground? playground;
 }
 
 /// Catalog query / filter state.

@@ -6,15 +6,15 @@ import 'package:rsprojects_showcase/core/content/content_schema.dart';
 
 void main() {
   Map<String, Object?> valid({String id = 'document_platform'}) => {
-        'id': id,
-        'name': 'Document Platform',
-        'description': 'A real description',
-        'version': '0.9.0',
-        'status': 'beta',
-        'category': 'platform',
-        'platforms': ['web', 'macos'],
-        'featured': true,
-      };
+    'id': id,
+    'name': 'Document Platform',
+    'description': 'A real description',
+    'version': '0.9.0',
+    'status': 'beta',
+    'category': 'platform',
+    'platforms': ['web', 'macos'],
+    'featured': true,
+  };
 
   test('accepts complete valid metadata', () {
     expect(validateProjectMetadata(valid()), isEmpty);
@@ -100,5 +100,64 @@ void main() {
       },
     });
     expect(errors.any((e) => e.contains('integration.source')), isTrue);
+  });
+
+  group('playground', () {
+    test('accepts a well-formed declaration', () {
+      final errors = validateProjectMetadata({
+        ...valid(),
+        'playground': {
+          'enabled': true,
+          'id': 'document-platform',
+          'demoPath': '/generated/document-platform/',
+        },
+      });
+      expect(errors, isEmpty);
+    });
+
+    test('rejects missing id', () {
+      final errors = validateProjectMetadata({
+        ...valid(),
+        'playground': {'enabled': true, 'demoPath': '/generated/x/'},
+      });
+      expect(errors.any((e) => e.contains('playground.id')), isTrue);
+    });
+
+    test('rejects non-kebab-case id', () {
+      final errors = validateProjectMetadata({
+        ...valid(),
+        'playground': {
+          'enabled': true,
+          'id': 'Document_Platform',
+          'demoPath': '/generated/Document_Platform/',
+        },
+      });
+      expect(errors.any((e) => e.contains('playground.id')), isTrue);
+    });
+
+    test('rejects a demoPath that does not match id', () {
+      final errors = validateProjectMetadata({
+        ...valid(),
+        'playground': {
+          'enabled': true,
+          'id': 'document-platform',
+          'demoPath': '/generated/wrong-id/',
+        },
+      });
+      expect(errors.any((e) => e.contains('playground.demoPath')), isTrue);
+    });
+
+    test('rejects generator-computed fields authored in content', () {
+      final errors = validateProjectMetadata({
+        ...valid(),
+        'playground': {
+          'enabled': true,
+          'id': 'document-platform',
+          'demoPath': '/generated/document-platform/',
+          'status': 'deployed',
+        },
+      });
+      expect(errors.any((e) => e.contains('playground.status')), isTrue);
+    });
   });
 }

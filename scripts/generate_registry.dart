@@ -8,11 +8,13 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:rsprojects_showcase/core/content/content_schema.dart';
+import 'package:rsprojects_showcase/core/content/playground_status.dart';
 
 Future<void> main(List<String> args) async {
   final root = Directory.current;
   final projectsDir = Directory('${root.path}/content/projects');
   final examplesDir = Directory('${root.path}/content/examples');
+  final generatedRoot = Directory('${root.path}/generated');
   final outFile = File('${root.path}/assets/generated/registry.json');
 
   if (!projectsDir.existsSync()) {
@@ -23,10 +25,7 @@ Future<void> main(List<String> args) async {
 
   final projects = <Map<String, Object?>>[];
   final knownProjectIds = <String>{};
-  final projectDirs = projectsDir
-      .listSync()
-      .whereType<Directory>()
-      .toList()
+  final projectDirs = projectsDir.listSync().whereType<Directory>().toList()
     ..sort((a, b) => a.path.compareTo(b.path));
 
   for (final dir in projectDirs) {
@@ -53,16 +52,27 @@ Future<void> main(List<String> args) async {
       exitCode = 1;
       continue;
     }
+
+    final playground = map['playground'];
+    if (playground is Map) {
+      final playgroundMap = playground.map((k, v) => MapEntry(k as String, v));
+      final playgroundId = playgroundMap['id'] as String?;
+      if (playgroundId != null) {
+        final computed = resolvePlaygroundStatus(
+          generatedRoot: generatedRoot,
+          playgroundId: playgroundId,
+        );
+        map['playground'] = {...playgroundMap, ...computed.toJson()};
+      }
+    }
+
     projects.add(map);
     knownProjectIds.add(id);
   }
 
   final examples = <Map<String, Object?>>[];
   if (examplesDir.existsSync()) {
-    final exampleDirs = examplesDir
-        .listSync()
-        .whereType<Directory>()
-        .toList()
+    final exampleDirs = examplesDir.listSync().whereType<Directory>().toList()
       ..sort((a, b) => a.path.compareTo(b.path));
 
     for (final dir in exampleDirs) {

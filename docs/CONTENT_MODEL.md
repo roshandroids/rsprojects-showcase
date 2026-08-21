@@ -33,6 +33,26 @@ Each project cache entry lives at `content/projects/<id>/metadata.json` (mirrore
 | `icon` | string | Asset path or icon key |
 | `showcase` | object | Canonical presentation sections (see below) |
 | `integration` | object | Provenance for Integration Definition–backed cache (see below) |
+| `playground` | object | Hosted static playground reference (see below) |
+
+### Playground (`playground`)
+
+Optional. Declares that this project has (or will have) a hosted Flutter
+Web build under `generated/<id>/`, published by `platform-ci` — a
+**different** concern from the `showcase` / `integration` fields above. See
+[`DEPLOYMENT.md`](DEPLOYMENT.md) for the full pipeline.
+
+| Field | Type | Rules |
+|-------|------|--------|
+| `enabled` | bool | Author-declared intent |
+| `id` | string | Kebab-case playground id — independent of this project's own (snake_case) `id`; joins to `generated/<id>/` |
+| `demoPath` | string | Must be `/generated/<id>/`, matching `id` |
+| `status` | string | **Computed**, not authored — `pending` \| `deployed`, derived from whether `generated/<id>/index.html` exists |
+| `version`, `commit`, `deployedAt` | string \| null | **Computed**, not authored — read from `generated/<id>/showcase.json` when `status` is `deployed` |
+
+Writing `status`/`version`/`commit`/`deployedAt` into `content/` is a
+validation error — see `validatePlaygroundMetadata` in
+[`content_schema.dart`](../lib/core/content/content_schema.dart).
 
 ### Integration provenance (`integration`)
 

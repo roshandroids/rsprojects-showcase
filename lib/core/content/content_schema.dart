@@ -18,6 +18,12 @@ const Set<String> kAllowedCategories = {
   'other',
 };
 
+/// Author-declared, kebab-case playground id: `document-platform`, `a1`.
+/// Deliberately independent of the project's own (snake_case) `id` — this is
+/// the join key into `generated/<playgroundId>/`, supplied verbatim by the
+/// publishing platform-ci consumer config (`deploy.showcase.id`).
+final RegExp kPlaygroundIdPattern = RegExp(r'^[a-z0-9]+(-[a-z0-9]+)*$');
+
 const Set<String> kAllowedPlatforms = {
   'web',
   'android',
@@ -27,23 +33,11 @@ const Set<String> kAllowedPlatforms = {
   'linux',
 };
 
-const Set<String> kAllowedRoadmapStatuses = {
-  'planned',
-  'in_progress',
-  'done',
-};
+const Set<String> kAllowedRoadmapStatuses = {'planned', 'in_progress', 'done'};
 
-const Set<String> kAllowedMediaKinds = {
-  'image',
-  'video',
-  'diagram',
-};
+const Set<String> kAllowedMediaKinds = {'image', 'video', 'diagram'};
 
-const Set<String> kAllowedHeroMediaKinds = {
-  'image',
-  'video',
-  'lottie',
-};
+const Set<String> kAllowedHeroMediaKinds = {'image', 'video', 'lottie'};
 
 const Set<String> kAllowedExampleCategories = {
   'demo',
@@ -53,11 +47,7 @@ const Set<String> kAllowedExampleCategories = {
   'other',
 };
 
-const Set<String> kAllowedDemoKinds = {
-  'embedded_web',
-  'external',
-  'media',
-};
+const Set<String> kAllowedDemoKinds = {'embedded_web', 'external', 'media'};
 
 const Set<String> kAllowedIntegrationSources = {
   'project-cache',
@@ -131,8 +121,7 @@ List<String> validateProjectMetadata(
       }
       final source = integration['source'];
       if (source != null &&
-          (source is! String ||
-              !kAllowedIntegrationSources.contains(source))) {
+          (source is! String || !kAllowedIntegrationSources.contains(source))) {
         errors.add(
           'integration.source invalid. Allowed: $kAllowedIntegrationSources',
         );
@@ -151,6 +140,69 @@ List<String> validateProjectMetadata(
         ),
       );
     }
+  }
+
+  final playground = data['playground'];
+  if (playground != null) {
+    if (playground is! Map) {
+      errors.add('Field "playground" must be an object when present');
+    } else {
+      errors.addAll(
+        validatePlaygroundMetadata(
+          playground.map((k, v) => MapEntry(k.toString(), v as Object?)),
+        ),
+      );
+    }
+  }
+
+  return errors;
+}
+
+/// Validates the author-declared `playground` intent block.
+///
+/// `status`, `version`, `commit`, and `deployedAt` are NOT authored fields —
+/// they are computed by `scripts/generate_registry.dart` from the presence
+/// of `generated/<id>/` on disk (see docs/DEPLOYMENT.md) and must never be
+/// hand-written into `content/projects/<id>/metadata.json`.
+List<String> validatePlaygroundMetadata(Map<String, Object?> data) {
+  final errors = <String>[];
+
+  for (final generatorField in const [
+    'status',
+    'version',
+    'commit',
+    'deployedAt',
+  ]) {
+    if (data.containsKey(generatorField)) {
+      errors.add(
+        'playground.$generatorField is computed by generate_registry.dart '
+        'and must not be authored in content/',
+      );
+    }
+  }
+
+  if (data['enabled'] is! bool) {
+    errors.add('playground.enabled must be a boolean');
+  }
+
+  final id = data['id'];
+  if (id is! String || id.trim().isEmpty) {
+    errors.add('playground.id must be a non-empty string');
+  } else if (!kPlaygroundIdPattern.hasMatch(id)) {
+    errors.add(
+      'playground.id must be kebab-case [a-z0-9-] (got ${id.toString()})',
+    );
+  }
+
+  final demoPath = data['demoPath'];
+  if (demoPath is! String || demoPath.trim().isEmpty) {
+    errors.add('playground.demoPath must be a non-empty string');
+  } else if (id is String &&
+      kPlaygroundIdPattern.hasMatch(id) &&
+      demoPath != '/generated/$id/') {
+    errors.add(
+      'playground.demoPath must be "/generated/$id/" to match playground.id',
+    );
   }
 
   return errors;
@@ -293,9 +345,7 @@ List<String> validateShowcaseMetadata(Map<String, Object?> data) {
     final kind = demoKind['kind'];
     if (kind != null &&
         (kind is! String || !kAllowedDemoKinds.contains(kind))) {
-      errors.add(
-        'showcase.demo.kind invalid. Allowed: $kAllowedDemoKinds',
-      );
+      errors.add('showcase.demo.kind invalid. Allowed: $kAllowedDemoKinds');
     }
   }
 
@@ -358,7 +408,11 @@ List<String> validateShowcaseMetadata(Map<String, Object?> data) {
     errors.add('showcase.relatedProjectIds must be a list');
   }
 
-  void validateMediaObject(String path, Object? raw, {required bool requireAlt}) {
+  void validateMediaObject(
+    String path,
+    Object? raw, {
+    required bool requireAlt,
+  }) {
     if (raw == null) return;
     if (raw is! Map) {
       errors.add('$path must be an object');
@@ -547,17 +601,14 @@ List<String> validateExampleMetadata(
         if (item is! Map ||
             item['label'] is! String ||
             item['url'] is! String) {
-          errors.add(
-            'documentationLinks[$i] requires "label" and "url"',
-          );
+          errors.add('documentationLinks[$i] requires "label" and "url"');
         }
       }
     }
   }
 
   final sourceUrl = data['sourceUrl'];
-  if (sourceUrl != null &&
-      (sourceUrl is! String || sourceUrl.trim().isEmpty)) {
+  if (sourceUrl != null && (sourceUrl is! String || sourceUrl.trim().isEmpty)) {
     errors.add('Field "sourceUrl" must be a non-empty string when present');
   }
 

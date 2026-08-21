@@ -28,6 +28,71 @@ void main() {
       expect(project.platforms, ['web', 'macos']);
       expect(project.tagline, 'Living docs');
     });
+
+    test('maps a playground block, generator fields included', () {
+      final project = ProjectDto.fromJson({
+        'id': 'document_platform',
+        'name': 'Document Platform',
+        'description': 'Docs product',
+        'version': '0.9.0',
+        'status': 'beta',
+        'category': 'platform',
+        'platforms': ['web'],
+        'featured': true,
+        'playground': {
+          'enabled': true,
+          'id': 'document-platform',
+          'demoPath': '/generated/document-platform/',
+          'status': 'deployed',
+          'version': '1.2.0',
+          'commit': 'abc1234',
+          'deployedAt': '2026-08-21T12:00:00Z',
+        },
+      }).toDomain();
+
+      expect(project.playground, isNotNull);
+      expect(project.playground!.enabled, isTrue);
+      expect(project.playground!.id, 'document-platform');
+      expect(project.playground!.demoPath, '/generated/document-platform/');
+      expect(project.playground!.isDeployed, isTrue);
+      expect(project.playground!.version, '1.2.0');
+    });
+
+    test('leaves playground null when absent', () {
+      final project = ProjectDto.fromJson({
+        'id': 'x',
+        'name': 'X',
+        'description': 'd',
+        'version': '1.0.0',
+        'status': 'active',
+        'category': 'tool',
+        'platforms': ['web'],
+        'featured': false,
+      }).toDomain();
+
+      expect(project.playground, isNull);
+    });
+
+    test('a pending playground reports isDeployed false', () {
+      final project = ProjectDto.fromJson({
+        'id': 'x',
+        'name': 'X',
+        'description': 'd',
+        'version': '1.0.0',
+        'status': 'active',
+        'category': 'tool',
+        'platforms': ['web'],
+        'featured': false,
+        'playground': {
+          'enabled': true,
+          'id': 'x',
+          'demoPath': '/generated/x/',
+          'status': 'pending',
+        },
+      }).toDomain();
+
+      expect(project.playground!.isDeployed, isFalse);
+    });
   });
 
   group('applyProjectQuery', () {

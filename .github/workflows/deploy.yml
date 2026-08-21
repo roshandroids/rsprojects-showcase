@@ -1,21 +1,83 @@
-# Deploy — publish the Flutter web build
+# Deploy — build the showcase and publish it, plus every hosted playground
+# under generated/<id>/, to GitHub Pages.
 #
-# Why: Build and deploy RSProjects Showcase to hosting.
-# Owner: Platform / release.
-# When: Implement after hosting target is chosen (see docs/DEPLOYMENT.md).
+# Two independent artifacts land in one Pages deploy:
+#   - This Flutter app's own web build (assets/generated/registry.json is
+#     regenerated fresh right before build, so playground status reflects
+#     whatever is actually present under generated/ at deploy time, even if
+#     a prior commit's registry.json is stale).
+#   - generated/<id>/ — static Flutter Web playgrounds published here by
+#     platform-ci from private source repos. Never built by this workflow.
 #
-# TODO(deploy): flutter build web --release
-# TODO(deploy): upload / publish artifacts
-# TODO(deploy): optionally run scripts/publish.dart
+# See docs/DEPLOYMENT.md for the full two-pipeline architecture
+# (catalog: content/ -> registry vs. hosting: generated/<id>/ -> Pages).
 
 name: deploy
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - "lib/**"
+      - "web/**"
+      - "content/**"
+      - "generated/**"
+      - "assets/**"
+      - "pubspec.yaml"
+      - "pubspec.lock"
   workflow_dispatch:
 
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
 jobs:
-  placeholder:
+  build:
+    name: Build
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
-      - name: Placeholder — deploy not implemented
-        run: echo "Deploy workflow not implemented yet"
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Pub get
+        run: flutter pub get
+
+      - name: Validate content
+        run: dart run scripts/validate_content.dart
+
+      - name: Regenerate registry (fresh playground status)
+        run: dart run scripts/generate_registry.dart
+
+      - name: Build showcase (web)
+        run: flutter build web --release --base-href /rsprojects-showcase/
+
+      - name: Stage hosted playgrounds into the build output
+        run: dart run scripts/stage_pages_artifact.dart --generated generated --build build/web
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/web
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

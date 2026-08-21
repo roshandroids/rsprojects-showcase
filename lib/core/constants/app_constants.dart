@@ -28,4 +28,10 @@ abstract final class AppConstants {
 
   /// Bundled project registry (must match `pubspec.yaml` assets entry).
   static const String registryAssetPath = 'assets/generated/registry.json';
+
+  /// This app's own GitHub Pages project-site path — fixed by the repo name,
+  /// not configurable per deploy. Playground `demoPath`s are joined onto
+  /// this (see `lib/shared/playground/playground_path.dart`), and
+  /// `flutter build web --base-href` for this app itself must match it.
+  static const String pagesBasePath = '/rsprojects-showcase';
 }

@@ -1,0 +1,118 @@
+# Receive playground — reacts when platform-ci pushes a hosted playground
+# build under generated/<id>/.
+#
+# Why this exists even though platform-ci already validates before it
+# pushes (see its showcase-validate / showcase-sync actions and artifact
+# rejection step): a leaked SHOWCASE_PUSH_TOKEN could push directly to this
+# repo, bypassing platform-ci's checks entirely. This workflow re-validates
+# server-side, independent of anything the pusher claims to have already
+# checked, then brings the committed catalog registry back in sync with
+# reality (pending -> deployed) so it doesn't silently drift until some
+# unrelated content change happens to trigger a rebuild.
+#
+# This workflow never builds or deploys the site itself — deploy.yml does
+# that, and it regenerates the registry fresh at build time regardless, so
+# the deployed site is correct even if this workflow's own commit races it.
+
+name: receive-playground
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "generated/**"
+
+concurrency:
+  group: showcase-generated-publish
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  validate-and-sync-registry:
+    name: Validate artifact and sync registry
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Reject source, secrets, and malformed playgrounds
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! -d generated ]]; then
+            echo "Nothing under generated/ — nothing to validate"
+            exit 0
+          fi
+          fail=0
+          for dir in generated/*/; do
+            id="$(basename "$dir")"
+            [[ "$id" == "README.md" ]] && continue
+
+            hits="$(find "$dir" \( \
+              -name lib -o -name test -o -name tests -o -name .git -o -name .github \
+              -o -name pubspec.yaml -o -name '*.env' -o -name '*.pem' -o -name '*.key' \
+            \) -print)"
+            if [[ -n "$hits" ]]; then
+              echo "::error::generated/$id contains disallowed private-source paths:"
+              echo "$hits"
+              fail=1
+            fi
+
+            if [[ ! -f "$dir/index.html" ]]; then
+              echo "::error::generated/$id is missing index.html"
+              fail=1
+            fi
+            if [[ ! -f "$dir/flutter.js" && ! -f "$dir/flutter_bootstrap.js" ]]; then
+              echo "::error::generated/$id is missing flutter.js / flutter_bootstrap.js"
+              fail=1
+            fi
+            if [[ ! -d "$dir/assets" ]]; then
+              echo "::error::generated/$id is missing assets/"
+              fail=1
+            fi
+          done
+          if [[ "$fail" -ne 0 ]]; then
+            echo "::error::One or more playgrounds under generated/ failed validation — registry will not be updated and Pages will not pick up this push cleanly until fixed."
+            exit 1
+          fi
+          echo "OK all playgrounds under generated/ passed validation"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Pub get
+        run: flutter pub get
+
+      - name: Regenerate registry (pending -> deployed)
+        run: dart run scripts/generate_registry.dart
+
+      - name: Commit registry if changed
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "rsprojects-showcase[bot]"
+          git config user.email "rsprojects-showcase-bot@users.noreply.github.com"
+          git add -- assets/generated/registry.json
+          if git diff --cached --quiet; then
+            echo "Registry already reflects generated/ — nothing to commit"
+            exit 0
+          fi
+          git commit -m "chore(registry): sync playground status from generated/"
+
+          attempt=1
+          max_attempts=3
+          until git push origin HEAD:main; do
+            if (( attempt >= max_attempts )); then
+              echo "::error::Failed to push registry sync after ${max_attempts} attempts"
+              exit 1
+            fi
+            echo "Push rejected (attempt ${attempt}/${max_attempts}) — fetching and rebasing before retry"
+            git fetch origin main
+            git rebase origin/main
+            attempt=$((attempt + 1))
+          done
