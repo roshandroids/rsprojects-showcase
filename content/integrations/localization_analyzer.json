@@ -23,7 +23,8 @@
       "docsUrl": "https://github.com/roshandroids/MBO/blob/main/packages/localization_analyzer/README.md"
     },
     "demo": {
-      "note": "CLI: dart run tool/scan_localization.dart from workspace root"
+      "note": "CLI locally; public playground publishes to generated/localization-analyzer/ when a web example exists",
+      "showcasePlaygroundId": "localization-analyzer"
     },
     "package": {
       "path": "packages/localization_analyzer",

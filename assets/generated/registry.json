@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-27T02:00:29.173075Z",
+  "generatedAt": "2026-08-21T20:03:24.508197Z",
   "projects": [
     {
       "id": "ai_tray",
@@ -133,6 +133,16 @@
       "integration": {
         "projectId": "ai_tray",
         "source": "project-cache"
+      },
+      "playground": {
+        "id": "ai-tray",
+        "projectId": "ai_tray",
+        "name": "AI Tray",
+        "description": "AI Tray is a native desktop companion for Claude Code and GitHub Copilot subscription usage (macOS menu bar / Windows system tray), with provider dashboards, session and week rings, diagnostics, and settings.",
+        "category": "app",
+        "repository": "https://github.com/roshandroids/AI_Tray",
+        "demoPath": "/generated/ai-tray/",
+        "status": "pending"
       }
     },
     {
@@ -297,6 +307,16 @@
       "integration": {
         "projectId": "document_platform",
         "source": "project-cache"
+      },
+      "playground": {
+        "id": "document-platform",
+        "projectId": "document_platform",
+        "name": "Document Platform",
+        "description": "Document Platform is an independent Flutter document-editing stack: schema-driven model, commands, hybrid rendering, clipboard/HTML interchange, plugins, and templates — split into focused Melos packages hosts can compose without forking a monolith.",
+        "category": "platform",
+        "repository": "https://github.com/roshandroids/Document_Platform",
+        "demoPath": "/generated/document-platform/",
+        "status": "pending"
       }
     },
     {
@@ -405,6 +425,16 @@
       "integration": {
         "projectId": "localization_analyzer",
         "source": "project-cache"
+      },
+      "playground": {
+        "id": "localization-analyzer",
+        "projectId": "localization_analyzer",
+        "name": "Localization Analyzer",
+        "description": "Pure-Dart localization analysis engine that scans Dart sources and ARB files for hardcoded text, missing keys, unused keys, and duplicates — with no Flutter or DevTools UI dependencies. Frontends (CLI, DevTools) only read files and present diagnostics.",
+        "category": "tool",
+        "repository": "https://github.com/roshandroids/MBO",
+        "demoPath": "/generated/localization-analyzer/",
+        "status": "pending"
       }
     }
   ],
@@ -474,6 +504,38 @@
         }
       ],
       "sourceUrl": "https://github.com/roshandroids/Document_Platform"
+    }
+  ],
+  "playgrounds": [
+    {
+      "id": "ai-tray",
+      "projectId": "ai_tray",
+      "name": "AI Tray",
+      "description": "AI Tray is a native desktop companion for Claude Code and GitHub Copilot subscription usage (macOS menu bar / Windows system tray), with provider dashboards, session and week rings, diagnostics, and settings.",
+      "category": "app",
+      "repository": "https://github.com/roshandroids/AI_Tray",
+      "demoPath": "/generated/ai-tray/",
+      "status": "pending"
+    },
+    {
+      "id": "document-platform",
+      "projectId": "document_platform",
+      "name": "Document Platform",
+      "description": "Document Platform is an independent Flutter document-editing stack: schema-driven model, commands, hybrid rendering, clipboard/HTML interchange, plugins, and templates — split into focused Melos packages hosts can compose without forking a monolith.",
+      "category": "platform",
+      "repository": "https://github.com/roshandroids/Document_Platform",
+      "demoPath": "/generated/document-platform/",
+      "status": "pending"
+    },
+    {
+      "id": "localization-analyzer",
+      "projectId": "localization_analyzer",
+      "name": "Localization Analyzer",
+      "description": "Pure-Dart localization analysis engine that scans Dart sources and ARB files for hardcoded text, missing keys, unused keys, and duplicates — with no Flutter or DevTools UI dependencies. Frontends (CLI, DevTools) only read files and present diagnostics.",
+      "category": "tool",
+      "repository": "https://github.com/roshandroids/MBO",
+      "demoPath": "/generated/localization-analyzer/",
+      "status": "pending"
     }
   ]
 }

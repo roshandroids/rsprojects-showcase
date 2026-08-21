@@ -22,7 +22,12 @@ TODO:
 
 ## Useful scripts
 
-TODO: Link to `scripts/README.md` once scripts are implemented.
+```sh
+dart run scripts/validate_content.dart
+dart run scripts/generate_registry.dart
+```
+
+Playgrounds: [`PLAYGROUNDS.md`](PLAYGROUNDS.md).
 
 ## Next steps
 

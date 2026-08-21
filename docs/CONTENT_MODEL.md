@@ -33,6 +33,7 @@ Each project cache entry lives at `content/projects/<id>/metadata.json` (mirrore
 | `icon` | string | Asset path or icon key |
 | `showcase` | object | Canonical presentation sections (see below) |
 | `integration` | object | Provenance for Integration Definition–backed cache (see below) |
+| `playground` | object | Hosted Flutter Web playground (`enabled`, kebab `id`, `demoPath` `/generated/<id>/`, `status` `pending` until artifact then `deployed`) — see [`PLAYGROUNDS.md`](PLAYGROUNDS.md) |
 
 ### Integration provenance (`integration`)
 
@@ -225,8 +226,9 @@ Docs/markdown **bodies** stay on disk (or remote URLs); the registry holds index
 ```json
 {
   "generatedAt": "ISO-8601",
-  "projects": [ /* full metadata objects including showcase */ ],
-  "examples": [ /* full example metadata objects */ ]
+  "projects": [ /* full metadata objects including showcase + playground */ ],
+  "examples": [ /* full example metadata objects */ ],
+  "playgrounds": [ /* merged catalog of hosted playgrounds */ ]
 }
 ```
 

@@ -25,7 +25,8 @@
       "screenshotsPath": "docs/assets/screenshots/"
     },
     "demo": {
-      "note": "No web embed; distribute via GitHub Releases"
+      "note": "No web embed by default; if a playground is published it lives at generated/ai-tray/",
+      "showcasePlaygroundId": "ai-tray"
     },
     "package": {
       "path": "ai_tray"

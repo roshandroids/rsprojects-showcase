@@ -35,6 +35,9 @@ class _TestProjectRepository implements ProjectRepository {
     }
     return null;
   }
+
+  @override
+  Future<List<ProjectPlayground>> fetchPlaygrounds() async => const [];
 }
 
 Future<void> pumpFrames(WidgetTester tester) async {

@@ -131,6 +131,19 @@ Set portal-only flags carefully (e.g. `featured` for Home). Prefer product SSOT 
 
 Add `content/examples/<example-id>/` with `projectId` if you need gallery cards before Phase 3 sync. Mark them as cache in descriptions when product `examples/` is the real SSOT.
 
+### 4b. Optional — hosted playground
+
+Set `playground.enabled` on portal metadata and `providers.demo.showcasePlaygroundId`. In the product `ci.yaml` only:
+
+```yaml
+deploy:
+  showcase:
+    enabled: true
+    id: document-platform
+```
+
+platform-ci publishes to `rsprojects-showcase/generated/<id>/`. This repo does not build the product. See [`PLAYGROUNDS.md`](PLAYGROUNDS.md).
+
 ### 5. Validate and generate
 
 ```bash

@@ -78,6 +78,7 @@ Quality is a **core product feature**. See `docs/quality/` and `lib/core/quality
 
 - Project source of truth lives under `content/projects/`.
 - `assets/generated/registry.json` is produced by tooling/CI, not hand-edited for releases.
+- Hosted playgrounds live under `generated/<kebab-id>/` and are published by platform-ci — never copy private product source here. See `docs/PLAYGROUNDS.md`.
 
 ## Commits
 

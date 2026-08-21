@@ -31,6 +31,9 @@ class _FakeRepo implements ProjectRepository {
     }
     return null;
   }
+
+  @override
+  Future<List<ProjectPlayground>> fetchPlaygrounds() async => const [];
 }
 
 const _sample = Project(
@@ -68,8 +71,9 @@ void main() {
     expect(find.text('Featured'), findsWidgets);
   });
 
-  testWidgets('catalog shows empty state when registry has no projects',
-      (tester) async {
+  testWidgets('catalog shows empty state when registry has no projects', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [

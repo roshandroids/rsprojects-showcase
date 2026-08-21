@@ -1,0 +1,114 @@
+# Receive a Flutter Web playground into generated/<project-id>/.
+#
+# Called by platform-ci (or a private product workflow) after building web.
+# Runs with a global concurrency group so two products cannot clobber each
+# other when committing to this repository.
+#
+# Caller must:
+#   1. Upload artifact named playground-web (complete flutter build web output)
+#   2. Pass secrets.SHOWCASE_PUSH_TOKEN (fine-grained PAT, Contents: Read and write on this repo)
+#
+# This workflow never checks out private product source.
+
+name: receive-playground
+
+on:
+  workflow_call:
+    inputs:
+      project-id:
+        description: Kebab-case playground id (document-platform)
+        type: string
+        required: true
+      version:
+        type: string
+        required: false
+        default: ""
+      commit:
+        type: string
+        required: false
+        default: ""
+      artifact-name:
+        type: string
+        required: false
+        default: playground-web
+      showcase-repository:
+        type: string
+        required: false
+        default: roshandroids/rsprojects-showcase
+    secrets:
+      SHOWCASE_PUSH_TOKEN:
+        required: true
+
+concurrency:
+  group: showcase-generated-publish
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Publish generated playground
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout showcase
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.showcase-repository }}
+          token: ${{ secrets.SHOWCASE_PUSH_TOKEN }}
+          path: showcase
+
+      - name: Download playground artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: playground-web
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Pub get (showcase)
+        working-directory: showcase
+        run: flutter pub get
+
+      - name: Stage playground (this id only)
+        working-directory: showcase
+        env:
+          PLAYGROUND_ID: ${{ inputs.project-id }}
+          VERSION: ${{ inputs.version }}
+          COMMIT: ${{ inputs.commit }}
+        run: |
+          set -euo pipefail
+          args=(--id "$PLAYGROUND_ID" --source ../playground-web --root .)
+          if [[ -n "$VERSION" ]]; then
+            args+=(--version "$VERSION")
+          fi
+          if [[ -n "$COMMIT" ]]; then
+            args+=(--commit "$COMMIT")
+          fi
+          dart run scripts/publish_playground.dart "${args[@]}"
+
+      - name: Commit and push with rebase retry
+        working-directory: showcase
+        env:
+          PLAYGROUND_ID: ${{ inputs.project-id }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "generated/${PLAYGROUND_ID}"
+          if git diff --cached --quiet; then
+            echo "No playground changes"
+            exit 0
+          fi
+          git commit -m "chore(playground): publish ${PLAYGROUND_ID}"
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase origin HEAD && git push && exit 0
+            echo "Push conflict on attempt ${attempt}; retrying"
+            sleep $((attempt * 3))
+          done
+          echo "::error::Failed to push playground ${PLAYGROUND_ID} after retries"
+          exit 1

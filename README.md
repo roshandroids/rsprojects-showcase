@@ -1,19 +1,21 @@
 # RSProjects Showcase
 
-Public portal for all RSProjects products.
+Public portal **and static host** for RSProjects products.
+
+Private product source stays in private repos. This repository ships the showcase Flutter app plus generated Flutter Web playgrounds under `generated/<project-id>/`.
 
 ## Status
 
-Architecture bootstrap only. Features are not implemented yet.
-
-**Source of truth for implementation status:** [PROJECT_STATUS.md](PROJECT_STATUS.md)
+See [PROJECT_STATUS.md](PROJECT_STATUS.md). Playground hosting contract: [docs/PLAYGROUNDS.md](docs/PLAYGROUNDS.md).
 
 ## Quick start
 
-TODO: See [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md).
+See [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md).
 
 ```sh
 flutter pub get
+dart run scripts/validate_content.dart
+dart run scripts/generate_registry.dart
 flutter run -d chrome
 ```
 
@@ -23,6 +25,7 @@ flutter run -d chrome
 |-----|-------------|
 | [PROJECT_STATUS.md](PROJECT_STATUS.md) | **Canonical status** — share for planning / reviews |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | High-level architecture |
+| [docs/PLAYGROUNDS.md](docs/PLAYGROUNDS.md) | Generated playground hosting + platform-ci contract |
 | [PROJECT_RULES.md](PROJECT_RULES.md) | Contribution / engineering rules |
 | [ROADMAP.md](ROADMAP.md) | Planned milestones |
 | [docs/](docs/README.md) | Detailed docs |

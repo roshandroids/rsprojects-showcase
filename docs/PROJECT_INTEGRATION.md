@@ -181,7 +181,7 @@ content/integrations/
 |----------|------|-------------------|
 | `repository` | Git / source tree | `gitUrl`, `paths`, `localDevPath`, `packagePath` |
 | `documentation` | Docs hub / sites | `docsUrl`, `wikiUrl`, site base URL |
-| `demo` | Live / hosted demos | `demoUrl`, `embedUrl`, DemoSpec hints |
+| `demo` | Live / hosted demos | `demoUrl`, `embedUrl`, `showcasePlaygroundId` |
 | `package` | Package indexes | pub.dev name, version URL |
 | `website` | Marketing / product site | `url` |
 | `releases` | Release artifacts | GitHub Releases API, download index |
@@ -229,9 +229,12 @@ Follow the full workflow in [`PROJECT_ONBOARDING.md`](PROJECT_ONBOARDING.md). Su
 4. Optionally cache examples under `content/examples/` until provider sync lands
 5. Run `dart run scripts/validate_content.dart` and `dart run scripts/generate_registry.dart`
 
+Playground web builds are **not** built here. platform-ci publishes them to `generated/<kebab-id>/`. See [`PLAYGROUNDS.md`](PLAYGROUNDS.md).
+
 ## Out of scope (this refinement)
 
 - Implementing fetch / GitHub Actions
 - Runtime consumption of `content/integrations/`
 - Implementing `showcase/schema.json` validation
 - Changing app presentation behavior
+

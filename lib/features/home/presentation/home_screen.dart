@@ -10,6 +10,7 @@ import 'package:rsprojects_showcase/design_system/design_system.dart';
 import 'package:rsprojects_showcase/features/home/presentation/home_content.dart';
 import 'package:rsprojects_showcase/features/projects/application/projects_application.dart';
 import 'package:rsprojects_showcase/features/projects/domain/projects_domain.dart';
+import 'package:rsprojects_showcase/features/projects/presentation/widgets/playground_card.dart';
 import 'package:rsprojects_showcase/features/projects/presentation/widgets/project_card.dart';
 
 /// Brand-first home experience (shell-hosted).
@@ -25,6 +26,8 @@ class HomeScreen extends ConsumerWidget {
           _HeroSection(),
           SizedBox(height: AppSpacing.section),
           _FeaturedSection(),
+          SizedBox(height: AppSpacing.section),
+          _PlaygroundsSection(),
           SizedBox(height: AppSpacing.section),
           _CategoriesSection(),
           SizedBox(height: AppSpacing.section),
@@ -94,21 +97,23 @@ class _HeroCopy extends StatelessWidget {
       children: [
         Text(
           AppConstants.appName,
-          style: (compact
-                  ? theme.textTheme.displaySmall
-                  : theme.textTheme.displayMedium)
-              ?.copyWith(letterSpacing: -1.2),
+          style:
+              (compact
+                      ? theme.textTheme.displaySmall
+                      : theme.textTheme.displayMedium)
+                  ?.copyWith(letterSpacing: -1.2),
         ),
         const SizedBox(height: AppSpacing.sm),
         Text(
           HomeContent.heroHeadline,
-          style: (compact
-                  ? theme.textTheme.headlineSmall
-                  : theme.textTheme.headlineMedium)
-              ?.copyWith(
-            color: scheme.onSurfaceVariant,
-            fontWeight: FontWeight.w500,
-          ),
+          style:
+              (compact
+                      ? theme.textTheme.headlineSmall
+                      : theme.textTheme.headlineMedium)
+                  ?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                    fontWeight: FontWeight.w500,
+                  ),
         ),
         const SizedBox(height: AppSpacing.sm),
         ConstrainedBox(
@@ -157,9 +162,7 @@ class _HeroProductPreview extends StatelessWidget {
       color: scheme.surfaceContainerLow,
       shape: RoundedRectangleBorder(
         borderRadius: AppRadius.borderCard,
-        side: BorderSide(
-          color: scheme.outlineVariant.withValues(alpha: 0.7),
-        ),
+        side: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.7)),
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(
@@ -197,20 +200,11 @@ class _HeroProductPreview extends StatelessWidget {
             padding: const EdgeInsets.all(AppSpacing.sm),
             child: Column(
               children: const [
-                _PreviewRow(
-                  title: 'Sample Platform',
-                  meta: 'Platform · beta',
-                ),
+                _PreviewRow(title: 'Sample Platform', meta: 'Platform · beta'),
                 SizedBox(height: AppSpacing.xs),
-                _PreviewRow(
-                  title: 'Sample Tool',
-                  meta: 'Tool · active',
-                ),
+                _PreviewRow(title: 'Sample Tool', meta: 'Tool · active'),
                 SizedBox(height: AppSpacing.xs),
-                _PreviewRow(
-                  title: 'Sample App',
-                  meta: 'App · experimental',
-                ),
+                _PreviewRow(title: 'Sample App', meta: 'App · experimental'),
               ],
             ),
           ),
@@ -317,8 +311,7 @@ class _FeaturedSection extends ConsumerWidget {
           error: (error, _) => AppErrorState(
             title: 'Could not load featured projects',
             message: error.toString(),
-            onRetry: () =>
-                ref.read(projectsCatalogProvider.notifier).refresh(),
+            onRetry: () => ref.read(projectsCatalogProvider.notifier).refresh(),
           ),
           data: (catalog) {
             final featured = catalog.featured;
@@ -334,6 +327,58 @@ class _FeaturedSection extends ConsumerWidget {
             return AppGrid(
               children: [
                 for (final project in featured) ProjectCard(project: project),
+              ],
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class _PlaygroundsSection extends ConsumerWidget {
+  const _PlaygroundsSection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final asyncCatalog = ref.watch(projectsCatalogProvider);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        AppSectionHeader(
+          title: 'Playgrounds',
+          subtitle: 'Live example apps hosted next to this showcase.',
+          action: AppButton(
+            label: 'View all',
+            variant: AppButtonVariant.text,
+            size: AppButtonSize.small,
+            icon: Icons.arrow_forward_rounded,
+            onPressed: () => context.go(AppRoutes.projects),
+          ),
+        ),
+        const SizedBox(height: AppSpacing.md),
+        asyncCatalog.when(
+          loading: () => const AppLoadingState(message: 'Loading playgrounds…'),
+          error: (error, _) => AppErrorState(
+            title: 'Could not load playgrounds',
+            message: error.toString(),
+            onRetry: () => ref.read(projectsCatalogProvider.notifier).refresh(),
+          ),
+          data: (catalog) {
+            if (catalog.playgrounds.isEmpty) {
+              return const AppEmptyState(
+                title: 'No playgrounds yet',
+                message:
+                    'Playgrounds appear after a project publishes a web '
+                    'build to generated/.',
+                icon: Icons.science_outlined,
+              );
+            }
+            return AppGrid(
+              children: [
+                for (final playground in catalog.playgrounds)
+                  PlaygroundCard(playground: playground),
               ],
             );
           },
@@ -366,8 +411,7 @@ class _CategoriesSection extends ConsumerWidget {
           data: (catalog) {
             final categories = <ProjectCategory>{
               for (final p in catalog.all) p.category,
-            }.toList()
-              ..sort((a, b) => a.name.compareTo(b.name));
+            }.toList()..sort((a, b) => a.name.compareTo(b.name));
 
             if (categories.isEmpty) return const SizedBox.shrink();
 
@@ -546,9 +590,7 @@ class _FinalCtaSection extends StatelessWidget {
       color: scheme.surfaceContainerHigh,
       shape: RoundedRectangleBorder(
         borderRadius: AppRadius.borderCard,
-        side: BorderSide(
-          color: scheme.outlineVariant.withValues(alpha: 0.6),
-        ),
+        side: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.6)),
       ),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.lg),

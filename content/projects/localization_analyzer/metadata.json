@@ -104,5 +104,11 @@
   "integration": {
     "projectId": "localization_analyzer",
     "source": "project-cache"
+  },
+  "playground": {
+    "enabled": true,
+    "id": "localization-analyzer",
+    "demoPath": "/generated/localization-analyzer/",
+    "status": "pending"
   }
 }

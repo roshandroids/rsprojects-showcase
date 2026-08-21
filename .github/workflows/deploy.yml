@@ -1,21 +1,78 @@
-# Deploy — publish the Flutter web build
+# Deploy — GitHub Pages (showcase app + generated playgrounds)
 #
-# Why: Build and deploy RSProjects Showcase to hosting.
+# Builds this repository's Flutter Web app, copies generated/<id>/ trees
+# into the site, and deploys. Does not build private product repositories.
+#
 # Owner: Platform / release.
-# When: Implement after hosting target is chosen (see docs/DEPLOYMENT.md).
-#
-# TODO(deploy): flutter build web --release
-# TODO(deploy): upload / publish artifacts
-# TODO(deploy): optionally run scripts/publish.dart
 
 name: deploy
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: true
+
 jobs:
-  placeholder:
+  build:
+    name: Build Pages site
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
-      - name: Placeholder — deploy not implemented
-        run: echo "Deploy workflow not implemented yet"
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Resolve Pages base href
+        id: href
+        shell: bash
+        run: |
+          set -euo pipefail
+          repo="${{ github.event.repository.name }}"
+          echo "base=/${repo}/" >> "$GITHUB_OUTPUT"
+
+      - name: Pub get
+        run: flutter pub get
+
+      - name: Validate content
+        run: dart run scripts/validate_content.dart
+
+      - name: Generate registry
+        run: dart run scripts/generate_registry.dart
+
+      - name: Build showcase web
+        run: |
+          flutter build web --release \
+            --base-href "${{ steps.href.outputs.base }}" \
+            --dart-define=PAGES_BASE_HREF=${{ steps.href.outputs.base }}
+
+      - name: Stage generated playgrounds
+        run: dart run scripts/publish.dart --web-build build/web --generated generated
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/web
+
+  deploy:
+    name: GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

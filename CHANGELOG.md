@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Added
 
-- Architecture bootstrap (folders, placeholders, docs templates)
+- Locked playground contract (`deploy.showcase.enabled` + `id` only; `generated/<id>/`; ADR 001)
 
 ## [0.0.0] - TBD
 

@@ -160,5 +160,11 @@
   "integration": {
     "projectId": "document_platform",
     "source": "project-cache"
+  },
+  "playground": {
+    "enabled": true,
+    "id": "document-platform",
+    "demoPath": "/generated/document-platform/",
+    "status": "pending"
   }
 }

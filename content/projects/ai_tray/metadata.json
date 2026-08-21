@@ -130,5 +130,11 @@
   "integration": {
     "projectId": "ai_tray",
     "source": "project-cache"
+  },
+  "playground": {
+    "enabled": true,
+    "id": "ai-tray",
+    "demoPath": "/generated/ai-tray/",
+    "status": "pending"
   }
 }

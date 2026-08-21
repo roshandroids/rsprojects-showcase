@@ -27,10 +27,12 @@ class ProjectDto {
     this.tags = const [],
     this.icon,
     this.showcase,
+    this.playground,
   });
 
   factory ProjectDto.fromJson(Map<String, Object?> json) {
     final showcaseRaw = json['showcase'];
+    final playgroundRaw = json['playground'];
     return ProjectDto(
       id: json['id'] as String? ?? '',
       name: json['name'] as String? ?? '',
@@ -53,6 +55,9 @@ class ProjectDto {
       showcase: showcaseRaw is Map
           ? ProjectShowcaseDto.fromJson(Map<String, Object?>.from(showcaseRaw))
           : null,
+      playground: playgroundRaw is Map
+          ? PlaygroundDto.fromJson(Map<String, Object?>.from(playgroundRaw))
+          : null,
     );
   }
 
@@ -71,6 +76,7 @@ class ProjectDto {
   final List<String> tags;
   final String? icon;
   final ProjectShowcaseDto? showcase;
+  final PlaygroundDto? playground;
 
   Project toDomain() {
     return Project(
@@ -89,6 +95,7 @@ class ProjectDto {
       tags: tags,
       icon: icon,
       showcase: showcase?.toDomain(),
+      playground: playground?.toDomain(),
     );
   }
 }
@@ -135,7 +142,7 @@ class ProjectShowcaseDto {
     }
 
     ({String kind, String? src, String? alt, String? caption, String? poster})?
-        parseMedia(Object? raw) {
+    parseMedia(Object? raw) {
       final m = asMap(raw);
       if (m == null) return null;
       final alt = m['alt'] as String? ?? '';
@@ -211,10 +218,7 @@ class ProjectShowcaseDto {
       installation: json['installation'] as String?,
       documentationLinks: [
         for (final m in maps('documentationLinks'))
-          (
-            label: m['label'] as String? ?? '',
-            url: m['url'] as String? ?? '',
-          ),
+          (label: m['label'] as String? ?? '', url: m['url'] as String? ?? ''),
       ].where((e) => e.label.isNotEmpty && e.url.isNotEmpty).toList(),
       examples: [
         for (final m in maps('examples'))
@@ -234,10 +238,7 @@ class ProjectShowcaseDto {
       ].where((e) => e.label.isNotEmpty && e.value.isNotEmpty).toList(),
       roadmap: [
         for (final m in maps('roadmap'))
-          (
-            item: m['item'] as String? ?? '',
-            status: m['status'] as String?,
-          ),
+          (item: m['item'] as String? ?? '', status: m['status'] as String?),
       ].where((e) => e.item.isNotEmpty).toList(),
       changelog: [
         for (final m in maps('changelog'))
@@ -277,28 +278,27 @@ class ProjectShowcaseDto {
   final String? problem;
   final String? solution;
   final List<
-      ({
-        String title,
-        String? description,
-        String? icon,
-        ({
-          String kind,
-          String? src,
-          String? alt,
-          String? caption,
-          String? poster,
-        })? media,
-      })> features;
-  final ({String? url, String? note, bool available})? demo;
-  final List<({String alt, String? src, String? caption})> screenshots;
-  final List<
+    ({
+      String title,
+      String? description,
+      String? icon,
       ({
         String kind,
         String? src,
-        String alt,
+        String? alt,
         String? caption,
         String? poster,
-      })> media;
+      })?
+      media,
+    })
+  >
+  features;
+  final ({String? url, String? note, bool available})? demo;
+  final List<({String alt, String? src, String? caption})> screenshots;
+  final List<
+    ({String kind, String? src, String alt, String? caption, String? poster})
+  >
+  media;
   final String? architecture;
   final ({
     String kind,
@@ -306,7 +306,8 @@ class ProjectShowcaseDto {
     String? alt,
     String? caption,
     String? poster,
-  })? architectureDiagram;
+  })?
+  architectureDiagram;
   final List<String> technologies;
   final List<({String platform, String? notes})> platformSupport;
   final String? installation;
@@ -316,20 +317,15 @@ class ProjectShowcaseDto {
   final List<({String item, String? status})> roadmap;
   final List<({String version, String? date, String notes})> changelog;
   final List<({String name, String? role, String? url, String? avatar})>
-      contributors;
+  contributors;
   final List<({String label, String url, String? platform, String? checksum})>
-      downloads;
+  downloads;
   final List<String> relatedProjectIds;
   final String? contributing;
 
   static ShowcaseMediaItem? _mediaToDomain(
-    ({
-      String kind,
-      String? src,
-      String? alt,
-      String? caption,
-      String? poster,
-    })? raw, {
+    ({String kind, String? src, String? alt, String? caption, String? poster})?
+    raw, {
     String fallbackAlt = '',
   }) {
     if (raw == null) return null;
@@ -451,6 +447,67 @@ class ProjectShowcaseDto {
   }
 }
 
+/// JSON DTO for hosted playgrounds (never used in UI).
+class PlaygroundDto {
+  const PlaygroundDto({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.category,
+    required this.demoPath,
+    required this.status,
+    this.projectId,
+    this.repository,
+    this.version,
+    this.commit,
+    this.deployedAt,
+  });
+
+  factory PlaygroundDto.fromJson(Map<String, Object?> json) {
+    return PlaygroundDto(
+      id: json['id'] as String? ?? '',
+      projectId: json['projectId'] as String?,
+      name: json['name'] as String? ?? '',
+      description: json['description'] as String? ?? '',
+      category: json['category'] as String? ?? 'other',
+      repository: json['repository'] as String?,
+      demoPath: json['demoPath'] as String? ?? '',
+      status: json['status'] as String? ?? 'pending',
+      version: json['version'] as String?,
+      commit: json['commit'] as String?,
+      deployedAt: json['deployedAt'] as String?,
+    );
+  }
+
+  final String id;
+  final String? projectId;
+  final String name;
+  final String description;
+  final String category;
+  final String? repository;
+  final String demoPath;
+  final String status;
+  final String? version;
+  final String? commit;
+  final String? deployedAt;
+
+  ProjectPlayground toDomain() {
+    return ProjectPlayground(
+      id: id,
+      projectId: projectId,
+      name: name.isEmpty ? id : name,
+      description: description,
+      category: category,
+      repository: repository,
+      demoPath: demoPath.isEmpty ? '/generated/$id/' : demoPath,
+      status: PlaygroundStatus.fromString(status),
+      version: version,
+      commit: commit,
+      deployedAt: deployedAt,
+    );
+  }
+}
+
 /// JSON DTO for registry example entries (never used in UI).
 class ProjectExampleDto {
   const ProjectExampleDto({
@@ -502,10 +559,7 @@ class ProjectExampleDto {
       ].where((e) => e.alt.isNotEmpty).toList(),
       documentationLinks: [
         for (final m in maps('documentationLinks'))
-          (
-            label: m['label'] as String? ?? '',
-            url: m['url'] as String? ?? '',
-          ),
+          (label: m['label'] as String? ?? '', url: m['url'] as String? ?? ''),
       ].where((e) => e.label.isNotEmpty && e.url.isNotEmpty).toList(),
       sourceUrl: json['sourceUrl'] as String?,
       demoUrl: json['demoUrl'] as String?,
@@ -521,13 +575,9 @@ class ProjectExampleDto {
   final bool featured;
   final Map<String, Object?>? demo;
   final List<
-      ({
-        String kind,
-        String? src,
-        String alt,
-        String? caption,
-        String? poster,
-      })> media;
+    ({String kind, String? src, String alt, String? caption, String? poster})
+  >
+  media;
   final List<({String label, String url})> documentationLinks;
   final String? sourceUrl;
   final String? demoUrl;
@@ -579,9 +629,14 @@ class AssetRegistryProjectRepository implements ProjectRepository {
 
   List<Project>? _projectCache;
   List<ProjectExample>? _exampleCache;
+  List<ProjectPlayground>? _playgroundCache;
 
   Future<void> _ensureLoaded() async {
-    if (_projectCache != null && _exampleCache != null) return;
+    if (_projectCache != null &&
+        _exampleCache != null &&
+        _playgroundCache != null) {
+      return;
+    }
 
     final raw = await _bundle.loadString(assetPath);
     final decoded = jsonDecode(raw);
@@ -609,8 +664,9 @@ class AssetRegistryProjectRepository implements ProjectRepository {
       for (final item in exampleList) {
         if (item is Map) {
           examples.add(
-            ProjectExampleDto.fromJson(Map<String, Object?>.from(item))
-                .toDomain(),
+            ProjectExampleDto.fromJson(
+              Map<String, Object?>.from(item),
+            ).toDomain(),
           );
         }
       }
@@ -618,6 +674,25 @@ class AssetRegistryProjectRepository implements ProjectRepository {
 
     _projectCache = projects;
     _exampleCache = examples;
+
+    final playgrounds = <ProjectPlayground>[];
+    final playgroundList = decoded['playgrounds'];
+    if (playgroundList is List) {
+      for (final item in playgroundList) {
+        if (item is Map) {
+          playgrounds.add(
+            PlaygroundDto.fromJson(Map<String, Object?>.from(item)).toDomain(),
+          );
+        }
+      }
+    } else {
+      for (final project in projects) {
+        if (project.playground != null) {
+          playgrounds.add(project.playground!);
+        }
+      }
+    }
+    _playgroundCache = playgrounds;
   }
 
   @override
@@ -639,5 +714,11 @@ class AssetRegistryProjectRepository implements ProjectRepository {
       if (p.id == id) return p;
     }
     return null;
+  }
+
+  @override
+  Future<List<ProjectPlayground>> fetchPlaygrounds() async {
+    await _ensureLoaded();
+    return _playgroundCache!;
   }
 }

@@ -10,4 +10,6 @@
 
 - Do not commit hand-written business logic here.
 - Prefer regenerating via scripts / CI over manual edits.
-- Runtime project registry JSON lives at repository root `generated/` (not here).
+- Runtime playground **web apps** live at repository root `generated/<id>/`.
+- Runtime project registry JSON lives at `assets/generated/registry.json`.
+

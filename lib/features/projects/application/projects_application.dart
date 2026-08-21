@@ -17,6 +17,7 @@ class ProjectsCatalogState {
     required this.all,
     required this.query,
     this.examples = const [],
+    this.playgrounds = const [],
   });
 
   final List<Project> all;
@@ -24,6 +25,9 @@ class ProjectsCatalogState {
 
   /// Supporting examples from the same registry (not a separate feature).
   final List<ProjectExample> examples;
+
+  /// Hosted playground catalog derived from content + generated artifacts.
+  final List<ProjectPlayground> playgrounds;
 
   List<Project> get filtered => applyProjectQuery(all, query);
 
@@ -34,11 +38,13 @@ class ProjectsCatalogState {
     List<Project>? all,
     ProjectQuery? query,
     List<ProjectExample>? examples,
+    List<ProjectPlayground>? playgrounds,
   }) {
     return ProjectsCatalogState(
       all: all ?? this.all,
       query: query ?? this.query,
       examples: examples ?? this.examples,
+      playgrounds: playgrounds ?? this.playgrounds,
     );
   }
 }
@@ -50,6 +56,10 @@ Future<List<ProjectExample>> _loadExamples(ProjectRepository repository) async {
   return const [];
 }
 
+Future<List<ProjectPlayground>> _loadPlaygrounds(ProjectRepository repository) {
+  return repository.fetchPlaygrounds();
+}
+
 /// Loads registry projects and holds catalog filter/sort state.
 class ProjectsCatalogNotifier extends AsyncNotifier<ProjectsCatalogState> {
   @override
@@ -57,10 +67,12 @@ class ProjectsCatalogNotifier extends AsyncNotifier<ProjectsCatalogState> {
     final repository = ref.watch(projectRepositoryProvider);
     final projects = await repository.fetchProjects();
     final examples = await _loadExamples(repository);
+    final playgrounds = await _loadPlaygrounds(repository);
     return ProjectsCatalogState(
       all: projects,
       query: const ProjectQuery(),
       examples: examples,
+      playgrounds: playgrounds,
     );
   }
 
@@ -71,10 +83,12 @@ class ProjectsCatalogNotifier extends AsyncNotifier<ProjectsCatalogState> {
       final repository = ref.read(projectRepositoryProvider);
       final projects = await repository.fetchProjects();
       final examples = await _loadExamples(repository);
+      final playgrounds = await _loadPlaygrounds(repository);
       return ProjectsCatalogState(
         all: projects,
         query: previous?.query ?? const ProjectQuery(),
         examples: examples,
+        playgrounds: playgrounds,
       );
     });
   }
@@ -120,22 +134,22 @@ class ProjectsCatalogNotifier extends AsyncNotifier<ProjectsCatalogState> {
   void _updateQuery(ProjectQuery Function(ProjectQuery current) updater) {
     final current = state.asData?.value;
     if (current == null) return;
-    state = AsyncData(
-      current.copyWith(query: updater(current.query)),
-    );
+    state = AsyncData(current.copyWith(query: updater(current.query)));
   }
 }
 
 final projectsCatalogProvider =
     AsyncNotifierProvider<ProjectsCatalogNotifier, ProjectsCatalogState>(
-  ProjectsCatalogNotifier.new,
-  // Asset registry failures are deterministic; surface error UI immediately.
-  retry: (retryCount, error) => null,
-);
+      ProjectsCatalogNotifier.new,
+      // Asset registry failures are deterministic; surface error UI immediately.
+      retry: (retryCount, error) => null,
+    );
 
 /// Single project by id (metadata-driven detail).
-final projectByIdProvider =
-    FutureProvider.family<Project?, String>((ref, id) async {
+final projectByIdProvider = FutureProvider.family<Project?, String>((
+  ref,
+  id,
+) async {
   if (id.isEmpty) return null;
   return ref.watch(projectRepositoryProvider).fetchById(id);
 }, retry: (retryCount, error) => null);

@@ -6,7 +6,7 @@
 
 | Meta | Value |
 |------|--------|
-| **Last updated** | 2026-07-26 |
+| **Last updated** | 2026-08-21 |
 | **Document owner** | Project maintainers |
 | **Status vocabulary** | `Not Started` · `In Progress` · `Blocked` · `Complete` |
 | **Supporting docs** | `docs/GOVERNANCE.md` (core), `ARCHITECTURE.md`, `ROADMAP.md`, `PROJECT_RULES.md`, `docs/*` (not status SSOT) |
@@ -136,7 +136,8 @@ Sprint is done when all of the following are true:
 - Friendly error UI wiring beyond placeholder presenter
 - Clipboard / URL launcher ports for diagnostics & feedback
 - Theme persistence settings UI
-- Hosting selection and production deploy
+- Hosting: GitHub Pages (D-011). Playgrounds: [`docs/PLAYGROUNDS.md`](docs/PLAYGROUNDS.md).
+
 - Optional bundled brand font assets
 - Remote `fetch_projects` automation
 
@@ -223,7 +224,7 @@ test/            unit + widget tests
 | D-008 | 2026-07-26 | Dual generated locations: `lib/generated/` (Dart codegen) vs registry JSON under `assets/generated/` (was root `generated/`) | Separates codegen from bundled content registry | Final |
 | D-009 | 2026-07-26 | Riverpod (Notifier / AsyncNotifier / AsyncValue) for application state | Aligns with RSProjects standards; catalog uses AsyncNotifier + AsyncValue | Final |
 | D-010 | 2026-07-26 | Use `go_router` with `MaterialApp.router` + `ShellRoute` | Declarative routing, deep links, shared shell | Final |
-| D-011 | — | Hosting target (GitHub Pages / Firebase / Cloudflare / other) | Required before real deploy | Open |
+| D-011 | 2026-08-21 | **Hosting: GitHub Pages** (Actions). Showcase at `/<repo>/`; playgrounds at `/<repo>/generated/<id>/` | Nested Flutter Web + existing Actions | Final |
 | D-012 | — | Repository license | Public repo needs a chosen license | Open |
 | D-013 | 2026-07-26 | Theme tokens centralized (superseded by D-015 location) | No hardcoded colors/magic layout numbers in features | Final |
 | D-014 | 2026-07-26 | Top nav: Home / Projects / About; Settings via footer | Keeps primary nav focused | Final |
@@ -242,6 +243,7 @@ test/            unit + widget tests
 | D-027 | 2026-07-26 | **Examples** on project pages via `ExampleGallery` (supporting content). Portal `content/examples/` is cache; long-term SSOT: product `examples/` via providers | Projects stay primary UX | Final |
 | D-028 | 2026-07-26 | **UI theme:** FlexScheme.`tealM3` + Material 3 FlexSubThemes (blend ~14–16, surface app bar, standard density, card/button/chip radii) | Premium developer-centric showcase; stay within Material 3 / FlexColorScheme | Final |
 | D-029 | 2026-07-26 | **Project Integration** (provider-driven): product projects own SSOT; Integration Definitions in `content/integrations/` declare providers (repository is one of many); showcase consumes derived cache until Phase 3 sync | Extensible without new concepts per source type; Document Platform is the reference integrate | Final |
+| D-030 | 2026-08-21 | **Central playground host + locked contract:** consumer `deploy.showcase.enabled` + `id` only; destination `generated/<kebab-id>/`; platform-ci builds; this repo never checks out private source | Public catalog without leaking private source | Final |
 
 ---
 
@@ -427,14 +429,15 @@ Engineering improvements (platform, quality, delivery).
 | Workflow | File | Status | Notes |
 |----------|------|--------|-------|
 | CI | `.github/workflows/ci.yml` | Not Started | Placeholder job (`echo` only) |
-| Deploy | `.github/workflows/deploy.yml` | Not Started | Placeholder; `workflow_dispatch` only |
+| Deploy | `.github/workflows/deploy.yml` | Complete | GitHub Pages: showcase web + `generated/` |
+| Receive playground | `.github/workflows/receive-playground.yml` | Complete | Callable; one `generated/<id>/` per run |
 | Fetch projects | `.github/workflows/fetch-projects.yml` | Not Started | Placeholder; `workflow_dispatch` only |
 
 ## Deployment status
 
 | Item | Status | Notes |
 |------|--------|-------|
-| Hosting target | Not Started | Not chosen |
+| Hosting target | Complete | GitHub Pages (D-011) |
 | `scripts/publish.dart` | Not Started | Unimplemented |
 | Production / preview deploy | Not Started | Not configured |
 
@@ -445,7 +448,8 @@ Engineering improvements (platform, quality, delivery).
 | `scripts/fetch_projects.dart` | Sync remote project sources | Not Started |
 | `scripts/generate_registry.dart` | Build `assets/generated/registry.json` | Complete |
 | `scripts/validate_content.dart` | Validate metadata/assets | Complete |
-| `scripts/publish.dart` | Build + deploy web | Not Started |
+| `scripts/publish.dart` | Stage playgrounds into web build | Complete |
+| `scripts/publish_playground.dart` | Copy one web build into `generated/<id>/` | Complete |
 
 ---
 
@@ -457,7 +461,7 @@ Engineering improvements (platform, quality, delivery).
 
 ## Technical debt
 
-- Dual “generated” concepts: `lib/generated/` (Dart codegen) vs root `generated/` (registry JSON) — documented but easy to confuse
+- Dual “generated” concepts: `lib/generated` (Dart codegen), `assets/generated/registry.json` (catalog), root `generated/<id>/` (hosted playgrounds) — see D-008 + D-030
 - SSH remote uses host alias `roshandroids.github.com` (personal key); plain `git@github.com:...` on this machine auth as a different GitHub account
 - `proposal.md` is in the repo from earlier planning — may or may not belong long-term
 - `LICENSE` is a placeholder (“TODO: choose license”)
@@ -467,10 +471,8 @@ Engineering improvements (platform, quality, delivery).
 
 ## Open questions
 
-1. Hosting target (GitHub Pages, Firebase, Cloudflare, other)?
-2. How will remote project discovery work (APIs, git remotes, manual content only)?
-3. License selection for the public repository?
-4. Should `proposal.md` remain in the repo or move to docs/archive?
+1. License selection for the public repository?
+2. Should `proposal.md` remain in the repo or move to docs/archive?
 
 Promote answers into the **Decisions** log (new `D-xxx` row) and remove from this list.
 
@@ -528,7 +530,7 @@ Ordered implementation sequence (promote into Current Sprint when starting work)
 | 2026-07-26 | **Project example infrastructure:** `content/examples/` + registry `examples[]`; shared `DemoSpec`/`DemoPane`/`ExampleGallery`; Document Platform + Localization Analyzer; D-027 shape finalized |
 | 2026-07-26 | **Project Integration Framework:** provider-driven Integration Definitions (`content/integrations/`), Document Platform `showcase/` contract, portal provenance; D-029; Localization Analyzer + AI Tray registered |
 | 2026-07-26 | **Refactor:** Repository Integration → Project Integration (docs rename, `content/integrations/`, provider model); no runtime/automation changes |
-| 2026-07-26 | **Project Onboarding Framework:** `docs/PROJECT_ONBOARDING.md`; Localization Analyzer + AI Tray product `showcase/` contracts; all three Integration Definitions `integrated` |
+| 2026-08-21 | **Playground hosting (D-011, D-030):** `generated/<id>/`, catalog `playgrounds[]`, Pages deploy, receive-playground concurrency, platform-ci contract |
 
 ---
 

@@ -3,6 +3,9 @@
 /// Used by `scripts/validate_content.dart` and unit tests.
 library;
 
+import 'package:rsprojects_showcase/core/content/playground_catalog.dart';
+import 'package:rsprojects_showcase/core/content/playground_paths.dart';
+
 const Set<String> kAllowedStatuses = {
   'active',
   'beta',
@@ -27,23 +30,11 @@ const Set<String> kAllowedPlatforms = {
   'linux',
 };
 
-const Set<String> kAllowedRoadmapStatuses = {
-  'planned',
-  'in_progress',
-  'done',
-};
+const Set<String> kAllowedRoadmapStatuses = {'planned', 'in_progress', 'done'};
 
-const Set<String> kAllowedMediaKinds = {
-  'image',
-  'video',
-  'diagram',
-};
+const Set<String> kAllowedMediaKinds = {'image', 'video', 'diagram'};
 
-const Set<String> kAllowedHeroMediaKinds = {
-  'image',
-  'video',
-  'lottie',
-};
+const Set<String> kAllowedHeroMediaKinds = {'image', 'video', 'lottie'};
 
 const Set<String> kAllowedExampleCategories = {
   'demo',
@@ -53,11 +44,7 @@ const Set<String> kAllowedExampleCategories = {
   'other',
 };
 
-const Set<String> kAllowedDemoKinds = {
-  'embedded_web',
-  'external',
-  'media',
-};
+const Set<String> kAllowedDemoKinds = {'embedded_web', 'external', 'media'};
 
 const Set<String> kAllowedIntegrationSources = {
   'project-cache',
@@ -131,8 +118,7 @@ List<String> validateProjectMetadata(
       }
       final source = integration['source'];
       if (source != null &&
-          (source is! String ||
-              !kAllowedIntegrationSources.contains(source))) {
+          (source is! String || !kAllowedIntegrationSources.contains(source))) {
         errors.add(
           'integration.source invalid. Allowed: $kAllowedIntegrationSources',
         );
@@ -150,6 +136,135 @@ List<String> validateProjectMetadata(
           showcase.map((k, v) => MapEntry(k.toString(), v as Object?)),
         ),
       );
+    }
+  }
+
+  final playground = data['playground'];
+  if (playground != null) {
+    if (playground is! Map) {
+      errors.add('Field "playground" must be an object when present');
+    } else {
+      errors.addAll(
+        validateProjectPlaygroundMetadata(
+          playground.map((k, v) => MapEntry(k.toString(), v as Object?)),
+          projectId: id,
+        ),
+      );
+    }
+  }
+
+  return errors;
+}
+
+/// Validates optional `playground` on project metadata.
+List<String> validateProjectPlaygroundMetadata(
+  Map<String, Object?> data, {
+  String? projectId,
+}) {
+  final errors = <String>[];
+
+  final enabled = data['enabled'];
+  if (enabled != null && enabled is! bool) {
+    errors.add('playground.enabled must be a boolean when present');
+  }
+
+  final playgroundId = data['id'];
+  if (playgroundId != null) {
+    if (playgroundId is! String || !isValidPlaygroundId(playgroundId)) {
+      errors.add('playground.id must be kebab-case (e.g. document-platform)');
+    }
+  } else if (enabled == true && projectId != null) {
+    final inferred = playgroundIdFromProjectId(projectId);
+    if (!isValidPlaygroundId(inferred)) {
+      errors.add(
+        'playground.id is required when project id cannot be kebab-cased',
+      );
+    }
+  }
+
+  final demoPath = data['demoPath'];
+  if (demoPath != null) {
+    if (demoPath is! String || demoPath.trim().isEmpty) {
+      errors.add('playground.demoPath must be a non-empty string when present');
+    } else if (!demoPath.contains('generated/')) {
+      errors.add(
+        'playground.demoPath must point under generated/ '
+        '(e.g. /generated/document-platform/)',
+      );
+    }
+  }
+
+  final status = data['status'];
+  if (status != null &&
+      (status is! String || !kAllowedPlaygroundStatuses.contains(status))) {
+    errors.add(
+      'playground.status invalid. Allowed: $kAllowedPlaygroundStatuses',
+    );
+  }
+
+  final repository = data['repository'];
+  if (repository != null &&
+      (repository is! String || repository.trim().isEmpty)) {
+    errors.add('playground.repository must be a non-empty string when present');
+  }
+
+  return errors;
+}
+
+/// Validates a registry/catalog playground object (including deployment fields).
+List<String> validatePlaygroundCatalogMetadata(Map<String, Object?> data) {
+  final errors = <String>[];
+
+  final id = data['id'];
+  if (id is! String || !isValidPlaygroundId(id)) {
+    errors.add('Playground "id" must be kebab-case');
+  }
+
+  final name = data['name'];
+  if (name is! String || name.trim().isEmpty) {
+    errors.add('Playground "name" must be a non-empty string');
+  }
+
+  final description = data['description'];
+  if (description != null && description is! String) {
+    errors.add('Playground "description" must be a string when present');
+  }
+
+  final category = data['category'];
+  if (category != null &&
+      (category is! String || !kAllowedCategories.contains(category))) {
+    errors.add('Playground "category" invalid. Allowed: $kAllowedCategories');
+  }
+
+  final demoPath = data['demoPath'];
+  if (demoPath is! String || !demoPath.contains('generated/')) {
+    errors.add('Playground "demoPath" must be a generated/ path');
+  } else if (id is String && isValidPlaygroundId(id)) {
+    final expected = playgroundDemoPath(id);
+    if (demoPath != expected &&
+        !demoPath.endsWith('/generated/$id/') &&
+        !demoPath.contains('/generated/$id')) {
+      errors.add('Playground demoPath "$demoPath" does not match id "$id"');
+    }
+  }
+
+  final status = data['status'];
+  if (status is! String || !kAllowedPlaygroundStatuses.contains(status)) {
+    errors.add(
+      'Playground "status" invalid. Allowed: $kAllowedPlaygroundStatuses',
+    );
+  }
+
+  for (final key in [
+    'version',
+    'commit',
+    'deployedAt',
+    'repository',
+    'projectId',
+  ]) {
+    final value = data[key];
+    if (value != null && (value is! String || value.trim().isEmpty)) {
+      errors.add('Playground "$key" must be a non-empty string when present');
     }
   }
 
@@ -293,9 +408,7 @@ List<String> validateShowcaseMetadata(Map<String, Object?> data) {
     final kind = demoKind['kind'];
     if (kind != null &&
         (kind is! String || !kAllowedDemoKinds.contains(kind))) {
-      errors.add(
-        'showcase.demo.kind invalid. Allowed: $kAllowedDemoKinds',
-      );
+      errors.add('showcase.demo.kind invalid. Allowed: $kAllowedDemoKinds');
     }
   }
 
@@ -358,7 +471,11 @@ List<String> validateShowcaseMetadata(Map<String, Object?> data) {
     errors.add('showcase.relatedProjectIds must be a list');
   }
 
-  void validateMediaObject(String path, Object? raw, {required bool requireAlt}) {
+  void validateMediaObject(
+    String path,
+    Object? raw, {
+    required bool requireAlt,
+  }) {
     if (raw == null) return;
     if (raw is! Map) {
       errors.add('$path must be an object');
@@ -547,17 +664,14 @@ List<String> validateExampleMetadata(
         if (item is! Map ||
             item['label'] is! String ||
             item['url'] is! String) {
-          errors.add(
-            'documentationLinks[$i] requires "label" and "url"',
-          );
+          errors.add('documentationLinks[$i] requires "label" and "url"');
         }
       }
     }
   }
 
   final sourceUrl = data['sourceUrl'];
-  if (sourceUrl != null &&
-      (sourceUrl is! String || sourceUrl.trim().isEmpty)) {
+  if (sourceUrl != null && (sourceUrl is! String || sourceUrl.trim().isEmpty)) {
     errors.add('Field "sourceUrl" must be a non-empty string when present');
   }
 

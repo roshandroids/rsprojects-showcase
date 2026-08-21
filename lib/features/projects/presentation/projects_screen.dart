@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rsprojects_showcase/design_system/design_system.dart';
 import 'package:rsprojects_showcase/features/projects/application/projects_application.dart';
 import 'package:rsprojects_showcase/features/projects/domain/projects_domain.dart';
+import 'package:rsprojects_showcase/features/projects/presentation/widgets/playground_card.dart';
 import 'package:rsprojects_showcase/features/projects/presentation/widgets/project_card.dart';
 
 /// Registry-backed projects catalog screen.
@@ -48,11 +49,11 @@ class _CatalogBody extends ConsumerWidget {
     final filtered = catalog.filtered;
     final platforms = {
       for (final project in catalog.all) ...project.platforms,
-    }.toList()
-      ..sort();
+    }.toList()..sort();
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
-    final hasFilters = query.status != null ||
+    final hasFilters =
+        query.status != null ||
         query.category != null ||
         query.platform != null ||
         query.search.trim().isNotEmpty;
@@ -177,6 +178,28 @@ class _CatalogBody extends ConsumerWidget {
               ),
           ],
         ),
+        const SizedBox(height: AppSpacing.lg),
+        AppSectionHeader(
+          title: 'Playgrounds',
+          subtitle:
+              'Hosted Flutter Web example apps published under generated/.',
+        ),
+        const SizedBox(height: AppSpacing.md),
+        if (catalog.playgrounds.isEmpty)
+          const AppEmptyState(
+            title: 'No playgrounds yet',
+            message:
+                'Enable playground metadata on a project and publish a '
+                'web build to generated/<project-id>/.',
+            icon: Icons.science_outlined,
+          )
+        else
+          AppGrid(
+            children: [
+              for (final playground in catalog.playgrounds)
+                PlaygroundCard(playground: playground),
+            ],
+          ),
         const SizedBox(height: AppSpacing.lg),
         if (catalog.all.isEmpty)
           const AppEmptyState(

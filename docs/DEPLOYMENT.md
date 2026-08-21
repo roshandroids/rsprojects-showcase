@@ -2,20 +2,45 @@
 
 ## Target host
 
-TODO: Choose hosting (GitHub Pages, Firebase Hosting, Cloudflare, etc.).
+**GitHub Pages** (D-011). Workflow: [`.github/workflows/deploy.yml`](../.github/workflows/deploy.yml).
+
+Public URLs (replace owner/repo with this GitHub repository; currently `roshandroids/rsprojects-showcase`):
+
+- Showcase: `https://<owner>.github.io/<repo>/`
+- Playground: `https://<owner>.github.io/<repo>/generated/<project-id>/`
+
+Enable Pages: Settings → Pages → Source **GitHub Actions**.
 
 ## Build
 
-TODO: Document `flutter build web` flags and base href requirements.
+```sh
+flutter build web --release \
+  --base-href /<repo>/ \
+  --dart-define=PAGES_BASE_HREF=/<repo>/
+dart run scripts/publish.dart --web-build build/web --generated generated
+```
 
-## Publish
+Playgrounds must be built **by platform-ci** with:
 
-TODO: Wire `scripts/publish.dart` and `.github/workflows/deploy.yml`.
+```text
+--base-href /<repo>/generated/<project-id>/
+```
+
+## Publish playgrounds
+
+This repo does not build private products. See [`PLAYGROUNDS.md`](PLAYGROUNDS.md).
+
+- Receive: [`.github/workflows/receive-playground.yml`](../.github/workflows/receive-playground.yml)
+- Local: `dart run scripts/publish_playground.dart --id <id> --source <web-dir>`
 
 ## Environments
 
-TODO: Define preview vs production environments.
+Production = `main` → `deploy.yml`. No preview environment yet.
 
 ## Rollback
 
-TODO: Document how to roll back a bad deploy.
+Revert the playground commit under `generated/<id>/` (does not revert other products) or revert the showcase app commit, then re-run deploy.
+
+## Concurrency
+
+Playground publishes share `showcase-generated-publish` (queue, no cancel). Pages deploys share `pages-deploy`.

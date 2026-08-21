@@ -6,15 +6,15 @@ import 'package:rsprojects_showcase/core/content/content_schema.dart';
 
 void main() {
   Map<String, Object?> valid({String id = 'document_platform'}) => {
-        'id': id,
-        'name': 'Document Platform',
-        'description': 'A real description',
-        'version': '0.9.0',
-        'status': 'beta',
-        'category': 'platform',
-        'platforms': ['web', 'macos'],
-        'featured': true,
-      };
+    'id': id,
+    'name': 'Document Platform',
+    'description': 'A real description',
+    'version': '0.9.0',
+    'status': 'beta',
+    'category': 'platform',
+    'platforms': ['web', 'macos'],
+    'featured': true,
+  };
 
   test('accepts complete valid metadata', () {
     expect(validateProjectMetadata(valid()), isEmpty);
@@ -91,14 +91,24 @@ void main() {
     expect(errors, isEmpty);
   });
 
-  test('rejects invalid integration.source', () {
+  test('accepts optional playground metadata', () {
     final errors = validateProjectMetadata({
       ...valid(),
-      'integration': {
-        'projectId': 'document_platform',
-        'source': 'remote-live',
+      'playground': {
+        'enabled': true,
+        'id': 'document-platform',
+        'demoPath': '/generated/document-platform/',
+        'status': 'pending',
       },
     });
-    expect(errors.any((e) => e.contains('integration.source')), isTrue);
+    expect(errors, isEmpty);
+  });
+
+  test('rejects invalid playground metadata on a project', () {
+    final errors = validateProjectMetadata({
+      ...valid(),
+      'playground': {'enabled': true, 'id': 'not valid', 'status': 'nope'},
+    });
+    expect(errors.any((e) => e.contains('playground')), isTrue);
   });
 }

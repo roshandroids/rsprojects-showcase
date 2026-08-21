@@ -4,6 +4,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rsprojects_showcase/app/router.dart';
+import 'package:rsprojects_showcase/core/services/open_url.dart';
 import 'package:rsprojects_showcase/design_system/design_system.dart';
 import 'package:rsprojects_showcase/features/projects/domain/projects_domain.dart';
 
@@ -111,9 +112,9 @@ class ProjectCard extends StatelessWidget {
                         label: project.status.name,
                         tone: _statusTone(project.status),
                       ),
-                      ...project.platforms.take(2).map(
-                            (platform) => AppBadge(label: platform),
-                          ),
+                      ...project.platforms
+                          .take(2)
+                          .map((platform) => AppBadge(label: platform)),
                     ],
                   ),
                   const Spacer(),
@@ -132,6 +133,23 @@ class ProjectCard extends StatelessWidget {
                         size: 16,
                         color: scheme.primary,
                       ),
+                      if (project.playground?.canOpen == true) ...[
+                        const Spacer(),
+                        AppButton(
+                          label: 'Open Playground',
+                          size: AppButtonSize.small,
+                          icon: Icons.play_arrow_rounded,
+                          onPressed: () {
+                            final url = project.playground!.resolvedUrl;
+                            final opened = openUrl(url);
+                            if (!opened && context.mounted) {
+                              ScaffoldMessenger.of(
+                                context,
+                              ).showSnackBar(SnackBar(content: Text(url)));
+                            }
+                          },
+                        ),
+                      ],
                     ],
                   ),
                 ],

@@ -23,7 +23,8 @@
       "wikiUrl": "https://github.com/roshandroids/Document_Platform/wiki"
     },
     "demo": {
-      "note": "Local examples/example_basic (Editor Playground); public portal embed planned"
+      "note": "Local examples/example_basic (Editor Playground); public playground publishes to project_showcase generated/document-platform/",
+      "showcasePlaygroundId": "document-platform"
     },
     "package": {
       "note": "Melos workspace packages under packages/ (e.g. document_core @ 0.1.0)"

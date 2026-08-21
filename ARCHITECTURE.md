@@ -4,7 +4,7 @@
 
 RSProjects Showcase is a **Flutter Web–first**, cross-platform portal for discovering and presenting RSProjects products.
 
-Layout is **feature-first** with shared core/platform layers. Adding a product is primarily a **Project Integration** change (product SSOT → Integration Definition / providers → showcase cache → generated registry), not a UI fork.
+Layout is **feature-first** with shared core/platform layers. Adding a product is primarily a **Project Integration** change (product SSOT → Integration Definition / providers → showcase cache → generated registry), not a UI fork. Hosted playgrounds are **generated web artifacts** under `generated/<id>/`, published by **platform-ci** — this app does not build private products.
 
 ## Layers
 
@@ -40,10 +40,22 @@ Product Project (SSOT: showcase/, docs/, examples/, …)
   → scripts/generate_registry.dart
   → assets/generated/registry.json          # projects[] + examples[]
   → AssetRegistryProjectRepository
-  → domain Project / ProjectShowcase + shared ProjectExample
+  → domain Project / ProjectShowcase / ProjectPlayground + shared ProjectExample
   → Riverpod catalog / detail
-  → ProjectShowcaseTemplate + ExampleGallery(projectId)
+  → ProjectShowcaseTemplate + PlaygroundCard + ExampleGallery(projectId)
 ```
+
+Hosted playgrounds (separate from the registry JSON):
+
+```
+Private product (platform-ci)
+  → flutter build web --release --base-href /<repo>/generated/<id>/
+  → receive-playground.yml
+  → generated/<kebab-id>/  (+ showcase.json)
+  → Pages deploy copies into the showcase web site
+```
+
+See [`docs/PLAYGROUNDS.md`](docs/PLAYGROUNDS.md).
 
 **Phase 2 (remaining):** docs hub, project demo section via DemoSpec, search/collections, relations — see [`docs/PHASE_2_SHOWCASE_EXCELLENCE.md`](docs/PHASE_2_SHOWCASE_EXCELLENCE.md). Local `docs/` / `media/` under projects and `content/collections/` remain planned.
 
@@ -75,4 +87,5 @@ All product pages share **one** generic template. UI must **never** branch on `p
 - No project-specific showcase forks
 - No premature dependencies (add packages when a Phase 2 milestone needs them)
 - No SaaS crash reporters yet (quality foundation uses GitHub Issues + email fallback)
-- Hosting target still open (D-011)
+- Does not check out or build private product repositories (D-030)
+

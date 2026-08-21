@@ -1,9 +1,11 @@
 # generated/
 
-**Why:** Historical location note for registry tooling.
+**Why:** Hosted Flutter Web playgrounds (`generated/<kebab-id>/`). Not the catalog registry.
 
-**Current registry path:** [`assets/generated/registry.json`](../assets/generated/registry.json)
+**Registry path:** [`assets/generated/registry.json`](../assets/generated/registry.json)
 
-The showcase registry lives under `assets/generated/` so Flutter Web (and all platforms) can load it as a normal bundled asset via `rootBundle`.
+Each subdirectory is a complete `flutter build web --release` published by platform-ci. Do not hand-edit those files. Deployment record: `generated/<id>/showcase.json`.
 
-Dart codegen output still belongs under `lib/generated/`.
+Dart codegen still belongs under `lib/generated/`.
+
+See [`docs/PLAYGROUNDS.md`](../docs/PLAYGROUNDS.md).

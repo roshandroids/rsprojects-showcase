@@ -14,20 +14,23 @@ import 'package:rsprojects_showcase/features/projects/domain/projects_domain.dar
 class _FakeRepo implements ProjectRepository {
   @override
   Future<List<Project>> fetchProjects() async => const [
-        Project(
-          id: 'document_platform',
-          name: 'Document Platform',
-          description: 'Living docs',
-          version: '0.9.0',
-          status: ProjectStatus.beta,
-          category: ProjectCategory.platform,
-          platforms: ['web'],
-          featured: true,
-        ),
-      ];
+    Project(
+      id: 'document_platform',
+      name: 'Document Platform',
+      description: 'Living docs',
+      version: '0.9.0',
+      status: ProjectStatus.beta,
+      category: ProjectCategory.platform,
+      platforms: ['web'],
+      featured: true,
+    ),
+  ];
 
   @override
   Future<Project?> fetchById(String id) async => null;
+
+  @override
+  Future<List<ProjectPlayground>> fetchPlaygrounds() async => const [];
 }
 
 void main() {
@@ -41,9 +44,8 @@ void main() {
         ),
         GoRoute(
           path: AppRoutes.projects,
-          builder: (context, state) => const Scaffold(
-            body: Text('Projects destination'),
-          ),
+          builder: (context, state) =>
+              const Scaffold(body: Text('Projects destination')),
         ),
         GoRoute(
           path: AppRoutes.about,
@@ -54,13 +56,8 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [
-          projectRepositoryProvider.overrideWithValue(_FakeRepo()),
-        ],
-        child: MaterialApp.router(
-          theme: AppTheme.light,
-          routerConfig: router,
-        ),
+        overrides: [projectRepositoryProvider.overrideWithValue(_FakeRepo())],
+        child: MaterialApp.router(theme: AppTheme.light, routerConfig: router),
       ),
     );
     await tester.pump();
@@ -78,9 +75,7 @@ void main() {
   testWidgets('home shows featured project from registry', (tester) async {
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [
-          projectRepositoryProvider.overrideWithValue(_FakeRepo()),
-        ],
+        overrides: [projectRepositoryProvider.overrideWithValue(_FakeRepo())],
         child: MaterialApp(
           theme: AppTheme.light,
           home: const Scaffold(body: HomeScreen()),

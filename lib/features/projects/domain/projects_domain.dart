@@ -1,6 +1,7 @@
 /// Projects domain — entities, enums, repository contract, query helpers.
 library;
 
+import 'package:rsprojects_showcase/core/content/playground_paths.dart';
 import 'package:rsprojects_showcase/features/projects/domain/project_showcase.dart';
 
 export 'package:rsprojects_showcase/features/projects/domain/project_showcase.dart';
@@ -36,6 +37,54 @@ enum ProjectCategory {
 
 enum ProjectSort { nameAsc, nameDesc, status, featuredFirst }
 
+enum PlaygroundStatus {
+  deployed,
+  pending,
+  unavailable;
+
+  static PlaygroundStatus fromString(String value) {
+    if (value == 'live') return PlaygroundStatus.deployed;
+    return PlaygroundStatus.values.firstWhere(
+      (e) => e.name == value,
+      orElse: () => PlaygroundStatus.pending,
+    );
+  }
+}
+
+/// Hosted Flutter Web playground for a product (generated artifact, not source).
+class ProjectPlayground {
+  const ProjectPlayground({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.category,
+    required this.demoPath,
+    required this.status,
+    this.projectId,
+    this.repository,
+    this.version,
+    this.commit,
+    this.deployedAt,
+  });
+
+  final String id;
+  final String? projectId;
+  final String name;
+  final String description;
+  final String category;
+  final String? repository;
+  final String demoPath;
+  final PlaygroundStatus status;
+  final String? version;
+  final String? commit;
+  final String? deployedAt;
+
+  bool get canOpen => status == PlaygroundStatus.deployed;
+
+  /// Public URL including GitHub Pages prefix when built with PAGES_BASE_HREF.
+  String get resolvedUrl => resolvePlaygroundUrl(demoPath);
+}
+
 /// Immutable project entity (UI-safe).
 class Project {
   const Project({
@@ -54,6 +103,7 @@ class Project {
     this.tags = const [],
     this.icon,
     this.showcase,
+    this.playground,
   });
 
   final String id;
@@ -71,6 +121,7 @@ class Project {
   final List<String> tags;
   final String? icon;
   final ProjectShowcase? showcase;
+  final ProjectPlayground? playground;
 }
 
 /// Catalog query / filter state.
@@ -169,4 +220,6 @@ abstract interface class ProjectRepository {
   Future<List<Project>> fetchProjects();
 
   Future<Project?> fetchById(String id);
+
+  Future<List<ProjectPlayground>> fetchPlaygrounds();
 }
