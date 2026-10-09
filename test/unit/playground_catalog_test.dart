@@ -26,7 +26,7 @@ void main() {
     });
 
     test('accepts locked kebab ids and rejects invalid ids', () {
-      const valid = ['document-platform', 'hcm-requisitions', 'a', 'a1'];
+      const valid = ['document-platform', 'sample-requisitions', 'a', 'a1'];
       const invalid = [
         'DocumentPlatform',
         'document_platform',
@@ -76,10 +76,10 @@ void main() {
         playgroundPublicUrl(
           owner: 'roshandroids',
           repository: 'rsprojects-showcase',
-          playgroundId: 'hcm-requisitions',
+          playgroundId: 'sample-requisitions',
         ),
         'https://roshandroids.github.io/rsprojects-showcase'
-        '/generated/hcm-requisitions/',
+        '/generated/sample-requisitions/',
       );
     });
 
@@ -94,7 +94,7 @@ void main() {
       expect(
         isPathInsidePlayground(
           playgroundId: 'document-platform',
-          candidate: 'generated/hcm-requisitions/index.html',
+          candidate: 'generated/sample-requisitions/index.html',
         ),
         isFalse,
       );
@@ -140,7 +140,7 @@ void main() {
 
     test('rejects mismatched deployment manifest', () {
       final errors = validatePlaygroundDeploymentManifest({
-        'id': 'hcm-requisitions',
+        'id': 'sample-requisitions',
         'version': '',
       }, expectedId: 'document-platform');
       expect(errors.any((e) => e.contains('does not match')), isTrue);
@@ -162,7 +162,7 @@ void main() {
 
     test('loads multiple playgrounds independently', () {
       final catalog = mergePlaygroundCatalog(
-        authored: [authored('document-platform'), authored('hcm-requisitions')],
+        authored: [authored('document-platform'), authored('sample-requisitions')],
         generated: const [
           GeneratedPlaygroundRecord(
             id: 'document-platform',
@@ -176,13 +176,13 @@ void main() {
 
       expect(catalog, hasLength(2));
       final document = catalog.firstWhere((e) => e.id == 'document-platform');
-      final hcm = catalog.firstWhere((e) => e.id == 'hcm-requisitions');
+      final sample = catalog.firstWhere((e) => e.id == 'sample-requisitions');
       expect(document.status, 'deployed');
       expect(document.version, '1.2.0');
       expect(document.commit, 'abc123');
       expect(document.canOpen, isTrue);
-      expect(hcm.status, 'pending');
-      expect(hcm.canOpen, isFalse);
+      expect(sample.status, 'pending');
+      expect(sample.canOpen, isFalse);
     });
 
     test('adding one playground does not rewrite existing entries', () {
@@ -333,7 +333,7 @@ void main() {
       );
       publishPlaygroundArtifact(
         showcaseRoot: root,
-        playgroundId: 'hcm-requisitions',
+        playgroundId: 'sample-requisitions',
         sourceDir: sourceB,
         version: '2.0.0',
         commit: 'bbb',
@@ -347,7 +347,7 @@ void main() {
         isTrue,
       );
       expect(
-        File('${root.path}/generated/hcm-requisitions/index.html').existsSync(),
+        File('${root.path}/generated/sample-requisitions/index.html').existsSync(),
         isTrue,
       );
       expect(
@@ -373,7 +373,7 @@ void main() {
 
       expect(
         File(
-          '${root.path}/generated/hcm-requisitions/main.dart.js',
+          '${root.path}/generated/sample-requisitions/main.dart.js',
         ).readAsStringSync(),
         'b',
       );
@@ -421,7 +421,7 @@ void main() {
         );
         publishPlaygroundArtifact(
           showcaseRoot: root,
-          playgroundId: 'hcm-requisitions',
+          playgroundId: 'sample-requisitions',
           sourceDir: sourceB,
           version: '9.9.9',
           commit: 'def456',
@@ -455,7 +455,7 @@ void main() {
         );
         expect(
           File(
-            '${web.path}/generated/hcm-requisitions/index.html',
+            '${web.path}/generated/sample-requisitions/index.html',
           ).existsSync(),
           isTrue,
         );

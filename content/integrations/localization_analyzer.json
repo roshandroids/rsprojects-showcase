@@ -7,7 +7,7 @@
       "gitUrl": "https://github.com/roshandroids/MBO",
       "defaultBranch": "main",
       "packagePath": "packages/localization_analyzer",
-      "localDevPath": "../MBO_research/cmic_localization_inspector",
+      "localDevPath": "../localization_lint",
       "paths": {
         "readme": "packages/localization_analyzer/README.md",
         "license": null,

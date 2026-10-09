@@ -44,12 +44,12 @@ const _live = ProjectPlayground(
 );
 
 const _pending = ProjectPlayground(
-  id: 'hcm-requisitions',
-  projectId: 'hcm_requisitions',
-  name: 'HCM Requisitions',
+  id: 'sample-requisitions',
+  projectId: 'sample_requisitions',
+  name: 'Sample Requisitions',
   description: 'Requisition playground',
   category: 'library',
-  demoPath: '/generated/hcm-requisitions/',
+  demoPath: '/generated/sample-requisitions/',
   status: PlaygroundStatus.pending,
 );
 
@@ -73,7 +73,7 @@ void main() {
 
     expect(find.byType(PlaygroundCard), findsNWidgets(2));
     expect(find.text('Document Platform'), findsWidgets);
-    expect(find.text('HCM Requisitions'), findsOneWidget);
+    expect(find.text('Sample Requisitions'), findsOneWidget);
     expect(find.text('Open Playground'), findsOneWidget);
     expect(find.text('Playground not deployed yet'), findsOneWidget);
   });

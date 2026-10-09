@@ -82,7 +82,7 @@ build/web/
     │   ├── flutter.js
     │   ├── assets/
     │   └── showcase.json
-    └── hcm-requisitions/
+    └── sample-requisitions/
         └── ...
 ```
 

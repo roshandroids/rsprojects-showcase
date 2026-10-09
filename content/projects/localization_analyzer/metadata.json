@@ -73,7 +73,7 @@
         "notes": "CLI / host tooling"
       }
     ],
-    "installation": "Use from the MBO / cmic_localization_inspector workspace: depend on packages/localization_analyzer, or run dart run tool/scan_localization.dart from the workspace root.",
+    "installation": "Use from the localization_lint workspace: depend on packages/localization_analyzer, or run dart run tool/scan_localization.dart from the workspace root.",
     "documentationLinks": [
       {
         "label": "Package README",
